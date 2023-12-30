@@ -1,80 +1,88 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 @include('layouts.head' , ['pageTitle' => 'Admins'])
 
-<body class="g-sidenav-show  bg-gray-100" >
+<body class="g-sidenav-show  bg-gray-100">
   @include('layouts.sidebar' , ['slag' => 8 , 'subSlag' => 81])
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
-  @include('layouts.nav' , ['pageTitle' => __('main.admins')])
+    @include('layouts.nav' , ['pageTitle' => __('main.admins')])
     <!-- End Navbar -->
     <div class="container-fluid py-4" s>
-        <div class="row">
-            <div class="col-12">
-                @include('flash-message')
-              <div class="card mb-4">
-                <div class="card-header pb-0" style="display: flex;
+      <div class="row">
+        <div class="col-12">
+          @include('flash-message')
+          <div class="card mb-4">
+            <div class="card-header pb-0" style="display: flex;
                 justify-content: left;
                 align-items: center;">
 
-                    <h6>{{ __('main.admins') }}</h6>
+              <h6>{{ __('main.admins') }}</h6>
 
 
-                    <button class="btn btn-primary" style="margin-left: auto " id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add New</button>
+              <button class="btn btn-primary" style="margin-left: auto " id="createButton"> <i class="fa fa-plus"
+                  style="margin-right: 10px"></i> Add New</button>
 
-                </div>
-                <div class="card-body px-0 pt-0 pb-2">
-                  <div class="table-responsive p-0">
-                    <table class="table align-items-center justify-content-center mb-0">
-                      <thead>
-                        <tr>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('main.name') }}</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.email') }}</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.role') }}</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.img') }}</th>
-
-
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach ($admins as $admin )
-                        <tr>
-                          <td  class="text-center"> {{ $admin -> name }}</td>
-                          <td  class="text-center"> {{ $admin -> email }}</td>
-                          <td  class="text-center"> {{ $admin -> role_name }}</td>
-                          <td class="text-center">
-                            @if($admin->img)
-
-                            <img src="{{ asset('images/Admins/' . $admin->img) }}" width="50" height="50px" style="border-radius: 50%"/>
-                            @endif
-                          </td>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="table-responsive p-0">
+                <table class="table align-items-center justify-content-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{
+                        __('main.name') }}</th>
+                      <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                        {{ __('main.email') }}</th>
+                      <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                        {{ __('main.role') }}</th>
+                      <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                        {{ __('main.img') }}</th>
 
 
-                          <td class="align-middle text-center">
-                            <button type="button" class="btn btn-success editBtn" value="{{ $admin -> id }}"><i class="fas fa-edit"></i></button>
-                          <button type="button" class="btn btn-danger deleteBtn" value="{{ $admin -> id }}"><i class="far fa-trash-alt"></i></button>
-                          </td>
-                        </tr>
-                        @endforeach
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($admins as $admin )
+                    <tr>
+                      <td class="text-center"> {{ $admin -> name }}</td>
+                      <td class="text-center"> {{ $admin -> email }}</td>
+                      <td class="text-center"> {{ $admin -> role_name }}</td>
+                      <td class="text-center">
+                        @if($admin->img)
 
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                        <img src="{{ asset('images/Admins/' . $admin->img) }}" width="50" height="50px"
+                          style="border-radius: 50%" />
+                        @endif
+                      </td>
+
+
+                      <td class="align-middle text-center">
+                        <button type="button" class="btn btn-success editBtn" value="{{ $admin -> id }}"><i
+                            class="fas fa-edit"></i></button>
+                        <button type="button" class="btn btn-danger deleteBtn" value="{{ $admin -> id }}"><i
+                            class="far fa-trash-alt"></i></button>
+                      </td>
+                    </tr>
+                    @endforeach
+
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
+        </div>
+      </div>
       @include('layouts.fixedPlugin')
 
       @include('layouts.footer')
 
       @include('Admins.create')
       @include('Admins.deleteModal')
+
       <script type="text/javascript">
-          $(document).on('click', '#createButton', function (event) {
+        $(document).on('click', '#createButton', function (event) {
 
         event.preventDefault();
         let href = $(this).attr('data-attr');

@@ -94,6 +94,21 @@ function()
     Route::get('/getSpecialUID/{id}', [App\Http\Controllers\SpecialIDController::class, 'show'])->name('getSpecialUID');
     Route::get('/deleteSpecialUID/{id}', [App\Http\Controllers\SpecialIDController::class, 'destroy'])->name('deleteSpecialUID');
 
+    Route::get('/designPurchases', [App\Http\Controllers\DesignPurchaseController::class, 'index'])->name('designPurchases');
 
+    Route::get('/appUsers/{enable}', [App\Http\Controllers\AppUserController::class, 'index'])->name('appUsers');
+    Route::get('/chargeAppUserBalance', [App\Http\Controllers\AppUserController::class, 'chargeAppUserBalance'])->name('chargeAppUserBalance');
+    Route::get('/userNotifications', [App\Http\Controllers\AppUserController::class, 'userNotifications'])->name('userNotifications');
+    Route::get('/getAppUserByTag/{tag}', [App\Http\Controllers\AppUserController::class, 'show'])->name('getAppUserByTag');
+    Route::get('/getAppUserById/{id}', [App\Http\Controllers\AppUserController::class, 'showById'])->name('getAppUserById');
+    
+    Route::post('/updateDiamondWallet', [App\Http\Controllers\AppUserController::class, 'updateDiamondWallet'])->name('updateDiamondWallet');
+    Route::post('/sendNotification', [App\Http\Controllers\AppUserController::class, 'sendNotification'])->name('sendNotification');
+    Route::get('/deleteNotification/{id}', [App\Http\Controllers\AppUserController::class, 'destroy'])->name('deleteNotification');
+    Route::post('/updateAppUser', [App\Http\Controllers\AppUserController::class, 'Update'])->name('updateAppUser');
 
+    
+
+    
+    
 });
