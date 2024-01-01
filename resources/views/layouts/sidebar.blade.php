@@ -46,6 +46,26 @@
         </ul>
       </li>
 
+      <li class="nav-item">
+        <a @if($slag==11) class="nav-link dropdown active" @else class="nav-link" @endif href="javascript:;"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/rooms.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{__('main.charRooms')}}</span>
+          <button class="Arrowbutton" value="dropdown-menu-2" id="dropdown-button-2"><i
+              class="fas fa-chevron-down"></i></button>
+        </a>
+        <ul class="dropdown-menu text-small subM" aria-labelledby="dropdown" id="dropdown-menu-2">
+          <li><a @if($subSlag==112) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('chatRooms' , 1)}}">{{__('main.activeChatRooms')}}</a></li>
+          <li><a @if($subSlag==111) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('chatRooms' , 0)}}">{{__('main.inActiveChatRooms')}}</a></li>
+
+        </ul>
+      </li>
+
 
       <li class="nav-item">
         <a @if($slag==2) class="nav-link dropdown active" @else class="nav-link" @endif href="javascript:;"
@@ -160,6 +180,16 @@
             <img src="{{ asset('assets/icons/goods.png') }}" style="width: 20px ">
           </div>
           <span class="nav-link-text ms-1">{{ __('main.design_purchases') }}</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a @if($slag==12) class="nav-link  active" @else class="nav-link" @endif href="{{ route('festival_banners') }}">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/party.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{ __('main.fesival_banners') }}</span>
         </a>
       </li>
 

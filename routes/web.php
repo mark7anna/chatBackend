@@ -101,14 +101,18 @@ function()
     Route::get('/userNotifications', [App\Http\Controllers\AppUserController::class, 'userNotifications'])->name('userNotifications');
     Route::get('/getAppUserByTag/{tag}', [App\Http\Controllers\AppUserController::class, 'show'])->name('getAppUserByTag');
     Route::get('/getAppUserById/{id}', [App\Http\Controllers\AppUserController::class, 'showById'])->name('getAppUserById');
-    
+
     Route::post('/updateDiamondWallet', [App\Http\Controllers\AppUserController::class, 'updateDiamondWallet'])->name('updateDiamondWallet');
     Route::post('/sendNotification', [App\Http\Controllers\AppUserController::class, 'sendNotification'])->name('sendNotification');
     Route::get('/deleteNotification/{id}', [App\Http\Controllers\AppUserController::class, 'destroy'])->name('deleteNotification');
     Route::post('/updateAppUser', [App\Http\Controllers\AppUserController::class, 'Update'])->name('updateAppUser');
 
-    
+    Route::get('/rooms/{state}', [App\Http\Controllers\ChatRoomController::class, 'index'])->name('chatRooms');
 
-    
-    
+    Route::get('/festival_banners', [App\Http\Controllers\FestivalBannerController::class, 'index'])->name('festival_banners');
+    Route::post('/festivalBannerStore', [App\Http\Controllers\FestivalBannerController::class, 'store'])->name('festivalBannerStore');
+
+
+
+
 });

@@ -142,9 +142,32 @@ return [
     "block" => "Block",
     "birth_date" => "Birth Date",
     "hoppies" => "Hoppies",
-    "update" => "Update"
+    "update" => "Update",
+    "charRooms" => "Chat Rooms",
+    "activeChatRooms" => "Active Chat Rooms",
+    "inActiveChatRooms" => "InActive Chat Rooms ",
+    "lock_State" => "Lock State",
+    "room_owner" => "Room Owner",
+    "talkers" => "Talkers",
+    "miccount" => "Mic Count ",
+    "isBlock" =>  "Is Block ?",
+    "fesival_banners" => "Festival Banners",
+    "start_date" => "Start Date",
+    "duration" => "Duration",
+    "accepted" => " Accepted",
+    "room" => "Chat Room",
+    "party_type1" => "Activity" ,
+    "party_type2" => "Party" ,
+    "party_type3" => "Advertise" ,
+    "party_type4" => "Section" ,
+    "new_Festival_banner" => "New Party Banner",
+    "event_type" => "Activity Type",
+    "refused" => "Refused",
+    "accepte" => "Accepted",
+    "enabled" => "Enabled",
+    "disabled" => "Disabled"
 
-    
+
 
 
 

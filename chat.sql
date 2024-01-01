@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 30, 2023 at 05:41 PM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.17
+-- Host: localhost
+-- Generation Time: Jan 01, 2024 at 08:53 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,28 +29,28 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `app_users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `tag` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL DEFAULT '',
   `share_level_id` int(11) NOT NULL,
   `karizma_level_id` int(11) NOT NULL,
   `charging_level_id` int(11) NOT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `isChargingAgent` int(11) NOT NULL DEFAULT 0,
   `isHostingAgent` int(11) NOT NULL DEFAULT 0,
   `registered_at` date NOT NULL,
   `last_login` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `birth_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `enable` int(11) NOT NULL DEFAULT 1,
-  `ipAddress` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `macAddress` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `deviceId` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ipAddress` text NOT NULL,
+  `macAddress` text NOT NULL,
+  `deviceId` text NOT NULL,
   `isOnline` int(11) NOT NULL DEFAULT 0,
   `isInRoom` int(11) NOT NULL DEFAULT 0,
   `country` int(11) NOT NULL,
-  `register_with` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `register_with` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -70,9 +70,9 @@ INSERT INTO `app_users` (`id`, `tag`, `name`, `img`, `share_level_id`, `karizma_
 
 CREATE TABLE `badges` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `description` text NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -93,11 +93,11 @@ INSERT INTO `badges` (`id`, `name`, `icon`, `description`, `created_at`, `update
 CREATE TABLE `banners` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `type` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `order` int(11) NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `img` varchar(255) NOT NULL,
   `action` int(11) NOT NULL,
-  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `url` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL,
   `room_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -119,7 +119,7 @@ INSERT INTO `banners` (`id`, `type`, `name`, `order`, `img`, `action`, `url`, `u
 
 CREATE TABLE `categories` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `order` int(11) NOT NULL,
   `enable` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -136,16 +136,47 @@ INSERT INTO `categories` (`id`, `name`, `order`, `enable`, `created_at`, `update
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `chat_rooms`
+--
+
+CREATE TABLE `chat_rooms` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `tag` varchar(255) NOT NULL,
+  `name` text NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `state` int(11) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `talkers_count` int(11) NOT NULL,
+  `starred` int(11) NOT NULL,
+  `isBlocked` int(11) NOT NULL,
+  `blockedDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `blockedUntil` timestamp NOT NULL DEFAULT current_timestamp(),
+  `createdDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `isTrend` int(11) NOT NULL,
+  `details` text NOT NULL,
+  `micCount` int(11) NOT NULL,
+  `enableMessages` int(11) NOT NULL,
+  `reportCount` int(11) NOT NULL,
+  `themeId` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `countries`
 --
 
 CREATE TABLE `countries` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL,
   `order` int(11) NOT NULL,
-  `dial_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dial_code` varchar(255) NOT NULL,
+  `icon` varchar(255) NOT NULL,
   `enable` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -167,17 +198,17 @@ INSERT INTO `countries` (`id`, `name`, `code`, `order`, `dial_code`, `icon`, `en
 CREATE TABLE `designs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `is_store` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `tag` varchar(255) NOT NULL,
   `order` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
   `gift_category_id` int(11) NOT NULL,
   `price` decimal(8,2) NOT NULL,
   `days` int(11) NOT NULL,
   `behaviour` int(11) NOT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `motion_icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `dark_icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `motion_icon` varchar(255) NOT NULL,
+  `dark_icon` varchar(255) NOT NULL,
   `subject` int(11) NOT NULL,
   `vip_id` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -210,7 +241,7 @@ CREATE TABLE `design_purchases` (
 
 CREATE TABLE `emossions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `img` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -230,12 +261,33 @@ INSERT INTO `emossions` (`id`, `img`, `created_at`, `updated_at`) VALUES
 
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `festival_banners`
+--
+
+CREATE TABLE `festival_banners` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `type` int(11) NOT NULL,
+  `description` text NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `room_id` int(11) NOT NULL,
+  `start_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `duration_in_hour` decimal(8,2) NOT NULL,
+  `enable` int(11) NOT NULL,
+  `accepted` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -246,7 +298,7 @@ CREATE TABLE `failed_jobs` (
 
 CREATE TABLE `gift_categories` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `order` int(11) NOT NULL,
   `enable` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -263,16 +315,28 @@ INSERT INTO `gift_categories` (`id`, `name`, `order`, `enable`, `created_at`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gift_transactions`
+--
+
+CREATE TABLE `gift_transactions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `levels`
 --
 
 CREATE TABLE `levels` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `order` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` varchar(255) NOT NULL,
   `points` int(11) NOT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `frame_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `enter_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `frame_id` varchar(255) NOT NULL,
+  `enter_id` varchar(255) NOT NULL,
   `type` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -295,7 +359,7 @@ INSERT INTO `levels` (`id`, `order`, `points`, `icon`, `frame_id`, `enter_id`, `
 
 CREATE TABLE `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -324,7 +388,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (19, '2023_12_27_211301_create_emossions_table', 11),
 (20, '2023_12_28_065337_create_special_i_d_s_table', 12),
 (21, '2023_12_29_215608_create_design_purchases_table', 13),
-(22, '2023_12_30_064141_create_notifications_table', 14);
+(22, '2023_12_30_064141_create_notifications_table', 14),
+(23, '2023_12_30_053326_create_gift_transactions_table', 15),
+(24, '2023_12_30_053333_create_chat_rooms_table', 16),
+(25, '2023_12_30_195120_create_festival_banners_table', 17);
 
 -- --------------------------------------------------------
 
@@ -334,12 +401,12 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 
 CREATE TABLE `notifications` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `link` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
   `type` int(11) NOT NULL,
-  `user_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(191) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -358,8 +425,8 @@ INSERT INTO `notifications` (`id`, `title`, `message`, `img`, `link`, `type`, `u
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -370,8 +437,8 @@ CREATE TABLE `password_resets` (
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -383,11 +450,11 @@ CREATE TABLE `password_reset_tokens` (
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `abilities` text DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -402,8 +469,8 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `roles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `description` text NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -423,8 +490,8 @@ INSERT INTO `roles` (`id`, `role`, `description`, `created_at`, `updated_at`) VA
 
 CREATE TABLE `special_i_d_s` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `uid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `price` decimal(8,2) NOT NULL,
   `isAvailable` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -436,7 +503,7 @@ CREATE TABLE `special_i_d_s` (
 --
 
 INSERT INTO `special_i_d_s` (`id`, `uid`, `img`, `price`, `isAvailable`, `created_at`, `updated_at`) VALUES
-(1, '88888888', '1703748131.png', '80000.00', 1, '2023-12-28 05:22:11', '2023-12-29 19:50:21');
+(1, '88888888', '1703748131.png', 80000.00, 1, '2023-12-28 05:22:11', '2023-12-29 19:50:21');
 
 -- --------------------------------------------------------
 
@@ -446,8 +513,8 @@ INSERT INTO `special_i_d_s` (`id`, `uid`, `img`, `price`, `isAvailable`, `create
 
 CREATE TABLE `themes` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `isMain` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -468,13 +535,13 @@ INSERT INTO `themes` (`id`, `name`, `img`, `isMain`, `created_at`, `updated_at`)
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `img` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL,
+  `img` varchar(191) NOT NULL DEFAULT '',
   `role` int(20) NOT NULL DEFAULT 0,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -495,11 +562,11 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `im
 
 CREATE TABLE `vips` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `tag` varchar(255) NOT NULL,
   `price` decimal(8,2) NOT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `motion_icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(255) NOT NULL,
+  `motion_icon` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -509,11 +576,11 @@ CREATE TABLE `vips` (
 --
 
 INSERT INTO `vips` (`id`, `name`, `tag`, `price`, `icon`, `motion_icon`, `created_at`, `updated_at`) VALUES
-(1, 'البارون', 'VIP1', '1000.00', '1703622039.png', '1703712938motion.png', NULL, '2023-12-27 19:35:38'),
-(2, 'الوزير', 'VIP2', '2000.00', '1703622052.png', '', NULL, '2023-12-26 18:20:52'),
-(3, 'البرنس', 'VIP3', '3000.00', '1703622067.png', '', NULL, '2023-12-26 18:21:07'),
-(4, 'القائد', 'VIP4', '4000.00', '1703622083.png', '', NULL, '2023-12-26 18:21:23'),
-(5, 'الملك', 'VIP5', '5000.00', '1703622094.png', '', NULL, '2023-12-26 18:21:34');
+(1, 'البارون', 'VIP1', 1000.00, '1703622039.png', '1703712938motion.png', NULL, '2023-12-27 19:35:38'),
+(2, 'الوزير', 'VIP2', 2000.00, '1703622052.png', '', NULL, '2023-12-26 18:20:52'),
+(3, 'البرنس', 'VIP3', 3000.00, '1703622067.png', '', NULL, '2023-12-26 18:21:07'),
+(4, 'القائد', 'VIP4', 4000.00, '1703622083.png', '', NULL, '2023-12-26 18:21:23'),
+(5, 'الملك', 'VIP5', 5000.00, '1703622094.png', '', NULL, '2023-12-26 18:21:34');
 
 -- --------------------------------------------------------
 
@@ -535,7 +602,7 @@ CREATE TABLE `wallets` (
 --
 
 INSERT INTO `wallets` (`id`, `user_id`, `gold`, `diamond`, `created_at`, `updated_at`) VALUES
-(1, 1, '200.00', '110.00', NULL, '2023-12-30 08:36:03');
+(1, 1, 200.00, 110.00, NULL, '2023-12-30 08:36:03');
 
 --
 -- Indexes for dumped tables
@@ -566,6 +633,12 @@ ALTER TABLE `banners`
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `chat_rooms`
+--
+ALTER TABLE `chat_rooms`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -600,9 +673,21 @@ ALTER TABLE `failed_jobs`
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
+-- Indexes for table `festival_banners`
+--
+ALTER TABLE `festival_banners`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `gift_categories`
 --
 ALTER TABLE `gift_categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `gift_transactions`
+--
+ALTER TABLE `gift_transactions`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -709,6 +794,12 @@ ALTER TABLE `categories`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `chat_rooms`
+--
+ALTER TABLE `chat_rooms`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `countries`
 --
 ALTER TABLE `countries`
@@ -739,10 +830,22 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `festival_banners`
+--
+ALTER TABLE `festival_banners`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `gift_categories`
 --
 ALTER TABLE `gift_categories`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `gift_transactions`
+--
+ALTER TABLE `gift_transactions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `levels`
@@ -754,7 +857,7 @@ ALTER TABLE `levels`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `notifications`

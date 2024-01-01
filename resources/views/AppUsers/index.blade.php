@@ -128,7 +128,7 @@
                         dataType: 'json',
 
                         success:function(response){
-                            
+
                             if(response.length > 0){
                                  console.log(response[0]);
                                 event.preventDefault();
@@ -175,7 +175,9 @@
                                             $(".modal-body #deviceId").val(response[0].deviceId);
                                             $(".modal-body #password").val(response[0].password);
                                             $(".modal-body #USERID").val(response[0].id);
-                                            $("#share_level_order").val(response[0].share_level_name);
+                                            $("#share_level_order").html(response[0].share_level_name);
+                                            $("#karizma_level_order").html(response[0].karizma_level_name);
+                                            $("#charrg_level_order").html(response[0].charging_level_name);
                                             var share_level_icon =  '/../images/Levels/' + response[0].share_level_img ;
                                             $("#share_level_icon").attr('src' ,  share_level_icon  );
                                             var charge_level_icon =  '/../images/Levels/' + response[0].charging_level_img ;
@@ -183,11 +185,11 @@
 
                                             var karizma_level_icon =  '/../images/Levels/' + response[0].karizma_level_img ;
                                             $("#karizma_level_icon").attr('src' ,  karizma_level_icon  );
-                                            
 
-                                            
-                                            
-                            
+
+
+
+
                                         },
                                         complete: function () {
                                             $('#loader').hide();
@@ -200,15 +202,15 @@
                                         timeout: 8000
                                     });
                             } else {
-                           
+
                             }
                         }
                     });
 
 
-                  
-             
-        
+
+
+
             });
 
             </script>

@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChatRoom;
+use App\Models\FestivalBanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ChatRoomController extends Controller
+class FestivalBannerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index($state)
+    public function index()
     {
-        $rooms = DB::table('chat_rooms')
-        ->join('app_users' , 'chat_rooms.userId' , '=' , 'app_users.id')
-        -> select('chat_rooms.*' , 'app_users.name as room_owner')
-        -> where('chat_rooms.state' , '=' , $state)
+        $banners = DB::table('festival_banners')
+        -> join('chat_rooms' , 'festival_banners.room_id' , '=' , 'chat_rooms.id')
+        -> select('chat_rooms.name as room_name' , 'festival_banners.*')
         -> get();
-        return view('ChatRoom.index' , compact('rooms' , 'state'));
+
+        return view('FestivalBanner.index' , compact('banners'));
     }
 
     /**
@@ -34,13 +34,13 @@ class ChatRoomController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ChatRoom $chatRoom)
+    public function show(FestivalBanner $festivalBanner)
     {
         //
     }
@@ -48,7 +48,7 @@ class ChatRoomController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ChatRoom $chatRoom)
+    public function edit(FestivalBanner $festivalBanner)
     {
         //
     }
@@ -56,7 +56,7 @@ class ChatRoomController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ChatRoom $chatRoom)
+    public function update(Request $request, FestivalBanner $festivalBanner)
     {
         //
     }
@@ -64,7 +64,7 @@ class ChatRoomController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ChatRoom $chatRoom)
+    public function destroy(FestivalBanner $festivalBanner)
     {
         //
     }

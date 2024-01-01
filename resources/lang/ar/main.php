@@ -142,7 +142,32 @@ return [
 "block" => "الحظر",
 "birth_date" => "تاريخ الميلاد",
 "hoppies" => "الهوايات",
-"update" => "تحديث"
+"update" => "تحديث",
+"charRooms" => "غرف الدردشة",
+"activeChatRooms" => "الغرف النشطة",
+"inActiveChatRooms" => "الغرف غير النشطة",
+"lock_State" => "حالة الغلق",
+"room_owner" => "مالك الغرفة",
+"talkers" => "المتحدثون",
+"miccount" => "عدد المقاعد",
+"isBlock" => "محظورة ؟",
+"fesival_banners" => "بانرات الإحتفال",
+"start_date" => "تاريخ البداية",
+"duration" => "المدة",
+"accepted" => "مقبول ؟",
+"room" => "غرفة الدردشة",
+"party_type1" => "نشاط" ,
+"party_type2" => "حفلة" ,
+"party_type3" => "اعلان" ,
+"party_type4" => "فقرة" ,
+"new_Festival_banner" => "بانر احتفال جديد",
+"event_type" => "نوع النشاط",
+"refused" => "مرفوض",
+"accepte" => "مقبول",
+"enabled" => "مفعل",
+"disabled" => "معطل"
+
+
 
 
 
