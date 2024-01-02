@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class AppUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -44,12 +48,12 @@ class AppUserController extends Controller
       if(count($walet) > 0){
         if($request -> chargeType == 1){
 
-            $walet[0] -> diamond += $request -> diamond ; 
+            $walet[0] -> diamond += $request -> diamond ;
         } else if($request -> chargeType == 0){
-            $walet[0] -> diamond -= $request -> diamond ; 
+            $walet[0] -> diamond -= $request -> diamond ;
         }
         $walet[0] -> update ();
-         
+
           return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
 
       }
@@ -72,7 +76,7 @@ class AppUserController extends Controller
             $img = "";
         }
         Notification::create([
-            'title' => $request -> title, 
+            'title' => $request -> title,
             'message' => $request -> message,
             'img' => $img,
             'link' => $request -> link ?? "",
@@ -110,7 +114,7 @@ class AppUserController extends Controller
         -> where('app_users.tag' , '=' , $tag)
         -> get();
         echo(json_encode($user));
-        exit; 
+        exit;
     }
 
     public function showById($id)
@@ -120,15 +124,15 @@ class AppUserController extends Controller
         -> join('levels as levels1' , 'app_users.share_level_id' , '=' , 'levels1.id')
         -> join('levels as levels2' , 'app_users.karizma_level_id' , '=' , 'levels2.id')
         -> join('levels as levels3' , 'app_users.charging_level_id' , '=' , 'levels3.id')
-        -> select('levels1.icon as share_level_img' , 'levels1.order as share_level_name' , 'wallets.gold' , 'wallets.diamond' , 
-        'levels2.icon as karizma_level_img' , 'levels2.order as karizma_level_name' , 
-        'levels3.icon as charging_level_img' , 'levels3.order as charging_level_name' , 
+        -> select('levels1.icon as share_level_img' , 'levels1.order as share_level_name' , 'wallets.gold' , 'wallets.diamond' ,
+        'levels2.icon as karizma_level_img' , 'levels2.order as karizma_level_name' ,
+        'levels3.icon as charging_level_img' , 'levels3.order as charging_level_name' ,
         'app_users.*')
         -> where('app_users.id' , '=' , $id)
         -> get();
-        
+
         echo(json_encode($user));
-        exit; 
+        exit;
     }
 
     /**
@@ -144,9 +148,9 @@ class AppUserController extends Controller
      */
     public function update(Request $request)
     {
-     
+
         $user = AppUser::find($request -> USERID);
-  
+
         if($user){
             if($request -> img){
                 $img = time() . '.' . $request->img->extension();
@@ -159,7 +163,7 @@ class AppUserController extends Controller
                'tag' => $request -> tag ,
                'email' => $request -> email ,
                'img' => $img
-            
+
             ]);
             return redirect()->route('appUsers' , 1 )->with('success', __('main.updated'));
         }

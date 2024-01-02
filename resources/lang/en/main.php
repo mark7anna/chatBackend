@@ -165,7 +165,8 @@ return [
     "refused" => "Refused",
     "accepte" => "Accepted",
     "enabled" => "Enabled",
-    "disabled" => "Disabled"
+    "disabled" => "Disabled",
+    "online_members" => "Online Members"
 
 
 

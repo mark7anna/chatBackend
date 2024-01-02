@@ -10,7 +10,7 @@
     <!-- Navbar -->
   @include('layouts.nav' , ['pageTitle' => __('main.fesival_banners')])
     <!-- End Navbar -->
-    <div class="container-fluid py-4" s>
+    <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
         <div class="row">
             <div class="col-12">
                 @include('flash-message')
@@ -20,7 +20,11 @@
                 align-items: center;">
                     <h6>{{ __('main.fesival_banners') }}</h6>
 
-                    <button class="btn btn-primary" style="margin-left: auto " id="createButton"> <i class="fa fa-plus"
+                    <button class="btn btn-primary" @if(Config::get('app.locale')=='ar' )
+style="margin-right: auto "
+@else style="margin-left: auto "
+@endif
+id="createButton"> <i class="fa fa-plus"
                         style="margin-right: 10px"></i> Add New</button>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -44,10 +48,10 @@
                       <tbody>
                         @foreach ($banners as $banner )
                         <tr>
-                          <td  class="text-center"> {{ $banners -> title }}</td>
-                          <td  class="text-center"> {{ $banners -> room_name }}</td>
+                          <td  class="text-center"> {{ $banner -> title }}</td>
+                          <td  class="text-center"> {{ $banner -> room_name ? $banner -> room_name : "---"}}</td>
                           <td  class="text-center">
-                            @if($banners -> type == 0)
+                            @if($banner -> type == 0)
                                {{ __('main.party_type1') }}
                                @elseif($banner -> type == 1)
                                {{ __('main.party_type2') }}
@@ -59,7 +63,7 @@
 
 
                         </td>
-                          <td class="text-center"> <img src="{{ asset('images/FestivalBanner/' . $banners->img) }}" width="80"/>  </td>
+                          <td class="text-center"> <img src="{{ asset('images/FestivalBanner/' . $banner->img) }}" width="80"/>  </td>
                           <td  class="text-center"> {{ $banner -> start_date }}</td>
                           <td  class="text-center"> {{ $banner -> duration_in_hour }}</td>
                           <td class="text-center">
@@ -100,12 +104,13 @@
             // return the result
             success: function (result) {
                 $('#createModal').modal("show");
-                $(".modal-body #name").val("");
-                $(".modal-body #code").val("");
-                $(".modal-body #order").val("");
-                $(".modal-body #dial_code").val("");
-                $(".modal-body #id").val(0);
-                $(".modal-body #enable").prop( "checked", false );
+                $(".modal-body #title").val("");
+                $(".modal-body #type").val("");
+                $(".modal-body #description").val("");
+                $(".modal-body #room_id").val("");
+                $(".modal-body #duration_in_hour").val("");
+                $(".modal-body #accepted").val("");
+                $(".modal-body #enable").val("");
                 $(".modal-body #profile-img-tag").attr('src', '{{ asset('assets/icons/picture.png') }}');
 
             },
@@ -120,11 +125,65 @@
             timeout: 8000
         })
 
+    });
+
+    $(document).on('click', '.editBtn', function(event) {
+        let id = event.currentTarget.value ;
+        event.preventDefault();
+        let href = $(this).attr('data-attr');
+        $.ajax({
+            type:'get',
+            url:'/getFestivalBanner' + '/' + id,
+            dataType: 'json',
+
+            success:function(response){
+                console.log(response);
+                if(response){
+                    let href = $(this).attr('data-attr');
+                    $.ajax({
+                        url: href,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#createModal').modal("show");
+
+                            // var img =  response.icon ;
+                             var img =  '/../images/FestivalBanner/' + response.img ;
+                            $(".modal-body #profile-img-tag").attr('src' , img );
+                            $(".modal-body #title").val( response.title );
+                            $(".modal-body #type").val( response.type );
+                            $(".modal-body #description").val(response.description);
+                            $(".modal-body #room_id").val(response.room_id);
+                            $(".modal-body #id").val(response.id);
+                            $(".modal-body #duration_in_hour").val(response.duration_in_hour);
+                            $(".modal-body #start_date").val(response.start_date);
+                            $(".modal-body #enable").val(response.enable);
+                            $(".modal-body #accepted").val(response.accepted);
+                        },
+                        complete: function() {
+                            $('#loader').hide();
+                        },
+                        error: function(jqXHR, testStatus, error) {
+                            console.log(error);
+                            alert("Page " + href + " cannot open. Error:" + error);
+                            $('#loader').hide();
+                        },
+                        timeout: 8000
+                    })
+                } else {
+
+                }
+            }
         });
+    });
 
         </script>
 
-    </div>
+
+
+</div>
   </main>
 
   <!--   Core JS Files   -->

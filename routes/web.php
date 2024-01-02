@@ -111,6 +111,7 @@ function()
 
     Route::get('/festival_banners', [App\Http\Controllers\FestivalBannerController::class, 'index'])->name('festival_banners');
     Route::post('/festivalBannerStore', [App\Http\Controllers\FestivalBannerController::class, 'store'])->name('festivalBannerStore');
+    Route::get('/getFestivalBanner/{id}', [App\Http\Controllers\FestivalBannerController::class, 'show'])->name('getFestivalBanner');
 
 
 

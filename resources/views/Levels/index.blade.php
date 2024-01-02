@@ -10,7 +10,7 @@
     <!-- Navbar -->
   @include('layouts.nav' , ['pageTitle' => __('main.levels')])
     <!-- End Navbar -->
-    <div class="container-fluid py-4" s>
+    <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
         <div class="row">
             <div class="col-12">
                 @include('flash-message')
@@ -26,7 +26,11 @@
                     <h6>{{ __('main.level_charge') }}</h6>
                     @endif
 
-                    <button class="btn btn-primary" style="margin-left: auto " id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add New</button>
+                    <button class="btn btn-primary" @if(Config::get('app.locale')=='ar' )
+style="margin-right: auto "
+@else style="margin-left: auto "
+@endif
+id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add New</button>
 
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">

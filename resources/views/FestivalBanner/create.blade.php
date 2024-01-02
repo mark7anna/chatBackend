@@ -14,7 +14,7 @@
                     <input type="hidden" class="form-control" id="id" name="id" >
             </div>
             <div class="mb-3">
-                <label for="title" class="col-form-label">{{ __('main.title') }}:</label>
+                <label for="type" class="col-form-label">{{ __('main.event_type') }}:</label>
                  <select name="type" id="type" class="form-select">
                     <option value="0"> {{ __('main.party_type1') }} </option>
                     <option value="1"> {{ __('main.party_type2') }} </option>
@@ -25,7 +25,7 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="col-form-label">{{ __('main.details') }}:</label>
-                <textarea name="description" id="description" rows="3"></textarea>
+                <textarea name="description" id="description" rows="3" class="form-control"></textarea>
             </div>
             <div class="mb-3">
                 <label for="points" class="col-form-label">{{ __('main.img') }}:</label>
@@ -51,7 +51,8 @@
 
               <div class="mb-3">
                         <label for="start_date" class="col-form-label">{{ __('main.start_date') }}:</label>
-                        <input type="datetime-local" class="form-control" id="start_date" name="start_date" required>
+                        <input type="datetime" class="form-control" id="start_date" name="start_date" required
+                        value="{{\Carbon\Carbon::now()}}" >
               </div>
 
               <div class="mb-3">
@@ -70,7 +71,7 @@
                     </div>
                     <div class="col-6">
                         <label for="enable" class="col-form-label">{{ __('main.enable') }}:</label>
-                        <select name="enable" id="tyenablepe" class="form-select">
+                        <select name="enable" id="enable" class="form-select">
                            <option value="0"> {{ __('main.disabled') }} </option>
                            <option value="1"> {{ __('main.enabled') }} </option>
                         </select>
@@ -91,6 +92,9 @@
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
   <script type="text/javascript">
+   $( document ).ready(function() {
+
+});
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();

@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.allUsers')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4" s>
+        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')

@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.chargeUsersBalance')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4" s>
+        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -105,7 +105,7 @@
             <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
             <script type="text/javascript">
-                $(document).ready(function() { 
+                $(document).ready(function() {
                 $('.usercard').hide();
                 $('#tag').val("");
              });
@@ -118,7 +118,7 @@
                         dataType: 'json',
 
                         success:function(response){
-                            
+
                             if(response.length > 0){
                                 var img =  '/../images/AppUsers/' + response[0].img ;
                                  $('.usercard').show();
@@ -140,9 +140,9 @@
                         }
                     });
                 }
-               
+
               }
-             
+
 
             </script>
 

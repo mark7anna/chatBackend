@@ -165,7 +165,8 @@ return [
 "refused" => "مرفوض",
 "accepte" => "مقبول",
 "enabled" => "مفعل",
-"disabled" => "معطل"
+"disabled" => "معطل",
+"online_members" => "الاْعضاء النشطيين"
 
 
 

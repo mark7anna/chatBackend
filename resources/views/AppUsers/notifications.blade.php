@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.user_notifications')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4" s>
+        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -20,7 +20,11 @@
 
                             <h6>{{ __('main.user_notifications') }}</h6>
 
-                            <button class="btn btn-primary" style="margin-left: auto " id="createButton"> <i
+                            <button class="btn btn-primary" @if(Config::get('app.locale')=='ar' )
+style="margin-right: auto "
+@else style="margin-left: auto "
+@endif
+id="createButton"> <i
                                     class="fa fa-plus" style="margin-right: 10px"></i> Add New</button>
                         </div>
                         <div class="card-body px-0 pt-0 pb-2">
@@ -86,7 +90,7 @@
 
             <script type="text/javascript">
                 $(document).on('click', '#createButton', function (event) {
-        
+
                 event.preventDefault();
                 let href = $(this).attr('data-attr');
                 $.ajax({
@@ -105,7 +109,7 @@
                         $(".modal-body #type").val("1");
                         $(".modal-body #user_id").val("");
                         $(".modal-body #profile-img-tag").attr('src', '{{ asset('assets/icons/picture.png') }}');
-        
+
                     },
                     complete: function () {
                         $('#loader').hide();
@@ -117,7 +121,7 @@
                     },
                     timeout: 8000
                 })
-        
+
             });
 
             $(document).on('click', '.deleteBtn', function(event) {

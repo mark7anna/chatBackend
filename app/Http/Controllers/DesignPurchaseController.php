@@ -8,21 +8,25 @@ use Illuminate\Support\Facades\DB;
 
 class DesignPurchaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $purchases = DB::table('design_purchases') 
+        $purchases = DB::table('design_purchases')
         ->join('designs' , 'designs.id' , 'design_purchases.design_id')
         ->join('app_users' , 'app_users.id' , 'design_purchases.user_id')
-        -> select('designs.icon as design_iocn' , 'designs.name as design_name' , 
-        'app_users.name as user_name' , 'app_users.img as user_img' , 
+        -> select('designs.icon as design_iocn' , 'designs.name as design_name' ,
+        'app_users.name as user_name' , 'app_users.img as user_img' ,
         'design_purchases.*') -> get();
 
         return view ('DesignPurchases.index' , compact('purchases'));
 
-        
+
     }
 
     /**

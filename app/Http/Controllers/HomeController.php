@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\ChatRoom;
+use App\Models\AppUser;
 class HomeController extends Controller
 {
+
     /**
      * Create a new controller instance.
      *
@@ -23,6 +25,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $roomsActive = ChatRoom::where('state' , '=' , 1) -> get();
+        $roomsActiveCount = count( $roomsActive);
+        $roomsInActive = ChatRoom::where('state' , '=' , 0) -> get();
+        $roomsInActiveCount = count( $roomsActive);
+        $onlineUsers = AppUser::where('isOnline' , '=' , 1) -> get();
+         $onlineUsersCount = count($onlineUsers);
+         $allUsers = AppUser::all();
+         $allUsersCount = count($allUsers);
+
+        return view('home' , compact('roomsActiveCount' , 'roomsInActiveCount' , 'onlineUsersCount' , 'allUsersCount'));
     }
 }

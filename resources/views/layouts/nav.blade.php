@@ -1,6 +1,9 @@
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true"
+@if(Config::get('app.locale')=='ar' )
+style="direction: rtl"
+@endif>
     <div class="container-fluid py-1 px-3">
-      <nav aria-label="breadcrumb">
+      <nav aria-label="breadcrumb" style="direction: ltr">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
           <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
           <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{ $pageTitle }}</li>
@@ -9,10 +12,7 @@
       </nav>
       <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-          <div class="input-group">
-            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-            <input type="text" class="form-control" placeholder="Type here...">
-          </div>
+
         </div>
         <ul class="navbar-nav  justify-content-end">
 
@@ -35,13 +35,13 @@
             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa fa-globe cursor-pointer"></i>
             </a>
-            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+            <ul class="dropdown-menu @if(Config::get('app.locale')=='ar' ) dropdown-menu-start @else dropdown-menu-end @endif   px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
               <li class="">
                 <a class="dropdown-item border-radius-md" hreflang="ar"
                 href="{{ LaravelLocalization::getLocalizedURL('ar', null, [], true) }}">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="{{ asset('assets/icons/arabic.png') }}" class="avatar avatar-sm  me-3 ">
+                      <img src="{{ asset('assets/icons/arabic.png') }}" class="avatar avatar-sm  me-3 ms-3">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       Arabic | العربية
@@ -54,7 +54,7 @@
                 href="{{ LaravelLocalization::getLocalizedURL('en', null, [], true) }}">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="{{ asset('assets/icons/english.png') }}" class="avatar avatar-sm  me-3 ">
+                      <img src="{{ asset('assets/icons/english.png') }}" class="avatar avatar-sm  me-3 ms-3 ">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       English | الإنجليزية

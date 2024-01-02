@@ -22893,12 +22893,17 @@ html {
 
 .navbar-vertical.navbar-expand-xs.fixed-start {
   left: 0;
+  overflow-y: hidden !important;
 }
 
 .navbar-vertical.navbar-expand-xs.fixed-end {
   right: 0;
+  overflow-y: hidden !important;
+  direction: rtl;
 }
-
+.navbar-vertical.navbar-expand-xs.fixed-end .icon-shape {
+    margin-left: 5px;
+}
 .navbar-vertical.navbar-expand-xs .navbar-nav .nav-link {
   padding-top: 0.675rem;
   padding-bottom: 0.675rem;
