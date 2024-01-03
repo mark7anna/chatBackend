@@ -103,6 +103,8 @@ function()
     Route::get('/getAppUserById/{id}', [App\Http\Controllers\AppUserController::class, 'showById'])->name('getAppUserById');
 
     Route::post('/updateDiamondWallet', [App\Http\Controllers\AppUserController::class, 'updateDiamondWallet'])->name('updateDiamondWallet');
+    Route::post('/updateGoldWallet', [App\Http\Controllers\AppUserController::class, 'updateGoldWallet'])->name('updateGoldWallet');
+
     Route::post('/sendNotification', [App\Http\Controllers\AppUserController::class, 'sendNotification'])->name('sendNotification');
     Route::get('/deleteNotification/{id}', [App\Http\Controllers\AppUserController::class, 'destroy'])->name('deleteNotification');
     Route::post('/updateAppUser', [App\Http\Controllers\AppUserController::class, 'Update'])->name('updateAppUser');
@@ -113,7 +115,27 @@ function()
     Route::post('/festivalBannerStore', [App\Http\Controllers\FestivalBannerController::class, 'store'])->name('festivalBannerStore');
     Route::get('/getFestivalBanner/{id}', [App\Http\Controllers\FestivalBannerController::class, 'show'])->name('getFestivalBanner');
 
+    Route::get('/gift_transactions', [App\Http\Controllers\GiftTransactionController::class, 'index'])->name('gift_transactions');
 
+    Route::get('/tags', [App\Http\Controllers\TagController::class, 'index'])->name('tags');
+    Route::post('/tagStore', [App\Http\Controllers\TagController::class, 'store'])->name('tagStore');
+    Route::get('/getTag/{id}', [App\Http\Controllers\TagController::class, 'show'])->name('getTag');
+    Route::get('/deleteTag/{id}', [App\Http\Controllers\TagController::class, 'destroy'])->name('deleteTag');
 
+    Route::get('/posts', [App\Http\Controllers\PostController::class, 'index'])->name('posts');
+    Route::get('/getPost/{id}', [App\Http\Controllers\PostController::class, 'show'])->name('getPost');
+    Route::get('/deletePost/{id}', [App\Http\Controllers\PostController::class, 'destroy'])->name('deletePost');
+    Route::get('/acceptPost/{id}', [App\Http\Controllers\PostController::class, 'acceptPost'])->name('acceptPost');
+
+    Route::get('/targets', [App\Http\Controllers\TargetController::class, 'index'])->name('targets');
+    Route::get('/getTarget/{id}', [App\Http\Controllers\TargetController::class, 'show'])->name('getTarget');
+    Route::get('/deleteTarget/{id}', [App\Http\Controllers\TargetController::class, 'destroy'])->name('deleteTarget');
+    Route::post('/targetStore', [App\Http\Controllers\TargetController::class, 'store'])->name('targetStore');
+
+    Route::get('/agencies', [App\Http\Controllers\HostAgencyController::class, 'index'])->name('agencies');
+    Route::get('/getAgency/{id}', [App\Http\Controllers\HostAgencyController::class, 'show'])->name('getAgency');
+    Route::get('/deleteAgency/{id}', [App\Http\Controllers\HostAgencyController::class, 'destroy'])->name('deleteAgency');
+    Route::post('/agencyStore', [App\Http\Controllers\HostAgencyController::class, 'store'])->name('agencyStore');
+    Route::get('/getAgencyTag', [App\Http\Controllers\HostAgencyController::class, 'create'])->name('getAgencyTag');
 
 });

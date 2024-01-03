@@ -58,6 +58,22 @@ class AppUserController extends Controller
 
       }
     }
+    public function updateGoldWallet(Request $request){
+        $walet = Wallet::where('user_id' , '=' , $request -> userIdd) -> get();
+        if(count($walet) > 0){
+          if($request -> chargeType == 1){
+
+              $walet[0] -> gold += $request -> gold ;
+          } else if($request -> chargeType == 0){
+              $walet[0] -> gold -= $request -> gold ;
+          }
+          $walet[0] -> update ();
+
+            return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
+
+        }
+      }
+
 
     public function userNotifications(){
         $notifications = Notification::all();

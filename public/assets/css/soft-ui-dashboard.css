@@ -22813,6 +22813,7 @@ html {
 
 .navbar-vertical .navbar-nav {
   flex-direction: column !important;
+  padding-bottom: ;
 }
 
 .navbar-vertical .navbar-nav .nav-link {
@@ -22893,12 +22894,12 @@ html {
 
 .navbar-vertical.navbar-expand-xs.fixed-start {
   left: 0;
-  overflow-y: hidden !important;
+  /* overflow-y: hidden !important; */
 }
 
 .navbar-vertical.navbar-expand-xs.fixed-end {
   right: 0;
-  overflow-y: hidden !important;
+  /* overflow-y: hidden !important; */
   direction: rtl;
 }
 .navbar-vertical.navbar-expand-xs.fixed-end .icon-shape {
@@ -27382,3 +27383,7 @@ pre[class*="language-"] {
   background-color: red;
 }
 
+.badge-success{
+    color: #ffffff;
+    background-color: green;
+  }

@@ -11,7 +11,7 @@
 
              <input type="hidden" id="id" name="id">
             <div class="mb-3">
-                <label for="points" class="col-form-label">{{ __('main.img') }}:</label>
+                <label for="points" class="col-form-label">{{ __('main.motion_img') }}:</label>
                 <div class="row" style="display: flex;
                 align-items: center;">
                     <div class="col-6">
@@ -23,6 +23,24 @@
                     </div>
                     <div class="col-6 text-right">
                         <img src="{{ asset('assets/icons/picture.png') }}" id="profile-img-tag" width="80px"
+                              class="profile-img"/>
+                    </div>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="points" class="col-form-label">{{ __('main.fixed_icon') }}:</label>
+                <div class="row" style="display: flex;
+                align-items: center;">
+                    <div class="col-6">
+                        <div class="custom-file">
+
+                                   <input class="form-control" type="file" id="icon" name="icon"
+                                   accept="*">
+                        </div>
+                    </div>
+                    <div class="col-6 text-right">
+                        <img src="{{ asset('assets/icons/picture.png') }}" id="profile-img-tag2" width="80px"
                               class="profile-img"/>
                     </div>
                 </div>
@@ -54,8 +72,22 @@
         }
     }
 
+    function readURL2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
 
+            reader.onload = function (e) {
+                $('#profile-img-tag2').attr('src', e.target.result);
+
+            }
+            reader.readAsDataURL(input.files[0]);
+
+        }
+    }
     $("#img").change(function () {
         readURL(this);
+    });
+    $("#icon").change(function () {
+        readURL2(this);
     });
 </script>

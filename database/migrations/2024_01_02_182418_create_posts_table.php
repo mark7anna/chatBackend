@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emossions', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table -> text('content');
+            $table -> integer('user_id');
             $table -> string('img');
-            $table -> string('icon');
+            $table -> integer('auth');
+            $table -> integer('accepted');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('emossions');
+        Schema::dropIfExists('posts');
     }
 };

@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emossions', function (Blueprint $table) {
+        Schema::create('targets', function (Blueprint $table) {
             $table->id();
-            $table -> string('img');
-            $table -> string('icon');
+            $table ->string('order');
+            $table ->decimal('gold');
+            $table ->decimal('dollar_amount');
+            $table ->decimal('agent_amount');
+            $table ->string('icon');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('emossions');
+        Schema::dropIfExists('targets');
     }
 };

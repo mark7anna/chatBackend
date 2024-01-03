@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Emossions extends Model
+class Post extends Model
 {
     use HasFactory;
     protected $fillable = [
-       'id',
-       'img',
-       'icon'
+      'id',
+      'content',
+      'user_id',
+      'img',
+      'auth',
+      'accepted'
     ];
 }

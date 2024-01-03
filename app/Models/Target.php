@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Emossions extends Model
+class Target extends Model
 {
     use HasFactory;
     protected $fillable = [
-       'id',
-       'img',
-       'icon'
+      'id',
+      'order',
+      'gold',
+      'dollar_amount',
+      'agent_amount',
+      'icon'
     ];
 }

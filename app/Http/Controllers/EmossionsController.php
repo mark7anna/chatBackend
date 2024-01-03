@@ -36,14 +36,20 @@ class EmossionsController extends Controller
     {
         if($request -> id == 0 ){
             $validated = $request->validate([
-                "img" => "required"
+                "img" => "required",
+                "icon" => "required"
             ]);
 
                 $img = time() . '.' . $request->img->extension();
                 $request->img->move(('images/Emossions'), $img);
+                $icon = time() . 'icon' .'.' . $request->icon->extension();
+                $request->icon->move(('images/Emossions'), $icon);
+
+
 
             Emossions::create([
-              'img' => $img
+              'img' => $img,
+              'icon' => $icon,
             ]);
             return redirect()->route('emotions')->with('success', __('main.created'));
 
@@ -83,8 +89,15 @@ class EmossionsController extends Controller
              } else {
                 $img = $emossion -> img ;
              }
+             if($request -> icon){
+                $icon = time() . 'icon' .'.' . $request->icon->extension();
+                $request->icon->move(('images/Emossions'), $icon);
+             } else {
+                $icon = $emossion -> icon ;
+             }
              $emossion -> update ([
-                'img' => $img
+                'img' => $img,
+                'icon' => $icon,
              ]);
              return redirect()->route('emotions')->with('success', __('main.updated'));
 

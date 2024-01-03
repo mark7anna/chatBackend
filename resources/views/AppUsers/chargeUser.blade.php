@@ -4,7 +4,7 @@
 @include('layouts.head' , ['pageTitle' => 'Charge Balance'])
 
 <body class="g-sidenav-show  bg-gray-100">
-    @include('layouts.sidebar' , ['slag' => 10 , 'subSlag' => 101])
+    @include('layouts.sidebar' , ['slag' => 10 , 'subSlag' => 103])
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.chargeUsersBalance')])
@@ -29,7 +29,8 @@
                                     <input id="tag" type="text" placeholder="{{ __('main.user_tag') }}"
                                         class="form-control" onkeyup="getUserByTag()">
                                 </div>
-                                <div class="col-lg-8 usercard">
+                                <div class="row" style="margin-top: 30px">
+<div class="col-lg-4 usercard">
                                     <div class="card mb-5 mb-xl-10">
 
                                         <div class="card-body d-flex flex-center flex-column "
@@ -72,12 +73,12 @@
                                                 <div class="form-group mb-5">
                                                     <div class="row">
                                                         <input type="hidden" name="userId" id="UserId">
-                                                        <div class="col-lg-4"><select class="form-control"
+                                                        <div class="col-lg-6"><select class="form-select"
                                                                 name="chargeType">
                                                                 <option value="1">{{ __('main.charge') }}</option>
                                                                 <option value="0">{{ __('main.discharge') }}</option>
                                                             </select></div>
-                                                        <div class="col-lg-8"><input type="number"
+                                                        <div class="col-lg-6"><input type="number"
                                                                 placeholder="{{ __('main.diamond') }}" min="0"
                                                                 class="form-control form-control-solid" name="diamond">
                                                         </div>
@@ -94,6 +95,42 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-4 usercard">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h2 class="card-title">{{ __('main.gold_charge_discharge') }}</h2>
+                                        </div>
+                                        <div class="card-body">
+                                            <form method="POST" action="{{ route('updateGoldWallet') }}"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="form-group mb-5">
+                                                    <div class="row">
+                                                        <input type="hidden" name="userIdd" id="userIdd">
+                                                        <div class="col-lg-6"><select class="form-select"
+                                                                name="chargeType">
+                                                                <option value="1">{{ __('main.charge') }}</option>
+                                                                <option value="0">{{ __('main.discharge') }}</option>
+                                                            </select></div>
+                                                        <div class="col-lg-6"><input type="number"
+                                                                placeholder="{{ __('main.gold') }}" min="0"
+                                                                class="form-control form-control-solid" name="gold">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group"><button type="submit"
+                                                        class="btn btn-outline btn-outline-dashed btn-outline-success btn-active-light-success">
+                                                        {{ __('main.charge') }}
+                                                    </button>
+                                                </div>
+                                            </form>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -124,7 +161,7 @@
                                  $('.usercard').show();
                                  $("#userImg").attr('src' ,  img  );
                                  $('#userName').html(response[0].name);
-                                 $('#userId').html(response[0].tag);
+                                 $('#userIdd').val(response[0].id);
                                  $('#userDiamond').html(response[0].diamond);
                                  $('#userGold').html(response[0].gold);
                                  $('#UserId').val(response[0].id);

@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@include('layouts.head' , ['pageTitle' => 'Emotions'])
+@include('layouts.head' , ['pageTitle' => 'Tags'])
 
 <body class="g-sidenav-show  bg-gray-100" >
-  @include('layouts.sidebar' , ['slag' => 7 , 'subSlag' => 75])
+  @include('layouts.sidebar' , ['slag' => 14 , 'subSlag' => 0])
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
-  @include('layouts.nav' , ['pageTitle' => __('main.emossions')])
+  @include('layouts.nav' , ['pageTitle' => __('main.tags')])
     <!-- End Navbar -->
     <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
         <div class="row">
@@ -19,7 +19,7 @@
                 justify-content: left;
                 align-items: center;">
 
-                    <h6>{{ __('main.emossions') }}</h6>
+                    <h6>{{ __('main.tags') }}</h6>
 
 
                     <button class="btn btn-primary" @if(Config::get('app.locale')=='ar' )
@@ -34,24 +34,27 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
                     <table class="table align-items-center justify-content-center mb-0">
                       <thead>
                         <tr>
-                         <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">#</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.motion_img') }}</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.fixed_icon') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('main.name') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.type') }}</th>
+
 
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($emossions as $emossion )
+                        @foreach ($tags as $tag )
                         <tr>
-                            <td class="text-center">{{ $loop -> index + 1 }}</td>
-                          <td class="text-center"> <img src="{{ asset('images/Emossions/' . $emossion->img) }}" width="80"/>  </td>
-                          <td class="text-center"> <img src="{{ asset('images/Emossions/' . $emossion->icon) }}" width="80"/>  </td>
-
-
-                          <td class="align-middle text-center">
-                            <button type="button" class="btn btn-success editBtn" value="{{ $emossion -> id }}"><i class="fas fa-edit"></i></button>
-                          <button type="button" class="btn btn-danger deleteBtn" value="{{ $emossion -> id }}"><i class="far fa-trash-alt"></i></button>
+                          <td  class="text-center"> {{ $tag -> name }}</td>
+                          <td  class="text-center">
+                            @if($tag -> type == 1)
+                               {{ __('main.tag1') }}
+                               @else
+                               {{ __('main.tag2') }}
+                            @endif
+                          </td>
+                          <td class="text-center">
+                            <button type="button" class="btn btn-success editBtn" value="{{ $tag -> id }}"><i class="fas fa-edit"></i></button>
+                          <button type="button" class="btn btn-danger deleteBtn" value="{{ $tag -> id }}"><i class="far fa-trash-alt"></i></button>
                           </td>
                         </tr>
                         @endforeach
@@ -63,12 +66,13 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
               </div>
             </div>
           </div>
+
       @include('layouts.fixedPlugin')
 
       @include('layouts.footer')
 
-      @include('Emotions.create')
-      @include('Emotions.deleteModal')
+      @include('Tag.create')
+      @include('Tag.deleteModal')
       <script type="text/javascript">
           $(document).on('click', '#createButton', function (event) {
 
@@ -82,9 +86,10 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
             // return the result
             success: function (result) {
                 $('#createModal').modal("show");
+                $(".modal-body #name").val("");
+                $(".modal-body #type").val("");
                 $(".modal-body #id").val(0);
-                $(".modal-body #profile-img-tag").attr('src', '{{ asset('assets/icons/picture.png') }}');
-                $(".modal-body #profile-img-tag2").attr('src', '{{ asset('assets/icons/picture.png') }}');
+
             },
             complete: function () {
                 $('#loader').hide();
@@ -106,7 +111,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
         let href = $(this).attr('data-attr');
         $.ajax({
             type:'get',
-            url:'/getEmotion' + '/' + id,
+            url:'/getTag' + '/' + id,
             dataType: 'json',
 
             success:function(response){
@@ -123,12 +128,10 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
                             $('#createModal').modal("show");
 
                             // var img =  response.icon ;
-                             var img =  '/../images/Emossions/' + response.img ;
-                             var icon =  '/../images/Emossions/' + response.icon ;
-                            $(".modal-body #profile-img-tag").attr('src' , img );
-                            $(".modal-body #profile-img-tag2").attr('src' , icon );
-
+                            $(".modal-body #name").val( response.name );
+                            $(".modal-body #type").val( response.type );
                             $(".modal-body #id").val(response.id);
+
                         },
                         complete: function() {
                             $('#loader').hide();
@@ -182,7 +185,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
     });
 
     function confirmDelete(id){
-        let url = "{{ route('deleteEmotion', ':id') }}";
+        let url = "{{ route('deleteTag', ':id') }}";
         url = url.replace(':id', id);
         document.location.href=url;
     }

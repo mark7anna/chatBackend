@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-@include('layouts.head' , ['pageTitle' => 'Emotions'])
+@include('layouts.head' , ['pageTitle' => 'Posts'])
 
 <body class="g-sidenav-show  bg-gray-100" >
-  @include('layouts.sidebar' , ['slag' => 7 , 'subSlag' => 75])
+  @include('layouts.sidebar' , ['slag' => 15 , 'subSlag' => 0])
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
-  @include('layouts.nav' , ['pageTitle' => __('main.emossions')])
+  @include('layouts.nav' , ['pageTitle' => __('main.posts')])
     <!-- End Navbar -->
     <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
         <div class="row">
@@ -19,14 +19,8 @@
                 justify-content: left;
                 align-items: center;">
 
-                    <h6>{{ __('main.emossions') }}</h6>
+                    <h6>{{ __('main.posts') }}</h6>
 
-
-                    <button class="btn btn-primary" @if(Config::get('app.locale')=='ar' )
-style="margin-right: auto "
-@else style="margin-left: auto "
-@endif
-id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add New</button>
 
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -34,24 +28,44 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
                     <table class="table align-items-center justify-content-center mb-0">
                       <thead>
                         <tr>
-                         <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">#</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.motion_img') }}</th>
-                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.fixed_icon') }}</th>
-
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7">{{ __('main.content') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.user') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.img') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.auth') }}</th>
+                          <th class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">{{ __('main.accepted') }}</th>
                           <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($emossions as $emossion )
+                        @foreach ($posts as $post )
                         <tr>
-                            <td class="text-center">{{ $loop -> index + 1 }}</td>
-                          <td class="text-center"> <img src="{{ asset('images/Emossions/' . $emossion->img) }}" width="80"/>  </td>
-                          <td class="text-center"> <img src="{{ asset('images/Emossions/' . $emossion->icon) }}" width="80"/>  </td>
-
-
+                          <td  class="text-center"> {{ $post -> content }}</td>
+                          <td  class="text-center"> {{ $post -> user_name }}</td>
+                          @if($post->img)
+                          <td class="text-center"> <img src="{{ asset('images/Posts/' . $post->img) }}" width="80"/>  </td>
+                           @else
+                           <td class="text-center">NO IMAGE</td>
+                          @endif
+                          <td class="text-center">
+                            @if($post -> auth == 0)
+                            <span class="text-xs font-weight-bold">{{ __('main.public') }}</span>
+                            @elseif($post -> auth == 1)
+                            <span class="text-xs font-weight-bold">{{ __('main.friends_only') }}</span>
+                            @elseif($post -> auth == 2)
+                            <span class="text-xs font-weight-bold">{{ __('main.only_me') }}</span>
+                            @endif
+                          </td>
+                          <td class="text-center">
+                            @if($post -> accepted == 1)
+                            <span class="text-xs font-weight-bold">{{ __('main.accepte') }}</span>
+                              @else
+                              <span class="text-xs font-weight-bold">{{ __('main.refused') }}</span>
+                              @endif
+                          </td>
                           <td class="align-middle text-center">
-                            <button type="button" class="btn btn-success editBtn" value="{{ $emossion -> id }}"><i class="fas fa-edit"></i></button>
-                          <button type="button" class="btn btn-danger deleteBtn" value="{{ $emossion -> id }}"><i class="far fa-trash-alt"></i></button>
+                          <button type="button" class="btn btn-danger deleteBtn" value="{{ $post -> id }}"><i class="far fa-trash-alt"></i></button>
+                          <button type="button" class="btn btn-info editBtn" value="{{ $post -> id }}"><i class="far fa-eye"></i></button>
+                          <a type="button" class="btn btn-primary "  href="{{ route('acceptPost' , $post -> id) }}"><i class="fa fa-check"></i></a>
                           </td>
                         </tr>
                         @endforeach
@@ -63,12 +77,13 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
               </div>
             </div>
           </div>
+
       @include('layouts.fixedPlugin')
 
       @include('layouts.footer')
 
-      @include('Emotions.create')
-      @include('Emotions.deleteModal')
+      @include('Posts.create')
+      @include('Posts.deleteModal')
       <script type="text/javascript">
           $(document).on('click', '#createButton', function (event) {
 
@@ -82,9 +97,13 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
             // return the result
             success: function (result) {
                 $('#createModal').modal("show");
+                $(".modal-body #content").val("");
+                $(".modal-body #user_id").val("");
+                $(".modal-body #auth").val("");
+                $(".modal-body #accepted").val("");
                 $(".modal-body #id").val(0);
                 $(".modal-body #profile-img-tag").attr('src', '{{ asset('assets/icons/picture.png') }}');
-                $(".modal-body #profile-img-tag2").attr('src', '{{ asset('assets/icons/picture.png') }}');
+
             },
             complete: function () {
                 $('#loader').hide();
@@ -106,7 +125,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
         let href = $(this).attr('data-attr');
         $.ajax({
             type:'get',
-            url:'/getEmotion' + '/' + id,
+            url:'/getPost' + '/' + id,
             dataType: 'json',
 
             success:function(response){
@@ -121,14 +140,15 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
                         // return the result
                         success: function(result) {
                             $('#createModal').modal("show");
+                             var img =  '/../images/Posts/' + response[0].img ;
+                            $(".modal-body #profile-img-tag").attr('src' ,response[0].img ?  img : '{{ asset('assets/icons/picture.png') }}' );
+                            $(".modal-body #content").val( response[0].content );
+                            $(".modal-body #user_id").val( response[0].user_name );
+                            $(".modal-body #auth").val(response[0].auth);
+                            $(".modal-body #accepted").val(response[0].accepted);
+                            $(".modal-body #id").val(response[0].id);
 
-                            // var img =  response.icon ;
-                             var img =  '/../images/Emossions/' + response.img ;
-                             var icon =  '/../images/Emossions/' + response.icon ;
-                            $(".modal-body #profile-img-tag").attr('src' , img );
-                            $(".modal-body #profile-img-tag2").attr('src' , icon );
 
-                            $(".modal-body #id").val(response.id);
                         },
                         complete: function() {
                             $('#loader').hide();
@@ -182,7 +202,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
     });
 
     function confirmDelete(id){
-        let url = "{{ route('deleteEmotion', ':id') }}";
+        let url = "{{ route('deletePost', ':id') }}";
         url = url.replace(':id', id);
         document.location.href=url;
     }

@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('gift_transactions', function (Blueprint $table) {
             $table->id();
+            $table -> integer('gift_id');
+            $table -> integer('sender_id');
+            $table -> integer('receiver_id');
+            $table -> integer('room_id');
+            $table -> integer('count');
+            $table -> decimal('price');
+            $table -> decimal('total');
+            $table -> timestamp('sendDate') -> useCurrent();
             $table->timestamps();
         });
     }

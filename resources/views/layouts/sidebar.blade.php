@@ -10,7 +10,7 @@
     </a>
   </div>
   <hr class="horizontal dark mt-0">
-  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="height: 100%">
+  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="min-height: 100% ;">
     <ul class="navbar-nav">
       <li class="nav-item">
         <a @if($slag==1) class="nav-link  active" @else class="nav-link" @endif href="{{ route('home') }}">
@@ -155,6 +155,27 @@
       </li>
 
       <li class="nav-item">
+        <a @if($slag==16) class="nav-link dropdown active" @else class="nav-link" @endif href="javascript:;"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/company.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{__('main.agencies')}}</span>
+          <button class="Arrowbutton" value="dropdown-menu-2" id="dropdown-button-2"><i
+              class="fas fa-chevron-down"></i></button>
+        </a>
+        <ul class="dropdown-menu text-small subM" aria-labelledby="dropdown" id="dropdown-menu-2">
+          <li><a @if($subSlag==161) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('targets')}}">{{__('main.targets')}}</a></li>
+          <li><a @if($subSlag==162) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('agencies')}}">{{__('main.agencies')}}</a></li>
+
+
+        </ul>
+      </li>
+
+      <li class="nav-item">
         <a @if($slag==4) class="nav-link  active" @else class="nav-link" @endif href="{{ route('countries') }}">
           <div
             class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -174,6 +195,34 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a @if($slag==13) class="nav-link  active" @else class="nav-link" @endif href="{{ route('gift_transactions') }}">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/transaction.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{ __('main.gift_transactions') }}</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a @if($slag==14) class="nav-link  active" @else class="nav-link" @endif href="{{ route('tags') }}">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/tag.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{ __('main.tags') }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a @if($slag==15) class="nav-link  active" @else class="nav-link" @endif href="{{ route('posts') }}">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/blog.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{ __('main.posts') }}</span>
+        </a>
+      </li>
 
       <li class="nav-item">
         <a @if($slag==8) class="nav-link dropdown active" @else class="nav-link" @endif href="javascript:;"
