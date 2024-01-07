@@ -186,10 +186,6 @@
                                             var karizma_level_icon =  '/../images/Levels/' + response[0].karizma_level_img ;
                                             $("#karizma_level_icon").attr('src' ,  karizma_level_icon  );
 
-
-
-
-
                                         },
                                         complete: function () {
                                             $('#loader').hide();

@@ -109,9 +109,25 @@
   }
 }
 
+@font-face {
+  font-family: "ThSans";
+  src: url("../fonts/ArbFONTS-TheSans-Bold.otf");
+
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: "ThSans" !important;
+}
+.fa,
+.far,
+.fas {
+  font-family: "Font Awesome 5 Free" !important;
+}
 body {
   margin: 0;
-  font-family: var(--bs-body-font-family);
+  font-family: "ThSans" !important;
   font-size: var(--bs-body-font-size);
   font-weight: var(--bs-body-font-weight);
   line-height: var(--bs-body-line-height);
@@ -22903,7 +22919,7 @@ html {
   direction: rtl;
 }
 .navbar-vertical.navbar-expand-xs.fixed-end .icon-shape {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 .navbar-vertical.navbar-expand-xs .navbar-nav .nav-link {
   padding-top: 0.675rem;
@@ -27378,12 +27394,12 @@ pre[class*="language-"] {
   color: #ffffff;
   background-color: #181c32;
 }
-.badge-danger{
+.badge-danger {
   color: #ffffff;
   background-color: red;
 }
 
-.badge-success{
-    color: #ffffff;
-    background-color: green;
-  }
+.badge-success {
+  color: #ffffff;
+  background-color: green;
+}

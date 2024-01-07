@@ -1,4 +1,5 @@
-<aside class="sidenav navbar  navbar-vertical navbar-expand-xs @if(Config::get('app.locale')=='ar' ) fixed-end @else fixed-start @endif  border-0 border-radius-xl my-3  ms-3 bg-white"
+<aside
+  class="sidenav navbar  navbar-vertical navbar-expand-xs @if(Config::get('app.locale')=='ar' ) fixed-end @else fixed-start @endif  border-0 border-radius-xl my-3  ms-3 bg-white"
   id="sidenav-main">
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
@@ -11,7 +12,7 @@
   </div>
   <hr class="horizontal dark mt-0">
   <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="min-height: 100% ;">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav" @if(Config::get('app.locale')=='ar' ) style="padding-right: 0px !important" @endif>
       <li class="nav-item">
         <a @if($slag==1) class="nav-link  active" @else class="nav-link" @endif href="{{ route('home') }}">
           <div
@@ -196,7 +197,8 @@
       </li>
 
       <li class="nav-item">
-        <a @if($slag==13) class="nav-link  active" @else class="nav-link" @endif href="{{ route('gift_transactions') }}">
+        <a @if($slag==13) class="nav-link  active" @else class="nav-link" @endif
+          href="{{ route('gift_transactions') }}">
           <div
             class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <img src="{{ asset('assets/icons/transaction.png') }}" style="width: 20px ">
