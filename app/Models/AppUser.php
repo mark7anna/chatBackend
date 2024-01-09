@@ -31,6 +31,7 @@ class AppUser extends Model
         'isOnline',
         'isInRoom',
         'country',
-        '   '
+        'register_with',
+        'gender'
     ];
 }

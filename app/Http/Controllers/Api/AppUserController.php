@@ -126,5 +126,25 @@ class AppUserController extends Controller
 
     }
 
+    public function search($txt){
+      try{
+        $users = DB::table('app_users')
+        -> join('wallets' , 'app_users.id' , '=','wallets.user_id')
+        -> join('levels as share_level' , 'share_level.id' , '=' , 'app_users.share_level_id' )
+        -> join('levels as karizma_level' , 'karizma_level.id' , '=' , 'app_users.karizma_level_id' )
+        -> join('levels as charging_level' , 'charging_level.id' , '=' , 'app_users.charging_level_id')
+        -> select('app_users.*' , 'wallets.gold' , 'wallets.diamond' , 
+        'share_level.order as share_level_order' , 'share_level.points as share_level_points' , 'share_level.icon as share_level_icon' ,
+        'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
+        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon') 
+        -> where('app_users.tag' , 'like' , '%' .$txt . '%' )
+        ->orWhere('app_users.name', 'like', '%' . $txt . '%')->get();
+
+        return $users ;
+      } catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+
+    }
 
 }

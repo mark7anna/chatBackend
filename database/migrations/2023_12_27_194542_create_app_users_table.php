@@ -35,6 +35,7 @@ return new class extends Migration
             $table -> integer('isInRoom')  -> default(0);
             $table -> integer('country');
             $table -> string('register_with');
+            $table -> integer('gender');
             $table->timestamps();
         });
     }

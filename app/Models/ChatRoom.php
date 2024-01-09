@@ -28,6 +28,7 @@ class ChatRoom extends Model
       'micCount',
       'enableMessages',
       'reportCount',
-      'themeId'
+      'themeId',
+      'country_id'
     ];
 }
