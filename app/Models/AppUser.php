@@ -34,4 +34,9 @@ class AppUser extends Model
         'register_with',
         'gender'
     ];
+
+    // public function shareLevel()
+    // {
+    //     return $this->hasOne(Level::class , 'id' , 'share_level_id') ;
+    // }
 }

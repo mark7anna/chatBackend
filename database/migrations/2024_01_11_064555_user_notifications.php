@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
-            $table -> text('content');
-            $table -> integer('user_id');
-            $table -> string('img');
-            $table -> integer('auth');
-            $table -> integer('accepted');
-            $table -> integer('likes_count');
-            $table -> integer('comments_count');
+            $table ->integer('type');
+            $table ->integer('notified_user');
+            $table ->integer('action_user');
+            $table ->string('title');
+            $table ->string('content');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('user_notifications');
     }
 };

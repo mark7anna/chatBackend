@@ -12,6 +12,7 @@ class Comment extends Model
       'id',
       'post_id',
       'user_id',
-      'content'
+      'content',
+      'order'
     ];
 }
