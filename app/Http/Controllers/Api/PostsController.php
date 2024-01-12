@@ -7,6 +7,8 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\PostReport;
+use App\Models\PostTage;
+use App\Models\Tag;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,8 +43,14 @@ class PostsController extends Controller
             -> join('app_users' , 'post_likes.user_id' , '=' , 'app_users.id')
             -> select('post_likes.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' 
             , 'app_users.gender as gender' , 'app_users.img as user_img') -> get(); 
+
+            $comments = DB::table('comments')
+            -> join('app_users' , 'comments.user_id' , '=' , 'app_users.id')
+            -> select('comments.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' 
+            , 'app_users.gender as gender' , 'app_users.img as user_img') -> get();
+
             $reports = PostReport::all();
-            return response()->json(['state' => 'success' , 'posts' => $posts , 'likes' => $likes , 'reports' => $reports]);
+            return response()->json(['state' => 'success' , 'posts' => $posts , 'likes' => $likes , 'reports' => $reports , 'comments' => $comments]);
         }catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
@@ -135,7 +143,11 @@ class PostsController extends Controller
             'content'=> $request -> content,
             'order'=> $request -> order,
         ]);
-        $comments = Comment::where('post_id' , '=' , $request -> post_id) -> get();
+        
+        $comments = DB::table('comments')
+        -> join('app_users' , 'comments.user_id' , '=' , 'app_users.id')
+        -> select('comments.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' 
+        , 'app_users.gender as gender' , 'app_users.img as user_img') -> get();
         $post = Post::find($request -> post_id);
         if($post){
             $likes = $post -> comments_count + 1 ;
@@ -152,6 +164,47 @@ class PostsController extends Controller
 
   }
     
+  function AddPost(Request $request){
 
+    try{
+            if($request -> img){
+        $img = time() . '.' . $request->img->extension();
+        $request->img->move(('images/Posts'), $img);
+    } else {
+        $img = "";
+    }
+
+   $id = Post::create([
+        'content' => $request -> content ?? "",
+        'user_id' => $request -> user_id,
+        'img' => $img,
+        'auth' => $request -> auth,
+        'accepted' => 0,
+        'likes_count' => 0,
+        'comments_count' => 0
+    ]) -> id;
+
+    PostTage::create([
+        'post_id' => $id,
+        'tag_id' => $request -> tag_id
+    ]);
+    return response()->json(['state' => 'success' , 'message' => "Post Added Successfully" ]);
+
+    } catch(QueryException $ex){
+
+    }
+
+  }
+
+  function getTags(){
+    try{
+        $tags = Tag::where('type' , '=' , 2) -> get();
+        return response()->json(['state' => 'success' , 'tags' => $tags ]);
+
+    }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+    }
+  }
 
 }
