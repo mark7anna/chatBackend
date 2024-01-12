@@ -15,6 +15,7 @@ class DesignPurchase extends Model
         'isAvailable',
         'purchase_date',
         'available_until',
-        'price'
+        'price',
+        'count'
     ];
 }

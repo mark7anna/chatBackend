@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
-            $table ->integer('type');
+            $table ->string('type');
             $table ->integer('notified_user');
             $table ->integer('action_user');
             $table ->string('title');
-            $table ->string('content');
+            $table ->text('content');
+            $table ->string('title_ar');
+            $table ->text('content_ar');
             $table->timestamps();
         });
     }

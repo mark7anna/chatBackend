@@ -19,6 +19,8 @@ return new class extends Migration
             $table -> timestamp('purchase_date');
             $table -> timestamp('available_until') -> useCurrent();
             $table -> decimal('price');
+            $table -> integer('count');
+            
             $table->timestamps();
         });
     }

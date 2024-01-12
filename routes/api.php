@@ -33,6 +33,14 @@ Route::get('/posts/report/{id}/{user}/{type}', [App\Http\Controllers\Api\PostsCo
 Route::post('/Comments/addComment', [App\Http\Controllers\Api\PostsController::class, 'addComment'])->name('addComment');
 Route::post('/posts/add', [App\Http\Controllers\Api\PostsController::class, 'AddPost'])->name('addPost');
 Route::get('/posts/tags/all', [App\Http\Controllers\Api\PostsController::class, 'getTags'])->name('getAllTags');
+Route::get('/store/cats/all', [App\Http\Controllers\Api\StoreController::class, 'getAllStoreCategory'])->name('getAllStoreCategory');
+Route::get('/store/designs/all', [App\Http\Controllers\Api\StoreController::class, 'getAllDesigns'])->name('getAllDesigns');
+Route::post('/store/design/purchase', [App\Http\Controllers\Api\StoreController::class, 'purchaseDesign'])->name('purchaseDesign');
+Route::get('/notifications/all/{user_id}', [App\Http\Controllers\Api\UserNotificationController::class, 'getAllUserNotifications'])->name('getAllUserNotifications');
+Route::post('/wallet/charge', [App\Http\Controllers\Api\WalletController::class, 'ChargeWallet'])->name('ChargeWallet');
+Route::get('/wallet/getWallet/{user_id}', [App\Http\Controllers\Api\WalletController::class, 'getWallet'])->name('getWallet');
+Route::post('/wallet/exchangeDiamond', [App\Http\Controllers\Api\WalletController::class, 'exchangeDiamond'])->name('exchangeDiamond');
+Route::get('/levels/getLevels', [App\Http\Controllers\Api\LevelsController::class, 'getLevels'])->name('getLevels');
 
 
 
