@@ -10,6 +10,8 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Tag;
+use App\Models\Usertags;
 
 class AppUserController extends Controller
 {
@@ -195,10 +197,14 @@ class AppUserController extends Controller
                   'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
                   'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('visitors.user_id' , '=' , $id) -> get(); 
 
-        
+           $tags = DB::table('usertags')
+           -> join('tags' , 'usertags.tag_id' , "=" , "tags.id")
+           -> select('tags.*' , 'usertags.user_id')
+           ->where('usertags.user_id' , '=' , $id) -> get();
         if(count($users) > 0){
           $user = $users[0] ;
-          return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors]);
+          return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
+          'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags]);
         } else {
       
           return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);
@@ -232,5 +238,146 @@ class AppUserController extends Controller
       }
 
     }
+
+    function getHoppies(){
+      try{
+          $tags = Tag::where('type' , '=' , 1) -> get();
+          return response()->json(['state' => 'success' , 'tags' => $tags ]);
+  
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+  
+      }
+    }
+    function addHoppy(Request $request){
+      try{
+        if($request ->  state == "ADD"){
+           Usertags::create([
+          'user_id' => $request ->user_id ,
+          'tag_id' => $request -> tag_id
+        ]);
+        } else if($request ->  state == "DEL"){
+          $userTags = Usertags::where('user_id' , '=' , $request -> user_id)
+          -> where('tag_id' , '=' , $request -> tag_id) -> get();
+          if(count($userTags) > 0){
+            $userTags[0] -> delete();
+          }
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserName(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          $user -> update ([
+            'name' => $request -> name
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserBirthdate(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          $user -> update ([
+            'birth_date' => Carbon::parse($request -> birth_date), 
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserCountry(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          $user -> update ([
+            'country' => $request -> country, 
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserProfile(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          if($request -> img){
+            $img = time() . '.' . $request->img->extension();
+            $request->img->move(('images/AppUsers'), $img);
+        } else {
+            $img = "";
+        }
+          $user -> update ([
+            'img' => $img, 
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserCoverPhoto(Reqyest $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          if($request -> cover){
+            $cover = time() . '.' . $request->cover->extension();
+            $request->cover->move(('images/AppUsers/Covers'), $cover);
+        } else {
+            $cover = "";
+        }
+          $user -> update ([
+            'cover' => $cover, 
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function updateUserStatus(Reqyest $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          $user -> update ([
+            'status' => $status, 
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
 
 }

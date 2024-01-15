@@ -36,6 +36,8 @@ return new class extends Migration
             $table -> integer('country');
             $table -> string('register_with');
             $table -> integer('gender');
+            $table -> string('cover');
+            $table -> string('status');
             $table->timestamps();
         });
     }

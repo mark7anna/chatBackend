@@ -173,7 +173,7 @@ class PostsController extends UserNotificationController
   function AddPost(Request $request){
 
     try{
-            if($request -> img){
+    if($request -> img){
         $img = time() . '.' . $request->img->extension();
         $request->img->move(('images/Posts'), $img);
     } else {

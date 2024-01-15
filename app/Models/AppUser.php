@@ -32,7 +32,9 @@ class AppUser extends Model
         'isInRoom',
         'country',
         'register_with',
-        'gender'
+        'gender',
+        'cover',
+        'status'
     ];
 
     // public function shareLevel()
