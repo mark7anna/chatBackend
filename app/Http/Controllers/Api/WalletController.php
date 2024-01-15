@@ -12,8 +12,7 @@ use App\Models\Settings;
 use App\Models\DiamondGoldExchnage;
 use App\Models\AppUser;
 use App\Models\Level;
-
-
+use Illuminate\Support\Facades\DB;
 
 class WalletController extends UserNotificationController
 {
@@ -47,11 +46,11 @@ class WalletController extends UserNotificationController
 
     public function getWallet($user_id){
         try{
-            $wallets = Wallet::where('user_id' , '=' , $request ->user_id ) -> get();
+            $wallets = Wallet::where('user_id' , '=' , $user_id ) -> get();
             if(count($wallets) > 0){
                 $wallet = $wallets[0];
-                $walletHistory = ChargingOpration::where('user_id' , '=' , $request ->user_id ) -> get();
-                $diamondExchange = DiamondGoldExchnage::where('user_id' , '=' , $request ->user_id ) -> get();
+                $walletHistory = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
+                $diamondExchange = DiamondGoldExchnage::where('user_id' , '=' , $user_id ) -> get();
                 return response()->json(['state' => 'success' , 'wallet' => $wallet , 
                 'walletHistory' => $walletHistory , 'diamondExchange' => $diamondExchange]);
 

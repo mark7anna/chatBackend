@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppUser;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostLike;
 use App\Models\PostReport;
 use App\Models\PostTage;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class PostsController extends Controller
+class PostsController extends UserNotificationController
 {
     public function index(){
 
@@ -59,8 +61,10 @@ class PostsController extends Controller
 
     public function likePost($post_id , $user_id){
        $post = Post::find($post_id);
+       $action_user = AppUser::find($user_id);
        $postLikes = PostLike::where('post_id' , '=' , $post_id)
        -> where('user_id' , '=' , $user_id) -> get();
+        
          if($post){
                 if(count($postLikes) == 0){
                     $likes = $post -> likes_count + 1 ;
@@ -73,6 +77,8 @@ class PostsController extends Controller
                         'user_id' => $user_id ,
                         'total_count' => 0
                         ]);
+                        $this -> createUserNotification('MOMENTS' ,$post -> user_id , $user_id , 'Your Post has new Like', $action_user -> name . ' liked your Post' , 
+                        'لديك إعجاب جديد علي أحد منشوراتك' , $action_user -> name . ' ' . ' قام بالإعجاب لأحد منشوراتك'  , $post_id );
                         return $this -> index();
                     }catch(QueryException $ex){
                         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);

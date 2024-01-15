@@ -18,6 +18,8 @@ class UserNotification extends Model
         'title',
         'content',
         'title_ar',
-        'content_ar'
+        'content_ar',
+        'isRead',
+        'post_id'
       ];
 }

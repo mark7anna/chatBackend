@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_notifications', function (Blueprint $table) {
-            $table->id();
+            $table ->id();
             $table ->string('type');
             $table ->integer('notified_user');
             $table ->integer('action_user');
@@ -20,7 +20,9 @@ return new class extends Migration
             $table ->text('content');
             $table ->string('title_ar');
             $table ->text('content_ar');
-            $table->timestamps();
+            $table ->integer('isRead');
+            $table ->integer('post_id');
+            $table ->timestamps();
         });
     }
 

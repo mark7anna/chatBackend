@@ -54,8 +54,7 @@ class AppUserController extends Controller
                 'diamond' => 0
               ]);
 
-              return response()->json(['state' => 'success' , 'message' => 'User created successfully !!' , 'user' => $user]);
-
+               return $this -> getUserData($user -> id);
            } else {
             return response()->json(['state' => 'failed' , 'message' => 'User not Created !!']);
            }
@@ -81,8 +80,9 @@ class AppUserController extends Controller
             'deviceId' => $request -> deviceId,
             'isOnline' => 1,
           ]);
+          
 
-          return response()->json(['state' => 'success' , 'message' => 'User Login successfully !!' , 'user' => $user]);
+          return $this -> getUserData($user -> id);
 
       } catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
@@ -122,10 +122,83 @@ class AppUserController extends Controller
         'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
         'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon') 
         -> where('app_users.id' , '=' , $id)-> get();
+
+        $followers = DB::table('followers')
+        -> join('app_users' , 'followers.user_id' , '=' , 'app_users.id')
+        ->join('levels as share_level' ,function ($join) {
+          $join->on('app_users.share_level_id', '=', 'share_level.id');
+         })
+         ->join('levels as karizma_level' ,function ($join) {
+          $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+          }) 
+          ->join('levels as charging_level' ,function ($join) {
+              $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+          }) -> select('followers.*' , 'app_users.name as follower_name' , 'app_users.tag as follower_tag' ,
+          'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
+          'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('followers.follower_id' , '=' , $id) -> get();
+
+          $followings = DB::table('followers')
+          -> join('app_users' , 'followers.follower_id' , '=' , 'app_users.id')
+          ->join('levels as share_level' ,function ($join) {
+            $join->on('app_users.share_level_id', '=', 'share_level.id');
+           })
+           ->join('levels as karizma_level' ,function ($join) {
+            $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+            }) 
+            ->join('levels as charging_level' ,function ($join) {
+                $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+            }) -> select('followers.*' , 'app_users.name as follower_name' , 'app_users.tag as follower_tag' ,
+            'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
+            'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('followers.user_id' , '=' , $id) -> get();
+
+            $friends1 = DB::table('friends')
+            -> join('app_users' , 'friends.user_id' , '=' , 'app_users.id')
+            ->join('levels as share_level' ,function ($join) {
+              $join->on('app_users.share_level_id', '=', 'share_level.id');
+             })
+             ->join('levels as karizma_level' ,function ($join) {
+              $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+              }) 
+              ->join('levels as charging_level' ,function ($join) {
+                  $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+              }) -> select('friends.*' , 'app_users.name as follower_name' , 'app_users.tag as follower_tag' ,
+              'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
+              'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('friends.friend_id' , '=' , $id) -> get();
+
+              $friends2 = DB::table('friends')
+              -> join('app_users' , 'friends.friend_id' , '=' , 'app_users.id')
+              ->join('levels as share_level' ,function ($join) {
+                $join->on('app_users.share_level_id', '=', 'share_level.id');
+               })
+               ->join('levels as karizma_level' ,function ($join) {
+                $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+                }) 
+                ->join('levels as charging_level' ,function ($join) {
+                    $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+                }) -> select('friends.*' , 'app_users.name as follower_name' , 'app_users.tag as follower_tag' ,
+                'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
+                'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('friends.user_id' , '=' , $id) -> get();
+
+                $friends = array_merge($friends1 ->toArray() , $friends2 ->toArray()) ;
+
+                $visitors = DB::table('visitors')
+                -> join('app_users' , 'visitors.visitor_id' , '=' , 'app_users.id')
+                ->join('levels as share_level' ,function ($join) {
+                  $join->on('app_users.share_level_id', '=', 'share_level.id');
+                 })
+                 ->join('levels as karizma_level' ,function ($join) {
+                  $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+                  }) 
+                  ->join('levels as charging_level' ,function ($join) {
+                      $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+                  }) -> select('visitors.*' , 'app_users.name as follower_name' , 'app_users.tag as follower_tag' ,
+                  'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
+                  'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('visitors.user_id' , '=' , $id) -> get(); 
+
         
         if(count($users) > 0){
           $user = $users[0] ;
-          return response()->json(['state' => 'success' , 'user' => $user ]);
+          return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors]);
         } else {
       
           return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);

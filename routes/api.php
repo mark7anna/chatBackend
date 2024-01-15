@@ -42,6 +42,7 @@ Route::get('/wallet/getWallet/{user_id}', [App\Http\Controllers\Api\WalletContro
 Route::post('/wallet/exchangeDiamond', [App\Http\Controllers\Api\WalletController::class, 'exchangeDiamond'])->name('exchangeDiamond');
 Route::get('/levels/getLevels', [App\Http\Controllers\Api\LevelsController::class, 'getLevels'])->name('getLevels');
 
+Route::post('/createUserNotification', [App\Http\Controllers\Api\UserNotificationController::class, 'createUserNotification'])->name('getLevels');
 
 
 
