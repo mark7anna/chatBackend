@@ -99,7 +99,7 @@ class HostAgencyController extends Controller
                 'automatic_accept_exit' => 'required'
             ]);
             if($request -> icon){
-                $icon = time() . '.' . $request->icon->extension();
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Agency'), $icon);
             } else {
                 $icon = $agency -> icon ;

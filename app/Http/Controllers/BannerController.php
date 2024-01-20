@@ -42,7 +42,7 @@ class BannerController extends Controller
                 'img' => 'required',
                 'action' => 'required',
             ]);
-            $img = time() . '.' . $request->img->extension();
+            $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/Banners'), $img);
             Banner::create([
                 'type' => $request -> type,
@@ -95,7 +95,7 @@ class BannerController extends Controller
                 'action' => 'required',
             ]);
             if($request->img){
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/Banners'), $img);
             } else {
                 $img  =  $banner -> img ;

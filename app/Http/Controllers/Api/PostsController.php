@@ -213,4 +213,47 @@ class PostsController extends UserNotificationController
     }
   }
 
+  public function getUserPosts($user_id){
+    try{
+        $posts = DB::table('posts')
+        ->leftJoin('post_tages' , 'posts.id' , '=' , 'post_tages.post_id')
+        ->leftJoin('tags' ,function ($join) {
+            $join->on('post_tages.tag_id', '=', 'tags.id');
+        }) 
+        ->join('app_users' , 'posts.user_id' , '=' , 'app_users.id') 
+        ->join('levels as share_level' ,function ($join) {
+            $join->on('app_users.share_level_id', '=', 'share_level.id');
+        }) 
+        ->join('levels as karizma_level' ,function ($join) {
+            $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+        }) 
+        ->join('levels as charging_level' ,function ($join) {
+            $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+        }) 
+        -> select('posts.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' , 
+        'app_users.gender as gender' , 'app_users.img as user_img' , 'share_level.icon as share_level_img' ,
+        'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img' , 'tags.name as tag'  ) 
+        -> where('posts.accepted' , '=' , 1)
+        -> where('posts.user_id' , '=' , $user_id)
+        -> get();
+
+        $likes = DB::table('post_likes')
+        -> join('app_users' , 'post_likes.user_id' , '=' , 'app_users.id')
+        -> select('post_likes.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' 
+        , 'app_users.gender as gender' , 'app_users.img as user_img') -> get(); 
+
+        $comments = DB::table('comments')
+        -> join('app_users' , 'comments.user_id' , '=' , 'app_users.id')
+        -> select('comments.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag' 
+        , 'app_users.gender as gender' , 'app_users.img as user_img') -> get();
+
+        $reports = PostReport::all();
+        return response()->json(['state' => 'success' , 'posts' => $posts , 'likes' => $likes , 'reports' => $reports , 'comments' => $comments]);
+    }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+    }
+
+  }
+
 }

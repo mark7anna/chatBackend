@@ -86,7 +86,7 @@ class AppUserController extends Controller
             'type' => 'required'
         ]);
         if($request -> img){
-            $img = time() . '.' . $request->img->extension();
+            $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/Notifications'), $img);
         } else {
             $img = "";
@@ -169,7 +169,7 @@ class AppUserController extends Controller
 
         if($user){
             if($request -> img){
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/AppUsers'), $img);
             } else {
                 $img = $user -> img;

@@ -38,7 +38,7 @@ class ThemesController extends Controller
                 'name' => 'required',
                 'img' => 'required'
             ]);
-            $img = time() . '.' . $request->img->extension();
+            $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/Themes'), $img);
             Themes::create([
                 'name' => $request -> name,
@@ -83,7 +83,7 @@ class ThemesController extends Controller
                 'name' => 'required',
             ]);
             if($request -> img){
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/Themes'), $img);
             } else {
                 $img = $theme -> img ;

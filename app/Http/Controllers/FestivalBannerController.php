@@ -50,7 +50,7 @@ class FestivalBannerController extends Controller
                 'accepted' => 'required',
                 'img' => 'required'
             ]);
-            $img = time() .  '.' . $request->img->extension();
+            $img = time() .  '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/FestivalBanner'), $img);
             FestivalBanner::create([
                 'title' => $request -> title,
@@ -106,7 +106,7 @@ class FestivalBannerController extends Controller
                 'accepted' => 'required',
             ]);
             if($request -> img){
-                         $img = time() .  '.' . $request->img->extension();
+                         $img = time() .  '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/FestivalBanner'), $img);
             } else {
                 $img = $banner -> img ;

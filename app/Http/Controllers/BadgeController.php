@@ -40,7 +40,7 @@ class BadgeController extends Controller
                 'name' => 'required|unique:badges',
                 'icon' => 'required',
             ]);
-            $icon = time() . '.' . $request->icon->extension();
+            $icon = time() . '.' . $request->icon->getClientOriginalExtension();
             $request->icon->move(('images/Badges'), $icon);
 
             Badge::create([
@@ -86,7 +86,7 @@ class BadgeController extends Controller
                 'name' => ['required' , Rule::unique('badges')->ignore($request -> id)],
             ]);
             if($request->icon){
-                $icon = time() . '.' . $request->icon->extension();
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Badges'), $icon);
             } else {
                 $icon  =  $badge -> icon ;

@@ -37,7 +37,7 @@ class AdminController extends Controller
             "role" => "required"
         ]);
         if($request -> img){
-            $img = time() . '.' . $request->img->extension();
+            $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/Admins'), $img);
         } else {
             $img = "";

@@ -11,11 +11,13 @@ class DesignPurchase extends Model
     protected $fillable = [
         'id',
         'design_id',
+        'design_cat',
         'user_id',
         'isAvailable',
         'purchase_date',
         'available_until',
         'price',
-        'count'
+        'count',
+        'isDefault'
     ];
 }

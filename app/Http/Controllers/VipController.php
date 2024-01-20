@@ -68,13 +68,13 @@ class VipController extends Controller
             ]);
 
             if($request->icon){
-                $icon = time() . '.' . $request->icon->extension();
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/VIP'), $icon);
             } else {
                 $icon  =  $vip -> icon ;
             }
             if($request->motion_icon){
-                $motion_icon = time() . 'motion' . '.' . $request->motion_icon->extension();
+                $motion_icon = time() . 'motion' . '.' . $request->motion_icon->getClientOriginalExtension();
                 $request->motion_icon->move(('images/VIPMotion'), $motion_icon);
             } else {
                 $motion_icon  =  $vip -> motion_icon ;

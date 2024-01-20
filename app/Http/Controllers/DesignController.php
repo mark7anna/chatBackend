@@ -48,6 +48,7 @@ class DesignController extends Controller
      */
     public function store(Request $request)
     {
+         
         if($request -> id == 0){
             $validated = $request->validate([
                 'name' => 'required',
@@ -58,16 +59,16 @@ class DesignController extends Controller
                 'behaviour' => 'required',
                 'icon' => 'required',
             ]);
-            $icon = time() . 'static_icon' . '.' . $request->icon->extension();
+            $icon = time() . 'static_icon' . '.' . $request->icon->getClientOriginalExtension();
             $request->icon->move(('images/Designs'), $icon);
             if($request->motion_icon){
-                $motion_icon = time() . 'motion_icon' . '.' . $request->motion_icon->extension();
+                $motion_icon = time() . 'motion_icon' . '.' . $request->motion_icon->getClientOriginalExtension();
                 $request->motion_icon->move(('images/Designs/Motion'), $motion_icon);
             } else {
                 $motion_icon  = "";
             }
             if($request->dark_icon){
-                $dark_icon = time() . 'dark_icon' . '.' . $request->dark_icon->extension();
+                $dark_icon = time() . 'dark_icon' . '.' . $request->dark_icon->getClientOriginalExtension();
                 $request->dark_icon->move(('images/Designs/Dark'), $dark_icon);
             } else {
                 $dark_icon  = "";
@@ -119,30 +120,34 @@ class DesignController extends Controller
      */
     public function update(Request $request)
     {
+        
         $design = Design::find($request -> id);
         if($design){
+
             $validated = $request->validate([
-                'name' => ['required' , Rule::unique('designs')->ignore($request -> id)],
-                'tag' => ['required' , Rule::unique('designs')->ignore($request -> id)],
-                'order' => ['required' , Rule::unique('designs')->ignore($request -> id)],
-                'price' => ['required' , Rule::unique('designs')->ignore($request -> id)],
-                'days' => ['required' , Rule::unique('designs')->ignore($request -> id)],
-                'behaviour' => ['required' , Rule::unique('designs')->ignore($request -> id)],
+                'name' => 'required',
+                'tag' => 'required',
+                'order' => 'required',
+                'price' => 'required',
+                'days' => 'required',
+                'behaviour' => 'required',
             ]);
+
+            
             if($request->motion_icon){
-            $icon = time() . 'static_icon' . '.' . $request->icon->extension();
+            $icon = time() . 'static_icon' . '.' . $request->icon->getClientOriginalExtension();
             $request->icon->move(('images/Designs'), $icon);
             } else {
                 $icon =  $design -> icon ;
             }
             if($request->motion_icon){
-                $motion_icon = time() . 'motion_icon' . '.' . $request->motion_icon->extension();
+                $motion_icon = time() . 'motion_icon' . '.' . $request->motion_icon->getClientOriginalExtension();
                 $request->motion_icon->move(('images/Designs/Motion'), $motion_icon);
             } else {
                 $motion_icon  = $design -> motion_icon ;
             }
             if($request->dark_icon){
-                $dark_icon = time() . 'dark_icon' . '.' . $request->dark_icon->extension();
+                $dark_icon = time() . 'dark_icon' . '.' . $request->dark_icon->getClientOriginalExtension();
                 $request->dark_icon->move(('images/Designs/Dark'), $dark_icon);
             } else {
                 $dark_icon  = $design -> dark_icon ;

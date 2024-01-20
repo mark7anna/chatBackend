@@ -44,7 +44,7 @@ class CountryController extends Controller
                 'dial_code' => 'required|unique:countries',
                 'icon' => 'required'
             ]);
-            $icon = time() . '.' . $request->icon->extension();
+            $icon = time() . '.' . $request->icon->getClientOriginalExtension();
             $request->icon->move(('images/Countries'), $icon);
             Country::create([
                 'name' => $request -> name,
@@ -93,7 +93,7 @@ class CountryController extends Controller
                 'dial_code' => ['required' , Rule::unique('countries')->ignore($request -> id)],
             ]);
             if($request->icon){
-                $icon = time() . '.' . $request->icon->extension();
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Countries'), $icon);
             } else {
                 $icon  =  $country -> icon ;

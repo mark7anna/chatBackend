@@ -41,7 +41,7 @@ class SpecialIDController extends Controller
                 'img' => 'required',
                 'price' => 'required'
             ]);
-            $img = time() . '.' . $request->img->extension();
+            $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/UID'), $img);
 
             SpecialID::create([
@@ -88,7 +88,7 @@ class SpecialIDController extends Controller
                 'price' => 'required'
             ]);
             if($request -> img){
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/UID'), $img);
             } else {
                 $img = $uid -> img ;

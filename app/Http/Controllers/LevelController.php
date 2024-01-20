@@ -43,7 +43,7 @@ class LevelController extends Controller
                 'icon' => 'required',
                 'type' => 'required'
             ]);
-            $icon = time() . '.' . $request->icon->extension();
+            $icon = time() . '.' . $request->icon->getClientOriginalExtension();
             $request->icon->move(('images/Levels'), $icon);
 
             Level::create([
@@ -96,7 +96,7 @@ class LevelController extends Controller
             ]);
 
             if($request->icon){
-                $icon = time() . '.' . $request->icon->extension();
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Levels'), $icon);
             } else {
                 $icon  =  $level -> icon ;

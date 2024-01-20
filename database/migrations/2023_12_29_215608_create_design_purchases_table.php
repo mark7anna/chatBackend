@@ -20,6 +20,9 @@ return new class extends Migration
             $table -> timestamp('available_until') -> useCurrent();
             $table -> decimal('price');
             $table -> integer('count');
+            $table -> integer('isDefault');
+            $table -> integer('design_cat');
+            
             
             $table->timestamps();
         });

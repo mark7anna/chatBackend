@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
 use App\Models\Usertags;
+use App\Models\Block;
+use App\Models\UserReport;
 
 class AppUserController extends Controller
 {
@@ -119,10 +121,13 @@ class AppUserController extends Controller
         -> join('levels as share_level' , 'share_level.id' , '=' , 'app_users.share_level_id' )
         -> join('levels as karizma_level' , 'karizma_level.id' , '=' , 'app_users.karizma_level_id' )
         -> join('levels as charging_level' , 'charging_level.id' , '=' , 'app_users.charging_level_id')
+        -> join('countries' , 'countries.id' , '=' , 'app_users.country')
+
         -> select('app_users.*' , 'wallets.gold' , 'wallets.diamond' , 
         'share_level.order as share_level_order' , 'share_level.points as share_level_points' , 'share_level.icon as share_level_icon' ,
         'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
-        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon') 
+        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon' ,
+        'countries.name as country_name' , 'countries.icon as country_flag') 
         -> where('app_users.id' , '=' , $id)-> get();
 
         $followers = DB::table('followers')
@@ -197,18 +202,23 @@ class AppUserController extends Controller
                   'app_users.img as follower_img' , 'app_users.gender as follower_gender' , 'share_level.icon as share_level_img' ,
                   'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img') -> where('visitors.user_id' , '=' , $id) -> get(); 
 
-           $tags = DB::table('usertags')
-           -> join('tags' , 'usertags.tag_id' , "=" , "tags.id")
-           -> select('tags.*' , 'usertags.user_id')
-           ->where('usertags.user_id' , '=' , $id) -> get();
-        if(count($users) > 0){
-          $user = $users[0] ;
-          return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
-          'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags]);
-        } else {
-      
-          return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);
-        }
+                  $tags = DB::table('usertags')
+                  -> join('tags' , 'usertags.tag_id' , "=" , "tags.id")
+                  -> select('tags.*' , 'usertags.user_id')
+                  ->where('usertags.user_id' , '=' , $id) -> get();
+
+                  $blocks = DB::table('blocks')
+                  -> join('app_users' , 'app_users.id' , '=' ,'blocks.blocke_user')
+                  -> select('blocks.*' , 'app_users.name as blocked_name' , 'app_users.tag as blocked_tag')
+                  -> where('blocks.user_id' , '=' , $id) -> get();
+                if(count($users) > 0){
+                  $user = $users[0] ;
+                  return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
+                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks]);
+                } else {
+              
+                  return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);
+                }
         
       } catch(QueryException $ex){
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
@@ -341,7 +351,7 @@ class AppUserController extends Controller
       }
     }
 
-    public function updateUserCoverPhoto(Reqyest $request){
+    public function updateUserCoverPhoto(Request $request){
       try{
         $user = AppUser::find($request -> user_id) ;
         if($user){
@@ -363,12 +373,12 @@ class AppUserController extends Controller
       }
     }
 
-    public function updateUserStatus(Reqyest $request){
+    public function updateUserStatus(Request $request){
       try{
         $user = AppUser::find($request -> user_id) ;
         if($user){
           $user -> update ([
-            'status' => $status, 
+            'status' => $request -> status, 
           ]);
         }
        
@@ -379,5 +389,90 @@ class AppUserController extends Controller
       }
     }
 
+    public function getUserDesigns($user_id){
+      try{
+        $designs = DB::table('design_purchases') 
+        ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+        ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+        'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $user_id)
+        -> get();
+        $gifts = DB::table('gift_transactions') 
+        ->join('designs' , 'gift_transactions.gift_id' , 'designs.id')
+        ->select('designs.*' , 'gift_transactions.sendDate as  available_until' ,
+         'gift_transactions.count' , 'gift_transactions.count as isDefault' , 'gift_transactions.count as design_cat' ) -> where('gift_transactions.receiver_id' , '=' , $user_id)
+        -> get();
 
+        return response()->json(['state' => 'success' , 'designs' => $designs , 'gifts' => $gifts ]);
+
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+ 
+
+    }
+
+
+    public function reportUser(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        $reported_user = AppUser::find($request -> reported_user) ;
+        if($user && $reported_user){
+          UserReport::create([
+            'user_id' => $request -> user_id,
+            'category_id' => $request -> category_id,
+            'reported_user' => $request -> reported_user,
+            'description' => $request -> description,
+            'screen_shot' => ""
+          ]);
+          return response()->json(['state' => 'success' , 'message' => "we have recived your report and will deal wit it !"]);
+
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not block this user"]);
+
+        }
+
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+    }
+    public function blockUser(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        $blocked_user = AppUser::find($request -> blocke_user) ;
+        $blocks = Block::where('user_id' , '=' ,$request -> user_id)
+        -> where('blocke_user' , '=' ,$request -> blocke_user) -> get();
+        if($user && $blocked_user && count($blocks) == 0){
+          Block::create([
+            'user_id' => $request -> user_id,
+            'blocke_user' => $request -> blocke_user,
+            'blocked_date' =>  Carbon::now()
+          ]);
+          return $this -> getUserData($request -> user_id);
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not block this user"]);
+
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+    }
+    public function unblockUser(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        $blocked_user = AppUser::find($request -> blocke_user) ;
+        $blocks = Block::where('user_id' , '=' ,$request -> user_id)
+        -> where('blocke_user' , '=' ,$request -> blocke_user) -> get();
+        if($user && $blocked_user && count($blocks) >  0){
+          $blocks[0] -> delete();
+          return $this -> getUserData($request -> user_id);
+           
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not block this user"]);
+
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+    }
+    
 }

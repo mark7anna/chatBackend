@@ -40,9 +40,9 @@ class EmossionsController extends Controller
                 "icon" => "required"
             ]);
 
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/Emossions'), $img);
-                $icon = time() . 'icon' .'.' . $request->icon->extension();
+                $icon = time() . 'icon' .'.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Emossions'), $icon);
 
 
@@ -84,13 +84,13 @@ class EmossionsController extends Controller
         $emossion = Emossions::find($request -> id);
         if($emossion){
              if($request -> img){
-                $img = time() . '.' . $request->img->extension();
+                $img = time() . '.' . $request->img->getClientOriginalExtension();
                 $request->img->move(('images/Emossions'), $img);
              } else {
                 $img = $emossion -> img ;
              }
              if($request -> icon){
-                $icon = time() . 'icon' .'.' . $request->icon->extension();
+                $icon = time() . 'icon' .'.' . $request->icon->getClientOriginalExtension();
                 $request->icon->move(('images/Emossions'), $icon);
              } else {
                 $icon = $emossion -> icon ;
