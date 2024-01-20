@@ -68,7 +68,11 @@ class ChatRoomController extends Controller
     }
 
     public function getRoom($room_id){
-       $room = ChatRoom::find($room_id);
+        $room = DB::table('chat_rooms')
+        -> join('countries' , 'chat_rooms.country_id' , '=' , 'countries.id')
+        -> join('app_users' , 'chat_rooms.userId' , 'app_users.id')
+        -> select('chat_rooms.*' , 'countries.icon as flag' , 'app_users.tag as admin_tag' , 
+        'app_users.name as admin_name' , 'app_users.img as admin_img') -> where( 'chat_rooms.id' , '=' , $room_id) -> first();
 
        $mics = DB::table('mics')
        -> leftJoin('app_users' , 'mics.user_id' , '=' , 'app_users.id')
@@ -151,7 +155,7 @@ class ChatRoomController extends Controller
     }
     public function createRoom($user_id){
         $user = AppUser::find($user_id);
-        $theme = Themes::first();
+        $theme = Themes::where('isMain' , '=' , 1) -> first();
         $country = Country::first();
         if($user){
          $tag = (int)(date('Ymd') . rand(1, 100));
@@ -171,7 +175,7 @@ class ChatRoomController extends Controller
             'createdDate' => Carbon::now(),
             'isTrend' => 0,
             'details' => "",
-            'micCount' => 9,
+            'micCount' => 12,
             'enableMessages' => 1,
             'reportCount' => 0,
             'themeId' => $theme -> id,
@@ -180,10 +184,10 @@ class ChatRoomController extends Controller
           
            if($id){
             //craete mics
-             for($i = 0 ; $i < 9 ; $i++){
+             for($i = 0 ; $i < 12 ; $i++){
                 Mic::create([
                     'room_id' => $id ,
-                    'order' =>  $i,
+                    'order' =>  $i + 1,
                     'user_id' => 0,
                     'isClosed' => 0,
                     'isMute' => 0,
