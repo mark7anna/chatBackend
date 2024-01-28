@@ -139,3 +139,7 @@ function()
     Route::get('/getAgencyTag', [App\Http\Controllers\HostAgencyController::class, 'create'])->name('getAgencyTag');
 
 });
+Route::get('/roomenter', function() {
+    event(new App\Events\TestEvent());
+    return null ;
+});

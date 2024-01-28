@@ -33,6 +33,7 @@ return new class extends Migration
             $table -> integer('reportCount');
             $table -> integer('themeId');
             $table -> integer('country_id');
+            $table -> text('hello_message');
             $table->timestamps();
         });
     }

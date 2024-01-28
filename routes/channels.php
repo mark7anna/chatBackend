@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+
+// Route::get('roomenter', function() {
+//     event(new App\Events\TestEvent());
+// });
+// ::channel('roomenter', function () {
+//     event(new App\Events\TestEvent());
+//     return null ;
+// });

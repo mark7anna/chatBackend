@@ -103,7 +103,6 @@ class WalletController extends UserNotificationController
         }
     }
 
-
     public function checkChargingLevelUpgrade($user_id){
       $chargingOpration = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
       $user = AppUser::find($user_id);
@@ -115,5 +114,16 @@ class WalletController extends UserNotificationController
         $total_gold += $operation -> gold ;
       }
       $nextChargingLevel = $allChargingLevels -> where('points' , '>=' , $total_gold) ->firstOrFail();
+    }
+
+    public function getChargingTransactions($user_id){
+        try{
+            $transactions = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
+            return response()->json(['state' => 'success' , 'transactions' => $transactions]);
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
     }
 }

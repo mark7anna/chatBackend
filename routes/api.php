@@ -32,7 +32,11 @@
         Route::post('/Account/img/update', [App\Http\Controllers\Api\AppUserController::class, 'updateUserProfile'])->name('updateUserProfile');
         Route::post('/Account/cover/update', [App\Http\Controllers\Api\AppUserController::class, 'updateUserCoverPhoto'])->name('updateUserCoverPhoto');
         Route::post('/Account/status/update', [App\Http\Controllers\Api\AppUserController::class, 'updateUserStatus'])->name('updateUserStatus');
-
+        Route::post('/Account/reportUser', [App\Http\Controllers\Api\AppUserController::class, 'reportUser'])->name('reportUser');
+        Route::post('/Account/blockUser', [App\Http\Controllers\Api\AppUserController::class, 'blockUser'])->name('blockUser');
+        Route::post('/Account/unblockUser', [App\Http\Controllers\Api\AppUserController::class, 'unblockUser'])->name('unblockUser');
+        Route::post('/Account/followUser', [App\Http\Controllers\Api\AppUserController::class, 'followUser'])->name('followUser');
+        Route::post('/Account/unfollowkUser', [App\Http\Controllers\Api\AppUserController::class, 'unfollowkUser'])->name('unfollowkUser');
 
 
         Route::get('/Banners/getAll', [App\Http\Controllers\Api\BannerController::class, 'index'])->name('getAllBanners');
@@ -40,7 +44,16 @@
         
         Route::get('/chatRooms/getAll', [App\Http\Controllers\Api\ChatRoomController::class, 'index'])->name('getAllChatRooms');
         Route::get('/chatRooms/getRoom/{user_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'checkRoom'])->name('checkRoom');
+        Route::get('/chatRooms/getBasicData', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomBasicData'])->name('getRoomBasicData');
+        Route::post('/chatRooms/updateName', [App\Http\Controllers\Api\ChatRoomController::class, 'updateRoomName'])->name('updateName');
+        Route::post('/chatRooms/updateHello', [App\Http\Controllers\Api\ChatRoomController::class, 'updateRoomHelloText'])->name('updateHello');
+        Route::post('/chatRooms/updatePassword', [App\Http\Controllers\Api\ChatRoomController::class, 'updateRoomPassword'])->name('updatePassword');
+        Route::get('/chatRooms/getRoomById/{room_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoom'])->name('getRoomById');
+        Route::get('/chatRooms/getRoomByAdmin/{admin_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomByAdmin'])->name('getRoomByAdmin');
+        Route::get('/chatRooms/trackUser/{user_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'trackUser'])->name('trackUser');
 
+        
+        
         
         Route::get('/festivalBanners/getAll', [App\Http\Controllers\Api\FestivalBannerController::class, 'index'])->name('getFestivalBanners');
         Route::get('/users/Search/{txt}', [App\Http\Controllers\Api\AppUserController::class, 'search'])->name('usersSearch');
@@ -61,9 +74,14 @@
         Route::get('/store/designs/all', [App\Http\Controllers\Api\StoreController::class, 'getAllDesigns'])->name('getAllDesigns');
         Route::post('/store/design/purchase', [App\Http\Controllers\Api\StoreController::class, 'purchaseDesign'])->name('purchaseDesign');
         Route::get('/notifications/all/{user_id}', [App\Http\Controllers\Api\UserNotificationController::class, 'getAllUserNotifications'])->name('getAllUserNotifications');
+      
         Route::post('/wallet/charge', [App\Http\Controllers\Api\WalletController::class, 'ChargeWallet'])->name('ChargeWallet');
         Route::get('/wallet/getWallet/{user_id}', [App\Http\Controllers\Api\WalletController::class, 'getWallet'])->name('getWallet');
         Route::post('/wallet/exchangeDiamond', [App\Http\Controllers\Api\WalletController::class, 'exchangeDiamond'])->name('exchangeDiamond');
+        Route::get('/wallet/getChargingTransactions/{user_id}', [App\Http\Controllers\Api\WalletController::class, 'getChargingTransactions'])->name('getChargingTransactions');
+        
+        
+        
         Route::get('/levels/getLevels', [App\Http\Controllers\Api\LevelsController::class, 'getLevels'])->name('getLevels');
 
         Route::post('/createUserNotification', [App\Http\Controllers\Api\UserNotificationController::class, 'createUserNotification'])->name('getLevels');

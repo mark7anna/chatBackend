@@ -14,11 +14,17 @@ use App\Models\Tag;
 use App\Models\Usertags;
 use App\Models\Block;
 use App\Models\UserReport;
+use App\Models\Country;
+use App\Models\Follower;
+
+
 
 class AppUserController extends Controller
 {
     public function Register(Request $request){
        $tag = (int)(date('Ymd') . rand(1, 100));
+       $country = Country::first();
+
        $share_level_id =  DB::table('levels') -> where('type' , '=' , 0) ->orderBy('id', 'asc')->first() -> id;
        $karizma_level_id =  DB::table('levels') -> where('type' , '=' , 1) ->orderBy('id', 'asc')->first() -> id;
        $charging_level_id =  DB::table('levels') -> where('type' , '=' , 2) ->orderBy('id', 'asc')->first() -> id;
@@ -46,7 +52,7 @@ class AppUserController extends Controller
             'deviceId' => $request -> deviceId,
             'isOnline' => 1,
             'isInRoom' => 0,
-            'country' => 0,
+            'country' => $country -> id,
             'register_with' => $request -> register_with
            ]);
 
@@ -235,10 +241,13 @@ class AppUserController extends Controller
         -> join('levels as share_level' , 'share_level.id' , '=' , 'app_users.share_level_id' )
         -> join('levels as karizma_level' , 'karizma_level.id' , '=' , 'app_users.karizma_level_id' )
         -> join('levels as charging_level' , 'charging_level.id' , '=' , 'app_users.charging_level_id')
+        -> join('countries' , 'countries.id' , '=' , 'app_users.country')
+
         -> select('app_users.*' , 'wallets.gold' , 'wallets.diamond' , 
         'share_level.order as share_level_order' , 'share_level.points as share_level_points' , 'share_level.icon as share_level_icon' ,
         'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
-        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon') 
+        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon' ,
+        'countries.name as country_name' , 'countries.icon as country_flag') 
         -> where('app_users.tag' , 'like' , '%' .$txt . '%' )
         ->orWhere('app_users.name', 'like', '%' . $txt . '%')->get();
 
@@ -468,6 +477,47 @@ class AppUserController extends Controller
            
         } else {
           return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not block this user"]);
+
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+    }
+
+
+    public function followUser(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        $followed_user = AppUser::find($request -> follower_id) ;
+    
+        if($user && $followed_user){
+          Follower::create([
+            'user_id' => $request -> user_id,
+            'follower_id' => $request -> follower_id,
+            'following_date' =>  Carbon::now()
+          ]);
+          return $this -> getUserData($request -> user_id);
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not follow this user"]);
+
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+    }
+
+    public function unfollowkUser(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        $followed_user = AppUser::find($request -> follower_id) ;
+        $folloings = Follower::where('user_id' , '=' ,$request -> user_id)
+        -> where('follower_id' , '=' ,$request -> follower_id) -> get();
+        if($user && $followed_user && count($folloings) >  0){
+          $folloings[0] -> delete();
+          return $this -> getUserData($request -> user_id);
+           
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not follow this user"]);
 
         }
       }catch(QueryException $ex){
