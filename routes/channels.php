@@ -21,3 +21,7 @@ use Illuminate\Support\Facades\Broadcast;
 //     event(new App\Events\TestEvent());
 //     return null ;
 // });
+
+Broadcast::channel('private.chat.id', function($user , $id) {
+   
+});

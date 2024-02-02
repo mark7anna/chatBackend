@@ -38,6 +38,7 @@ return new class extends Migration
             $table -> integer('gender');
             $table -> string('cover');
             $table -> string('status');
+            $table -> string('token');
             $table->timestamps();
         });
     }

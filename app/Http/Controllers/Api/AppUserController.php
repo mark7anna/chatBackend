@@ -53,7 +53,8 @@ class AppUserController extends Controller
             'isOnline' => 1,
             'isInRoom' => 0,
             'country' => $country -> id,
-            'register_with' => $request -> register_with
+            'register_with' => $request -> register_with,
+            'token' => $request -> token
            ]);
 
            if($user){
@@ -89,6 +90,7 @@ class AppUserController extends Controller
             'macAddress' => $request -> macAddress,
             'deviceId' => $request -> deviceId,
             'isOnline' => 1,
+             'token' => $request -> token
           ]);
           
 
@@ -523,6 +525,26 @@ class AppUserController extends Controller
       }catch(QueryException $ex){
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
       }
+    }
+
+    public function updateUserToken(Request $request) {
+      try{
+        $user = AppUser::find($request -> user_id);
+        if($user){
+          $user -> update([
+            'token' => $request -> token 
+          ]);
+          return $this -> getUserData($request -> user_id);
+
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => "Sorry , we can not find this user"]);
+
+        }
+
+      } catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+
     }
     
 }

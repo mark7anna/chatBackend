@@ -204,7 +204,11 @@ return [
     "active" => " Active",
     "inActive" => "Disabled",
     "agency_delete" => " Do you really need to delete Agency ?",
-    "new_agency" => "New Agency "
+    "new_agency" => "New Agency ",
+    "settings" => "Settings",
+    'diamond_to_gold_ratio' => "Diamond to Gold Ration",
+'gift_sender_diamond_back' => "Diamond Ratio for the sender",
+"gift_room_owner_diamond_back" => "Diamond Ratio for the room owner"
 
 
 

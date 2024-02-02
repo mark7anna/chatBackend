@@ -80,6 +80,7 @@ class AppUserController extends Controller
         return view('AppUsers.notifications' , compact('notifications'));
     }
     public function sendNotification(Request $request){
+        $pushController = new PushNotificationController();
         $validated = $request->validate([
             'title' => 'required',
             'message' => 'required',
@@ -91,14 +92,28 @@ class AppUserController extends Controller
         } else {
             $img = "";
         }
+        if($request -> user_id){ 
+            $users = AppUser::Where('tag' , '=' , $request -> user_id) -> get();
+            if(count($users) > 0){
+                $id = $users[0] -> id ;
+                $token = $users[0] -> token ;
+            } else {
+                $id = 0 ;
+                $token = '/topics/all';
+            }
+        } else {
+            $id = 0 ;
+                $token = '/topics/all';
+        }
         Notification::create([
             'title' => $request -> title,
             'message' => $request -> message,
             'img' => $img,
             'link' => $request -> link ?? "",
             'type' => $request -> type,
-            'user_id' => $request -> user_id ?? ""
+            'user_id' => 0
         ]);
+        $pushController -> sendNotificationToUser($token , $request -> title  ,$request -> message );
 
         return redirect()->route('userNotifications' )->with('success', __('main.sent'));
     }

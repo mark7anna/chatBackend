@@ -205,7 +205,12 @@ return [
 "active" => " نشط",
 "inActive" => "معطل",
 "agency_delete" => "هل تريد حذف الوكالة ؟",
-"new_agency" => "وكالة جديدة"
+"new_agency" => "وكالة جديدة",
+"settings" => "الإعدادات",
+'diamond_to_gold_ratio' => "نسبة تحويل الماس الي ذهب",
+'gift_sender_diamond_back' => "نسبة الماس الذي يحصل عليه الراسل من قيمة الهدية",
+"gift_room_owner_diamond_back" => "نسبة الماس الذي يحصل عليه صاحب الغرفة من قيمة الهدية"
+
 
 
 

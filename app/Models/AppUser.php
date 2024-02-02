@@ -34,7 +34,8 @@ class AppUser extends Model
         'register_with',
         'gender',
         'cover',
-        'status'
+        'status',
+        'token'
     ];
 
     // public function shareLevel()

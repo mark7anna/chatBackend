@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,8 +139,25 @@ function()
     Route::post('/agencyStore', [App\Http\Controllers\HostAgencyController::class, 'store'])->name('agencyStore');
     Route::get('/getAgencyTag', [App\Http\Controllers\HostAgencyController::class, 'create'])->name('getAgencyTag');
 
+
+
+    Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
+    Route::post('/settingsStore', [App\Http\Controllers\SettingsController::class, 'store'])->name('settingsStore');
+
+
+
+    Route::get('/sendUserNotification/{tokrn}', [App\Http\Controllers\PushNotificationController::class, 'sendNotificationToUser'])->name('sendNotificationToUser');
+
 });
 Route::get('/roomenter', function() {
-    event(new App\Events\TestEvent());
+    event(new App\Events\RoomEvent());
     return null ;
+});
+Route::get('/ws', function() {
+   
+    return  view('websocket') ;
+});
+Route::post('/chat-message', function(Request $request) {
+    event(new App\Events\RoomEvent($request -> message));
+   
 });

@@ -246,7 +246,15 @@
         </ul>
       </li>
 
-
+      <li class="nav-item">
+        <a @if($slag==20) class="nav-link  active" @else class="nav-link" @endif href="{{ route('settings') }}">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/settings_iocn.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{ __('main.settings') }}</span>
+        </a>
+      </li>
 
 
 

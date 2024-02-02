@@ -37,7 +37,10 @@
         Route::post('/Account/unblockUser', [App\Http\Controllers\Api\AppUserController::class, 'unblockUser'])->name('unblockUser');
         Route::post('/Account/followUser', [App\Http\Controllers\Api\AppUserController::class, 'followUser'])->name('followUser');
         Route::post('/Account/unfollowkUser', [App\Http\Controllers\Api\AppUserController::class, 'unfollowkUser'])->name('unfollowkUser');
+        Route::post('/Account/updateToken', [App\Http\Controllers\Api\AppUserController::class, 'updateUserToken'])->name('updateUserToken');
 
+
+        
 
         Route::get('/Banners/getAll', [App\Http\Controllers\Api\BannerController::class, 'index'])->name('getAllBanners');
         Route::get('/Countries/getAll', [App\Http\Controllers\Api\CountryController::class, 'index'])->name('getAllCountries');
@@ -90,4 +93,6 @@
         Route::post('/designa/use', [App\Http\Controllers\Api\StoreController::class, 'useDesign'])->name('useDesign');
 
 
-        
+        Route::get('/chats/all/{user_id}', [App\Http\Controllers\Api\ChatController::class, 'getUserChats'])->name('getUserChats');
+        Route::post('/chats/sendMsg', [App\Http\Controllers\Api\ChatController::class, 'sendMessage'])->name('sendMsg');
+

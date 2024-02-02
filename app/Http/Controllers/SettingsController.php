@@ -13,7 +13,13 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Settings::all() ;
+        if(count($settings) == 0)
+        $setting = null ;
+       else 
+        $setting = $settings[0] ;
+
+        return view ('Settings.index' , compact('setting'));
     }
 
     /**
@@ -29,7 +35,27 @@ class SettingsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request -> id > 0){
+           $setting = Settings::fins($request -> id);
+           if($setting){
+            $setting -> update([
+               'diamond_to_gold_ratio' => $request -> diamond_to_gold_ratio ,
+               'gift_sender_diamond_back' => $request -> gift_sender_diamond_back ,
+               'gift_room_owner_diamond_back' => $request -> gift_room_owner_diamond_back ,
+
+            ]);
+            return redirect()->route('settings')->with('success', __('main.updated'));
+
+           }
+        } else {
+            Settings::create([
+                'diamond_to_gold_ratio' => $request -> diamond_to_gold_ratio ,
+                'gift_sender_diamond_back' => $request -> gift_sender_diamond_back ,
+                'gift_room_owner_diamond_back' => $request -> gift_room_owner_diamond_back ,
+ 
+             ]);
+             return redirect()->route('settings')->with('success', __('main.created'));
+        }
     }
 
     /**
