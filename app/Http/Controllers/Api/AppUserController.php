@@ -308,6 +308,24 @@ class AppUserController extends Controller
       }
     }
 
+
+    public function updateUserGender(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id) ;
+        if($user){
+          $user -> update ([
+            'gender' => $request -> gender
+          ]);
+        }
+       
+         return $this -> getUserData($request -> user_id);
+      }catch(QueryException $ex){
+          return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+
     public function updateUserBirthdate(Request $request){
       try{
         $user = AppUser::find($request -> user_id) ;

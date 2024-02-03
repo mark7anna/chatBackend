@@ -133,11 +133,11 @@
                          </select>
                     </div>
                     <div class="col-6">
-                        <label for="enter_id" class="col-form-label">{{ __('main.vip') }}:</label>
-                        <select class="form-select" id="enter_id" name="enter_id" style="direction: ltr">
+                        <label for="vip_id" class="col-form-label">{{ __('main.vip') }}:</label>
+                        <select class="form-select" id="vip_id" name="vip_id" style="direction: ltr">
                             <option value="0"></option>
                             @foreach ($vips as $vip )
-                            <option value="{{ $vip -> id }}"> {{ $vip -> name }}</option>
+                            <option value="{{ $vip -> id }}"> {{ $vip -> tag }}</option>
                             @endforeach
                          </select>
                     </div>
