@@ -38,7 +38,10 @@
         Route::post('/Account/followUser', [App\Http\Controllers\Api\AppUserController::class, 'followUser'])->name('followUser');
         Route::post('/Account/unfollowkUser', [App\Http\Controllers\Api\AppUserController::class, 'unfollowkUser'])->name('unfollowkUser');
         Route::post('/Account/updateToken', [App\Http\Controllers\Api\AppUserController::class, 'updateUserToken'])->name('updateUserToken');
+        Route::post('/  ', [App\Http\Controllers\Api\AppUserController::class, 'updateUserGender'])->name('updateUserGender');
 
+
+        
 
         
 
@@ -96,3 +99,6 @@
         Route::get('/chats/all/{user_id}', [App\Http\Controllers\Api\ChatController::class, 'getUserChats'])->name('getUserChats');
         Route::post('/chats/sendMsg', [App\Http\Controllers\Api\ChatController::class, 'sendMessage'])->name('sendMsg');
 
+
+        Route::get('/vip/all/{user_id}', [App\Http\Controllers\Api\VipController::class, 'index'])->name('getVip');
+        Route::get('/vip/getAll', [App\Http\Controllers\Api\VipController::class, 'getVip'])->name('getVipAll');

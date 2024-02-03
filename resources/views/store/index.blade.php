@@ -79,7 +79,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
 
 
                             </td>
-                        <td  class="text-center"> {{ $design -> vip_name }}</td>
+                        <td  class="text-center"> {{ $design -> vip_tag }}</td>
                           <td class="align-middle text-center">
                             <button type="button" class="btn btn-success editBtn" value="{{ $design -> id }}"><i class="fas fa-edit"></i></button>
                           <button type="button" class="btn btn-danger deleteBtn" value="{{ $design -> id }}"><i class="far fa-trash-alt"></i></button>
@@ -180,7 +180,7 @@ id="createButton" > <i class="fa fa-plus" style="margin-right: 10px"></i>  Add N
                             $(".modal-body #order").val(response.order);
                             $(".modal-body #behaviour").val(response.behaviour);
                             $(".modal-body #subject").val(response.subject);
-                            $(".modal-body #vip_id").val(response.vip);
+                            $(".modal-body #vip_id").val(response.vip_id);
                         },
                         complete: function() {
                             $('#loader').hide();

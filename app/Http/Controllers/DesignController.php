@@ -26,7 +26,7 @@ class DesignController extends Controller
          ->leftJoin('gift_categories' , 'designs.gift_category_id' , '=' , 'gift_categories.id')
          ->leftJoin('vips' , 'designs.vip_id' , '=' , 'vips.id')
          ->select('designs.*' , 'categories.name as category_name' ,
-         'gift_categories.name as gift_category_name' , 'vips.name as vip_name') -> get();
+         'gift_categories.name as gift_category_name' , 'vips.name as vip_name' , 'vips.tag as vip_tag') -> get();
 
          $vips = Vip::all();
          $cats = Category::all();
