@@ -82,8 +82,8 @@
         Route::get('/wallet/getWallet/{user_id}', [App\Http\Controllers\Api\WalletController::class, 'getWallet'])->name('getWallet');
         Route::post('/wallet/exchangeDiamond', [App\Http\Controllers\Api\WalletController::class, 'exchangeDiamond'])->name('exchangeDiamond');
         Route::get('/wallet/getChargingTransactions/{user_id}', [App\Http\Controllers\Api\WalletController::class, 'getChargingTransactions'])->name('getChargingTransactions');
-        
-        
+        Route::get('/wallet/getSettings', [App\Http\Controllers\Api\WalletController::class, 'getTransactionSettings'])->name('getSettings');
+
         
         Route::get('/levels/getLevels', [App\Http\Controllers\Api\LevelsController::class, 'getLevels'])->name('getLevels');
 

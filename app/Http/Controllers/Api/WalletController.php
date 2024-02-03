@@ -14,7 +14,7 @@ use App\Models\AppUser;
 use App\Models\Level;
 use Illuminate\Support\Facades\DB;
 
-class WalletController extends UserNotificationController
+class WalletController extends Controller
 {
     public function ChargeWallet(Request $request){
         try{
@@ -76,7 +76,7 @@ class WalletController extends UserNotificationController
                     $new_gold = $wallet -> gold + $added_gold ;
                     $new_diamond = $wallet -> diamond - $request -> diamond ;
                     $wallet -> update([
-                        'gold' => $added_gold ,
+                        'gold' => $new_gold ,
                         'diamond' => $new_diamond
                     ]);
                     DiamondGoldExchnage::create([
@@ -86,6 +86,7 @@ class WalletController extends UserNotificationController
                         'gold' => $added_gold,
                         'exchange_date' => Carbon::now()
                     ]);
+                    $this -> createChargeOperation($request -> user_id ,  $added_gold);
  
                     return $this -> getWallet($request ->user_id );
     
@@ -102,6 +103,17 @@ class WalletController extends UserNotificationController
 
         }
     }
+
+    public function createChargeOperation( $userId , $gold  ){
+        
+        ChargingOpration::create([
+            'user_id' => $userId ,
+            'gold' => $gold,
+            'source' => "Exchange",
+            'state' => 1,
+            'charging_date' => Carbon::now()
+        ]);
+      }
 
     public function checkChargingLevelUpgrade($user_id){
       $chargingOpration = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
@@ -125,5 +137,15 @@ class WalletController extends UserNotificationController
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
         }
+    }
+
+    public function getTransactionSettings(){
+        try{
+            $setting = Settings::all() -> first();
+            return response()->json(['state' => 'success' , 'setting' => $setting ]);
+        } catch (QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]); 
+        }
+      
     }
 }

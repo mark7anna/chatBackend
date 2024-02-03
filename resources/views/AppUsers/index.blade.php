@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.allUsers')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
+        <div class="container-fluid py-4" @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -101,6 +101,18 @@
                                             <td class="align-middle text-center">
                                                 <button type="button" class="btn btn-success editBtn"
                                                     value="{{ $user -> id }}"><i class="fas fa-edit"></i></button>
+                                                @if ($user -> enable == 1)
+                                                <a href="{{ route('disable_account' , $user -> id) }}" type="button"
+                                                    class="btn btn-danger " value="{{ $user -> id }}">
+                                                    Disable Account</a>
+                                                @else
+                                                <a href="{{ route('enable_account' , $user -> id) }}" type="button"
+                                                    class="btn btn-info " value="{{ $user -> id }}">
+                                                    Enable Account</a>
+                                                @endif
+
+
+
                                             </td>
 
                                         </tr>
@@ -167,11 +179,13 @@
                                             $("#gold").html(response[0].gold);
                                             $("#register_date").html(response[0].registered_at);
                                             $("#last_login").html(response[0].last_login);
+                                            $("#enable").html(response[0].enable == 1 ? "حساب فعال" : "حساب معطل");
+                                            $("#room").html(response[0].isInRoom >  0 ? "داخل غرفة" : " ليس بداخل غرفة");
                                             $(".modal-body #name").val(response[0].name);
                                             $(".modal-body #tag").val(response[0].tag);
                                             $(".modal-body #email").val(response[0].email);
                                             $(".modal-body #birth_date").val(response[0].birth_date );
-                                            $(".modal-body #macAddress").val(response[0].macAddress);
+                                            $(".modal-body #macAddress").val(response[0].token);
                                             $(".modal-body #deviceId").val(response[0].deviceId);
                                             $(".modal-body #password").val(response[0].password);
                                             $(".modal-body #USERID").val(response[0].id);

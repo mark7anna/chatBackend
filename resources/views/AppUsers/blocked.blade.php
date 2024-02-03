@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.blockedUsers')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
+        <div class="container-fluid py-4" @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -101,6 +101,10 @@
                                             <td class="align-middle text-center">
                                                 <button type="button" class="btn btn-success editBtn"
                                                     value="{{ $user -> id }}"><i class="fas fa-edit"></i></button>
+
+                                                <a href="{{ route('enable_account' , $user -> id) }}" type="button"
+                                                    class="btn btn-info " value="{{ $user -> id }}">
+                                                    Enable Account</a>
                                             </td>
 
                                         </tr>

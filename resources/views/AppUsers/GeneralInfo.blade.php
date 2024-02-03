@@ -19,7 +19,7 @@
                         </div>
                     </li>
                     <li class="mb-2">
-                        <div class="form-group"><label>
+                        <div class="form-group"><label>macAddress
                                 {{ __('main.email') }}
                             </label>
                             <input type="text" readonly="readonly" class="form-control" style="padding: 3px;" id="email"

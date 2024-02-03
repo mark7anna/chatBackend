@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppUser;
+use App\Models\ChargingOpration;
 use App\Models\Notification;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,6 +41,28 @@ class AppUserController extends Controller
         }
     }
 
+    public function enable_account($user_id){
+      $user = AppUser::find($user_id);
+      if($user){
+        $user -> update([
+            'enable' => 1
+        ]);
+
+      }
+      return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
+
+    }
+    public function disable_account($user_id){
+        $user = AppUser::find($user_id);
+        if($user){
+          $user -> update([
+              'enable' => 0
+          ]);
+  
+        }
+        return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
+    }
+
     public function chargeAppUserBalance(){
         return view('AppUsers.chargeUser' );
     }
@@ -69,9 +93,22 @@ class AppUserController extends Controller
           }
           $walet[0] -> update ();
 
+          $this -> createChargeOperation($request -> userIdd , $request -> chargeType == 1 ? $request -> gold :  -1 * $request -> gold);
+
             return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
 
         }
+      }
+
+      public function createChargeOperation( $userId , $gold  ){
+        
+        ChargingOpration::create([
+            'user_id' => $userId ,
+            'gold' => $gold,
+            'source' => "ADMIN",
+            'state' => 1,
+            'charging_date' => Carbon::now()
+        ]);
       }
 
 

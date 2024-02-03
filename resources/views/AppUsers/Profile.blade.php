@@ -36,12 +36,18 @@
 
                                         </span></a></div>
                             </div>
-                            <div class="d-flex my-4"><button class="btn btn-sm btn-info me-3">
-                                    ليس بداخل غرفة
-                                </button> <a href="#" class="btn btn-sm btn-danger me-3"><i aria-hidden="true"
-                                        class="fa fa-refresh"></i>
-                                    تسجيل الخروج
-                                </a></div>
+                            <div class="d-flex my-4">
+
+                                <button class="btn btn-sm btn-info me-3" id="enable">
+
+                                </button>
+
+                                <button class="btn btn-sm btn-danger me-3" id="room">
+
+                                </button>
+
+
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-8 d-flex flex-column ">

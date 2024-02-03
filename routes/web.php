@@ -144,6 +144,10 @@ function()
     Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
     Route::post('/settingsStore', [App\Http\Controllers\SettingsController::class, 'store'])->name('settingsStore');
 
+    Route::get('/enable_account/{user}', [App\Http\Controllers\AppUserController::class, 'enable_account'])->name('enable_account');
+    Route::get('/disable_account/{user}', [App\Http\Controllers\AppUserController::class, 'disable_account'])->name('disable_account');
+
+
 
 
     Route::get('/sendUserNotification/{tokrn}', [App\Http\Controllers\PushNotificationController::class, 'sendNotificationToUser'])->name('sendNotificationToUser');
