@@ -1,6 +1,9 @@
         <?php
 
-        use Illuminate\Http\Request;
+use App\Http\Controllers\Websockets\WebsocketHandlers\ChatRoomHandler as WebsocketHandlersChatRoomHandler;
+use App\Http\Websockets\WebsocketHandlers\ChatRoomHandler;
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
+use Illuminate\Http\Request;
         use Illuminate\Support\Facades\Route;
 
         /*
@@ -100,5 +103,13 @@
         Route::post('/chats/sendMsg', [App\Http\Controllers\Api\ChatController::class, 'sendMessage'])->name('sendMsg');
 
 
-        Route::get('/vip/all/{user_id}', [App\Http\Controllers\Api\VipController::class, 'index'])->name('getVip');
+        Route::get('/vip/all', [App\Http\Controllers\Api\VipController::class, 'index'])->name('getVip');
         Route::get('/vip/getAll', [App\Http\Controllers\Api\VipController::class, 'getVip'])->name('getVipAll');
+
+        Route::get('/designs/medal/all', [App\Http\Controllers\Api\DesignController::class, 'getAllMedals'])->name('getAllMedals');
+
+        
+
+        //websockets
+
+        WebSocketsRouter::webSocket('/ws/enterRoom' , WebsocketHandlersChatRoomHandler::class);

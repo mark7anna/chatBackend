@@ -11,6 +11,6 @@
         <input id="inp-message" />
     </form>
     
-    <script src="{{ mix('js/app.js') }}"></script>
+    <script type="module" src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

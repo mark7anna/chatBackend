@@ -24,4 +24,19 @@ console.log('sub')
 }).listen('.UserEnteRoom' , (event) => {
     console.log(event);
 });
-
+// enterRoom();
+function enterRoom(){
+  const socket = new WebSocket(`ws://${window.location.hostname}:6001/ws/enterRoom?appKey=livepost_key`);
+  socket.onopen = function (event){
+    console.log('on open!');
+    socket.send(JSON.stringify(
+      {
+        id:1 , 
+        payload:{
+          title: "hello",
+          body:"this is a text"
+        }
+      }
+    ))
+  }
+}
