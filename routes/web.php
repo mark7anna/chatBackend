@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -154,7 +156,7 @@ function()
 
 });
 Route::get('/roomenter', function() {
-    event(new App\Events\RoomEvent());
+    event(new App\Events\RoomEvent('hello'));
     return null ;
 });
 Route::get('/ws', function() {

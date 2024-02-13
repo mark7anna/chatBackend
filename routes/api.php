@@ -61,8 +61,14 @@ use Illuminate\Http\Request;
         Route::get('/chatRooms/getRoomByAdmin/{admin_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomByAdmin'])->name('getRoomByAdmin');
         Route::get('/chatRooms/trackUser/{user_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'trackUser'])->name('trackUser');
 
-        
-        
+        Route::post('/chatRooms/enterRoom', [App\Http\Controllers\Api\ChatRoomController::class, 'enterRoom'])->name('enterRoom');
+        Route::post('/chatRooms/exitRoom', [App\Http\Controllers\Api\ChatRoomController::class, 'exitRoom'])->name('exitRoom');
+        Route::post('/chatRooms/lockMic', [App\Http\Controllers\Api\ChatRoomController::class, 'lockMic'])->name('lockMic');
+        Route::post('/chatRooms/unlockMic', [App\Http\Controllers\Api\ChatRoomController::class, 'unlockMic'])->name('unlockMic');
+        Route::post('/chatRooms/useMic', [App\Http\Controllers\Api\ChatRoomController::class, 'useMic'])->name('useMic');
+        Route::post('/chatRooms/leaveMic', [App\Http\Controllers\Api\ChatRoomController::class, 'leaveMic'])->name('leaveMic');
+        Route::post('/chatRooms/chnageRoomBg', [App\Http\Controllers\Api\ChatRoomController::class, 'chnageRoomBg'])->name('chnageRoomBg');
+
         
         Route::get('/festivalBanners/getAll', [App\Http\Controllers\Api\FestivalBannerController::class, 'index'])->name('getFestivalBanners');
         Route::get('/users/Search/{txt}', [App\Http\Controllers\Api\AppUserController::class, 'search'])->name('usersSearch');

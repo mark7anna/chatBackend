@@ -15,12 +15,7 @@ use App\Models\Mic;
 use App\Models\Emossions;
 use App\Models\Design;
 use App\Models\GiftCategory;
-
-
-
-
-
-
+use App\Models\RoomMember;
 
 class ChatRoomController extends Controller
 {
@@ -409,4 +404,205 @@ class ChatRoomController extends Controller
         }
         
     }
+
+    public function enterRoom(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id);
+        $room = ChatRoom::find($request -> room_id);
+        if($user && $room){
+             
+            $user -> update([
+               'isInRoom' => $room -> id
+            ]);
+            $roomMembers = RoomMember::where('room_id' , '=' , $room -> id) -> where('user_id' , '=' , $user -> id) -> get();
+            if(count($roomMembers) == 0 ){
+                RoomMember::create([
+                    'room_id' =>  $room -> id ,
+                    'user_id' => $user -> id
+                ]);
+            }
+            return $this -> getRoom($room -> id);
+
+
+        } else {
+            return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the user or the room"]);
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+
+    public function exitRoom(Request $request){
+        try{
+            $user = AppUser::find($request -> user_id);
+            $room = ChatRoom::find($request -> room_id);
+            if($user && $room){
+                 
+                $user -> update([
+                   'isInRoom' => 0
+                ]);
+                $roomMembers = RoomMember::where('room_id' , '=' , $room -> id) -> where('user_id' , '=' , $user -> id) -> get();
+                if(count($roomMembers) > 0 ){
+                    $roomMembers[0] -> delete();
+                }
+                return $this -> getRoom($room -> id);
+    
+    
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the user or the room"]);
+            }
+          }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+          }
+    }
+
+    public function useMic(Request $request){
+        try{
+            $user = AppUser::find($request -> user_id);
+            $room = ChatRoom::find($request -> room_id);
+            $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('order' , $request -> mic) -> get() ;
+
+            if($user && $room){
+               if(count($mics) >  0){
+                $mic = $mics[0];
+                if($mic -> isClosed == 0 && $mic -> user_id == 0){
+                    $mic -> update([
+                        'user_id'  => $user -> id ,
+                    ]);
+                     $talkers_count = $room -> talkers_count + 1 ;
+                     $room -> update([
+                        'talkers_count' => $talkers_count
+                     ]);
+                    return $this -> getRoom($room -> id);
+
+                } else {
+                    return response()->json(['state' => 'failed' , 'message' => "sorry this mic is close or not empty"]);
+
+                }
+
+               } else {
+                return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the mic"]);
+
+               }
+            }else {
+                return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the user or the room"]);
+            }
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+          }
+    }
+    public function leaveMic(Request $request){
+        try{
+            $user = AppUser::find($request -> user_id);
+            $room = ChatRoom::find($request -> room_id);
+            if($request -> mic > 0){
+                $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('order' , $request -> mic) -> get() ;
+
+            } else {
+                $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('user_id' , $request -> user_id) -> get() ;
+
+            }
+
+            if($user && $room){
+               if(count($mics) >  0){
+                $mic = $mics[0];
+                
+                    $mic -> update([
+                       'user_id'  => 0 ,
+                    ]);
+                    $talkers_count = $room -> talkers_count - 1 ;
+                    $room -> update([
+                       'talkers_count' => $talkers_count
+                    ]);
+
+                    return $this -> getRoom($room -> id);
+
+
+               } else {
+                return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the mic"]);
+
+               }
+            }else {
+                return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the user or the room"]);
+            }
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+          }
+    }
+
+    public function lockMic(Request $request){
+       try{
+        if($request -> mic > 0){
+            $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('order' , $request -> mic) -> get() ;
+
+        } else {
+            $mics = Mic::where('room_id' , '=' , $request -> room_id) -> get() ;
+
+        }
+        foreach( $mics as $mic){
+            $mic -> update([
+                "isClosed" => 1 ,
+                "user_id" => 0
+            ]);
+        }
+        return $this -> getRoom($request -> room_id);
+
+
+       } catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+    public function unlockMic(Request $request){
+        try{
+            if($request -> mic > 0){
+                $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('order' , $request -> mic) -> get() ;
+    
+            } else {
+                $mics = Mic::where('room_id' , '=' , $request -> room_id) -> get() ;
+    
+            }
+            foreach( $mics as $mic){
+                $mic -> update([
+                    "isClosed" => 0 ,
+                    "user_id" => 0
+                ]);
+            }
+            return $this -> getRoom($request -> room_id);
+    
+    
+           } catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+          }
+    }
+    
+    public function chnageRoomBg(Request $request){
+        try{
+         
+           $room = ChatRoom::find($request -> room_id);
+           $bg = Themes::find($request -> bg);
+           if($room && $bg){
+            $room -> update([
+              'themeId' =>  $bg  -> id 
+            ]);
+            
+            return $this -> getRoom($request -> room_id);
+           } else {
+            return response()->json(['state' => 'failed' , 'message' => "sorry we can not find the room or theme"]);
+
+           }
+         
+    
+    
+           } catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+          }
+    }
+
 }

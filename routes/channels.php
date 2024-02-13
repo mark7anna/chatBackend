@@ -22,6 +22,6 @@ use Illuminate\Support\Facades\Broadcast;
 //     return null ;
 // });
 
-Broadcast::channel('private.chat.id', function($user , $id) {
-   
+Broadcast::channel('public.room.enter', function() {
+   return true ;
 });

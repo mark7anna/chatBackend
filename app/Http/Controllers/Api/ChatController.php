@@ -17,7 +17,7 @@ class ChatController extends Controller
             $chats = DB::table('chats') 
             -> join('app_users as sender' , 'chats.sender_id' , '=' , 'sender.id' )
             -> join('app_users as receiver' , 'chats.reciver_id' , '=' , 'receiver.id' )
-            -> join('messages' , 'messages.chat_id' , '=' , 'chats.id')
+            -> leftJoin('messages' , 'messages.chat_id' , '=' , 'chats.id')
             -> select('chats.*' , 'sender.name as sender_name' , 'sender.img as sender_img' ,
             'receiver.name as receiver_name' , 'receiver.img as receiver_img' ,
              'messages.id as message_id' , 'messages.sender_id as message_sender' , 
@@ -41,15 +41,18 @@ class ChatController extends Controller
             -> Where('reciver_id' , '=' , $request -> reciver_id) -> get();
             $chats2 = Chat::Where('reciver_id' , '=' , $request -> user_id)
             -> orWhere('sender_id' , '=' , $request -> reciver_id) -> get();
-            $chats = array_merge ($chats1 , $chats2) ;
+            $chats = array_merge ($chats1->toArray() , $chats2->toArray()) ;
+         
             if(count($chats) > 0){
-               $chats[0] -> update([
+             $id = $chats[0]['id'] ;
+             $chat = Chat::find($id);
+                $chat-> update([
                 'last_action_date' => Carbon::now(),
                 'last_message' => $request -> message ?? "",
                 'last_sender' => $request -> user_id,
-               ]); 
+                ]); 
              //  $this -> createMessage($chats[0] -> id , $request);
-               return $this -> getUserChats($request -> user_id);
+                return $this -> getUserChats($request -> user_id);
             } else {
                 
                 $id = Chat::create([
@@ -61,7 +64,7 @@ class ChatController extends Controller
                 ]) -> id;
 
               //  $this -> createMessage($id , $request);
-               return $this -> getUserChats($request -> user_id);
+                return $this -> getUserChats($request -> user_id);
             }
         } catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);

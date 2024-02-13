@@ -4,10 +4,10 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import axios from 'axios';
+
 import './bootstrap';
 
-import Echo from 'laravel-echo';
+
 
 const form = document.getElementById('message-form');
 const inpMessage = document.getElementById('inp-message');
@@ -25,18 +25,21 @@ console.log('sub')
     console.log(event);
 });
 // enterRoom();
-function enterRoom(){
-  const socket = new WebSocket(`ws://${window.location.hostname}:6001/ws/enterRoom?appKey=livepost_key`);
-  socket.onopen = function (event){
-    console.log('on open!');
-    socket.send(JSON.stringify(
-      {
-        id:1 , 
-        payload:{
-          title: "hello",
-          body:"this is a text"
-        }
-      }
-    ))
-  }
-}
+// function enterRoom(){
+//   const socket = new WebSocket(`ws://${window.location.hostname}:6001/ws/enterRoom?appKey=livepost_key`);
+//   socket.onopen = function (event){
+//     console.log('on open!');
+//     socket.send(JSON.stringify(
+//       {
+//         id:1 , 
+//         payload:{
+//           title: "hello",
+//           body:"this is a text"
+//         }
+//       }
+//     ))
+//   }
+//   socket.onmessage = function (event) {
+//      console.log(event);
+//   }
+// }
