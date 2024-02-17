@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\api\UserNotificationController;
 use App\Http\Controllers\Controller;
 use App\Models\AppUser;
 use App\Models\Wallet;
@@ -503,8 +504,6 @@ class AppUserController extends Controller
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
       }
     }
-
-
     public function followUser(Request $request){
       try{
         $user = AppUser::find($request -> user_id) ;
@@ -516,6 +515,10 @@ class AppUserController extends Controller
             'follower_id' => $request -> follower_id,
             'following_date' =>  Carbon::now()
           ]);
+       
+  
+
+
           return $this -> getUserData($request -> user_id);
         } else {
           return response()->json(['state' => 'failed' , 'message' => "Soryy You Can not follow this user"]);
@@ -563,6 +566,28 @@ class AppUserController extends Controller
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
       }
 
+    }
+
+    public function getUSerByTag($tag){
+      try{
+        $users = DB::table('app_users')
+        -> join('wallets' , 'app_users.id' , '=','wallets.user_id')
+        -> join('levels as share_level' , 'share_level.id' , '=' , 'app_users.share_level_id' )
+        -> join('levels as karizma_level' , 'karizma_level.id' , '=' , 'app_users.karizma_level_id' )
+        -> join('levels as charging_level' , 'charging_level.id' , '=' , 'app_users.charging_level_id')
+        -> join('countries' , 'countries.id' , '=' , 'app_users.country')
+
+        -> select('app_users.*' , 'wallets.gold' , 'wallets.diamond' , 
+        'share_level.order as share_level_order' , 'share_level.points as share_level_points' , 'share_level.icon as share_level_icon' ,
+        'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
+        'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon' ,
+        'countries.name as country_name' , 'countries.icon as country_flag') 
+        -> where('app_users.tag' , '=' ,  $tag )->get();
+
+        return $users ;
+      } catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
     }
     
 }

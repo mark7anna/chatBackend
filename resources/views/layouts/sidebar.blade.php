@@ -1,17 +1,17 @@
 <aside
   class="sidenav navbar  navbar-vertical navbar-expand-xs @if(Config::get('app.locale')=='ar' ) fixed-end @else fixed-start @endif  border-0 border-radius-xl my-3  ms-3 bg-white"
-  id="sidenav-main">
+  id="sidenav-main" style="overflow-y: hidden !important;">
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
       aria-hidden="true" id="iconSidenav"></i>
-    <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/soft-ui-dashboard/pages/dashboard.html "
+    <a class="navbar-brand m-0" href=" # "
       target="_blank">
       <img src="{{ asset('assets/icons/chat.png') }}" class="navbar-brand-img h-100" alt="main_logo">
       <span class="ms-1 font-weight-bold">Chat Dashboard</span>
     </a>
   </div>
   <hr class="horizontal dark mt-0">
-  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="min-height: 100% ;">
+  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="overflow-y: hidden !important; min-height: 70vh; ">
     <ul class="navbar-nav" @if(Config::get('app.locale')=='ar' ) style="padding-right: 0px !important" @endif>
       <li class="nav-item">
         <a @if($slag==1) class="nav-link  active" @else class="nav-link" @endif href="{{ route('home') }}">
@@ -175,6 +175,27 @@
 
         </ul>
       </li>
+
+      <li class="nav-item">
+        <a @if($slag==17) class="nav-link dropdown active" @else class="nav-link" @endif href="javascript:;"
+          data-bs-toggle="dropdown" aria-expanded="false">
+          <div
+            class="icon icon-shape icon-md shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <img src="{{ asset('assets/icons/company.png') }}" style="width: 20px ">
+          </div>
+          <span class="nav-link-text ms-1">{{__('main.charging_agency')}}</span>
+          <button class="Arrowbutton" value="dropdown-menu-2" id="dropdown-button-2"><i
+              class="fas fa-chevron-down"></i></button>
+        </a>
+        <ul class="dropdown-menu text-small subM" aria-labelledby="dropdown" id="dropdown-menu-2">
+          <li><a @if($subSlag==171) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('chargingAgencies')}}">{{__('main.charging_agency')}}</a></li>
+
+
+
+        </ul>
+      </li>
+
 
       <li class="nav-item">
         <a @if($slag==4) class="nav-link  active" @else class="nav-link" @endif href="{{ route('countries') }}">

@@ -142,6 +142,19 @@ function()
     Route::get('/getAgencyTag', [App\Http\Controllers\HostAgencyController::class, 'create'])->name('getAgencyTag');
 
 
+    Route::get('/chargingAgencies', [App\Http\Controllers\ChargingAgencyController::class, 'index'])->name('chargingAgencies');
+    Route::get('/getChargingAgency/{id}', [App\Http\Controllers\ChargingAgencyController::class, 'show'])->name('getChargingAgency');
+    Route::get('/deletechargingAgency/{id}', [App\Http\Controllers\ChargingAgencyController::class, 'destroy'])->name('deletechargingAgency');
+    Route::post('/chargingAgencyStore', [App\Http\Controllers\ChargingAgencyController::class, 'store'])->name('chargingAgencyStore');
+    Route::get('/getchargingTag', [App\Http\Controllers\ChargingAgencyController::class, 'create'])->name('getchargingTag');
+    Route::get('/getchargingBalance/{id}', [App\Http\Controllers\ChargingAgencyController::class, 'getchargingBalance'])->name('getchargingBalance');
+    Route::post('/addchargingBalance', [App\Http\Controllers\ChargingAgencyController::class, 'addchargingBalance'])->name('addchargingBalance');
+
+    
+  
+
+
+
 
     Route::get('/settings', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
     Route::post('/settingsStore', [App\Http\Controllers\SettingsController::class, 'store'])->name('settingsStore');
