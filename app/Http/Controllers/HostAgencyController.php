@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppUser;
 use App\Models\HostAgency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class HostAgencyController extends Controller
     public function index()
     {
         $agencies = DB::table('host_agencies')
-        -> join('app_users' , 'host_agencies.user_id' , '=' , 'app_users.tag')
+        -> join('app_users' , 'host_agencies.user_id' , '=' , 'app_users.id')
         -> select('host_agencies.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag')
         -> get();
 
@@ -45,10 +46,12 @@ class HostAgencyController extends Controller
                 'user_id' => 'required|unique:host_agencies',
             ]);
 
-            HostAgency::create([
+            $users = AppUser::where('tag' , '=' , $request -> user_id) -> get();
+            if( count($users) > 0){
+                HostAgency::create([
                     'name' => $request -> name,
                     'tag' => $request -> tag,
-                    'user_id' => $request -> user_id,
+                    'user_id' => $users[0]-> id,
                     'monthly_gold_target' => $request -> monthly_gold_target ?? 0,
                     'details'=> $request -> details ?? "",
                     'active' => $request->input('active') == 'on' ? 1 : 0,
@@ -56,7 +59,16 @@ class HostAgencyController extends Controller
                     'automatic_accept_joiners' => $request->input('automatic_accept_joiners') == 'on' ? 1 : 0,
                     'automatic_accept_exit' => $request->input('automatic_accept_exit') == 'on' ? 1 : 0,
             ]);
+            $users[0] -> update([
+                'isHostingAgent' => 1 
+            ]);
             return redirect()->route('agencies')->with('success', __('main.created'));
+            } else {
+                return redirect()->route('agencies')->with('error', 'User not found');
+
+            }
+
+
 
 
         } else {
@@ -69,7 +81,12 @@ class HostAgencyController extends Controller
      */
     public function show($id)
     {
-        $agency = HostAgency::find($id);
+        $agency = DB::table('host_agencies')
+        -> join('app_users' , 'host_agencies.user_id' , '=' , 'app_users.id')
+        -> select('host_agencies.*' , 'app_users.name as user_name' , 'app_users.tag as user_tag')
+        ->where('host_agencies.id' , '=' , $id)
+        -> get()[0];
+        
         echo(json_encode($agency));
         exit;
     }
@@ -108,13 +125,13 @@ class HostAgencyController extends Controller
             $agency -> update([
                 'name' => $request -> name,
                 'tag' => $request -> tag,
-                'user_id' => $request -> user_id,
+                'user_id' => $agency -> user_id,
                 'monthly_gold_target' => $request -> monthly_gold_target,
-                'details'=> $request -> details,
-                'active' => $request -> active,
-                'allow_new_joiners' => $request -> allow_new_joiners,
-                'automatic_accept_joiners' => $request -> automatic_accept_joiners,
-                'automatic_accept_exit' => $request -> automatic_accept_exit,
+                'details'=> $request -> details ?? "",
+                'active' => $request->input('active') == 'on' ? 1 : 0,
+                'allow_new_joiners' =>$request->input('allow_new_joiners') == 'on' ? 1 : 0,
+                'automatic_accept_joiners' => $request->input('automatic_accept_joiners') == 'on' ? 1 : 0,
+                'automatic_accept_exit' => $request->input('automatic_accept_exit') == 'on' ? 1 : 0,
         ]);
         return redirect()->route('agencies')->with('success', __('main.updated'));
         }
@@ -127,6 +144,10 @@ class HostAgencyController extends Controller
     {
         $agency = HostAgency::find($id);
         if($agency){
+            $user = AppUser::find($agency -> user_id);
+            $user -> update([
+                'isHostingAgent' => 0 
+            ]);
             $agency -> delete();
             return redirect()->route('agencies')->with('success', __('main.deleted'));
 

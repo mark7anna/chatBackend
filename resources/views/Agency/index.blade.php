@@ -153,6 +153,7 @@
                       $(".modal-body #automatic_accept_joiners").prop( "checked", false );
                       $(".modal-body #automatic_accept_exit").prop( "checked", false );
                       $(".modal-body #id").val(0);
+                      $(".modal-body #user_id").prop( "readonly", false );
                       $(".modal-body #profile-img-tag").attr('src', '{{ asset('assets/icons/picture.png') }}');
 
                   },
@@ -203,7 +204,7 @@
                                     $(".modal-body #profile-img-tag").attr('src' , img );
                                     $(".modal-body #name").val(response.name);
                                     $(".modal-body #tag").val(response.tag);
-                                    $(".modal-body #tag").val(response.tag);
+                                    $(".modal-body #user_id").val(response.user_tag);
                                     $(".modal-body #monthly_gold_target").val(response.monthly_gold_target);
                                     $(".modal-body #details").val(response.details);
                                     $(".modal-body #active").prop( "checked", response.active == 1 );
@@ -211,6 +212,7 @@
                                     $(".modal-body #automatic_accept_joiners").prop( "checked", response.automatic_accept_joiners == 1 );
                                     $(".modal-body #automatic_accept_exit").prop( "checked", response.automatic_accept_exit == 1 );
                                     $(".modal-body #id").val(response.id);
+                                    $(".modal-body #user_id").prop( "readonly", true );
 
                               },
                               complete: function() {

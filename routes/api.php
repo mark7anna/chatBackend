@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
         Route::get('/Account/hoppies', [App\Http\Controllers\Api\AppUserController::class, 'getHoppies'])->name('getHoppies');
         Route::post('/Account/hoppies/Add', [App\Http\Controllers\Api\AppUserController::class, 'addHoppy'])->name('addHoppy');
         Route::get('/Account/designs/all/{id}', [App\Http\Controllers\Api\AppUserController::class, 'getUserDesigns'])->name('getUserDesigns');
+        Route::get('/Account/getUSerByTag/{tag}', [App\Http\Controllers\Api\AppUserController::class, 'getUSerByTag'])->name('getUSerByTag');
 
         
 
@@ -41,7 +42,7 @@ use Illuminate\Http\Request;
         Route::post('/Account/followUser', [App\Http\Controllers\Api\AppUserController::class, 'followUser'])->name('followUser');
         Route::post('/Account/unfollowkUser', [App\Http\Controllers\Api\AppUserController::class, 'unfollowkUser'])->name('unfollowkUser');
         Route::post('/Account/updateToken', [App\Http\Controllers\Api\AppUserController::class, 'updateUserToken'])->name('updateUserToken');
-        Route::post('/  ', [App\Http\Controllers\Api\AppUserController::class, 'updateUserGender'])->name('updateUserGender');
+        Route::post('/Account/updateUserGender', [App\Http\Controllers\Api\AppUserController::class, 'updateUserGender'])->name('updateUserGender');
 
 
         
@@ -113,6 +114,11 @@ use Illuminate\Http\Request;
         Route::get('/vip/getAll', [App\Http\Controllers\Api\VipController::class, 'getVip'])->name('getVipAll');
 
         Route::get('/designs/medal/all', [App\Http\Controllers\Api\DesignController::class, 'getAllMedals'])->name('getAllMedals');
+
+
+        Route::post('/chargingAgency/addBalance', [App\Http\Controllers\Api\ChargingAgencyController::class, 'AddBalanceToUser'])->name('AddBalanceToUser');
+        Route::get('/chargingAgency/getAgency/{user_id}', [App\Http\Controllers\Api\ChargingAgencyController::class, 'getAgency'])->name('getAgency');
+        Route::get('/chargingAgency/operations/{agency_id}', [App\Http\Controllers\Api\ChargingAgencyController::class, 'getAgencyOperations'])->name('getAgencyOperations');
 
         
 

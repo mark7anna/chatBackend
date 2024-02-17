@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Http\Controllers\APi\ChargingLevelController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Wallet;
@@ -33,10 +34,14 @@ class WalletController extends Controller
                 'charging_date' => Carbon::now() 
             ]);
             //create notification
-            $this -> createUserNotification('CHARGING' , $request -> user_id , 'SYSTEM' , 
+            $notificationsController = new UserNotificationController();
+            $notificationsController -> createUserNotification('CHARGING' , $request -> user_id , 'SYSTEM' , 
             'Charging Wallet !' , 'Your wallet has been Charged With ' . $request -> gold . 'from ' . $request -> source ,
-           'عملية شحن' , ' تم شحن رصيدك من الذهب بقيمة' . $request -> gold .'عن طريق'  . $request -> source );
-            return response()->json(['state' => 'success' , 'wallet' => $wallet]);
+           'عملية شحن' , ' تم شحن رصيدك من الذهب بقيمة' . $request -> gold .'عن طريق'  . $request -> source , 0 );
+                   
+           $upCheck = new ChargingLevelController();
+           return  $upCheck -> checkToUp($request -> user_id);
+           return response()->json(['state' => 'success' , 'wallet' => $wallet]);
            }
         }catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
@@ -115,7 +120,8 @@ class WalletController extends Controller
         ]);
       }
 
-    public function checkChargingLevelUpgrade($user_id){
+   
+      public function checkChargingLevelUpgrade($user_id){
       $chargingOpration = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
       $user = AppUser::find($user_id);
       $currentChargingLevel = Level::find($user -> charging_level_id) ;
@@ -148,4 +154,5 @@ class WalletController extends Controller
         }
       
     }
+    
 }

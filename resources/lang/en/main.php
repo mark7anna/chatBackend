@@ -208,8 +208,11 @@ return [
     "settings" => "Settings",
     'diamond_to_gold_ratio' => "Diamond to Gold Ration",
 'gift_sender_diamond_back' => "Diamond Ratio for the sender",
-"gift_room_owner_diamond_back" => "Diamond Ratio for the room owner"
-
+"gift_room_owner_diamond_back" => "Diamond Ratio for the room owner",
+"charging_agency" => "Charging Agency ",
+"charging_agency_balance" => "Agency Balance ",
+"current_balance" => "Current Balance",
+"charging_value" => "Charging Value"
 
 
 

@@ -15,7 +15,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class PostsController extends UserNotificationController
+class PostsController extends Controller
 {
     public function index(){
 
