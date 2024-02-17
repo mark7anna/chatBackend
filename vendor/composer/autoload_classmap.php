@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Events\\PrivateEvent' => $baseDir . '/app/Events/PrivateEvent.php',
+    'App\\Events\\RoomEvent' => $baseDir . '/app/Events/RoomEvent.php',
     'App\\Events\\TestEvent' => $baseDir . '/app/Events/TestEvent.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AdminController' => $baseDir . '/app/Http/Controllers/AdminController.php',
@@ -19,6 +21,7 @@ return array(
     'App\\Http\\Controllers\\Api\\FestivalBannerController' => $baseDir . '/app/Http/Controllers/Api/FestivalBannerController.php',
     'App\\Http\\Controllers\\Api\\FollowController' => $baseDir . '/app/Http/Controllers/Api/FollowController.php',
     'App\\Http\\Controllers\\Api\\PostsController' => $baseDir . '/app/Http/Controllers/Api/PostsController.php',
+    'App\\Http\\Controllers\\Api\\VipController' => $baseDir . '/app/Http/Controllers/Api/VipController.php',
     'App\\Http\\Controllers\\AppUserController' => $baseDir . '/app/Http/Controllers/AppUserController.php',
     'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -72,6 +75,7 @@ return array(
     'App\\Http\\Controllers\\VipController' => $baseDir . '/app/Http/Controllers/VipController.php',
     'App\\Http\\Controllers\\VisitorController' => $baseDir . '/app/Http/Controllers/VisitorController.php',
     'App\\Http\\Controllers\\WalletController' => $baseDir . '/app/Http/Controllers/WalletController.php',
+    'App\\Http\\Controllers\\Websockets\\WebsocketHandlers\\ChatRoomHandler' => $baseDir . '/app/Http/Controllers/Websockets/WebsocketHandlers/ChatRoomHandler.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',

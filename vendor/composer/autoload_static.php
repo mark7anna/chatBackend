@@ -633,6 +633,8 @@ class ComposerStaticInit8032c7cee37df755bc24144c13174d67
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Events\\PrivateEvent' => __DIR__ . '/../..' . '/app/Events/PrivateEvent.php',
+        'App\\Events\\RoomEvent' => __DIR__ . '/../..' . '/app/Events/RoomEvent.php',
         'App\\Events\\TestEvent' => __DIR__ . '/../..' . '/app/Events/TestEvent.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminController.php',
@@ -645,6 +647,7 @@ class ComposerStaticInit8032c7cee37df755bc24144c13174d67
         'App\\Http\\Controllers\\Api\\FestivalBannerController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/FestivalBannerController.php',
         'App\\Http\\Controllers\\Api\\FollowController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/FollowController.php',
         'App\\Http\\Controllers\\Api\\PostsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/PostsController.php',
+        'App\\Http\\Controllers\\Api\\VipController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/VipController.php',
         'App\\Http\\Controllers\\AppUserController' => __DIR__ . '/../..' . '/app/Http/Controllers/AppUserController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -698,6 +701,7 @@ class ComposerStaticInit8032c7cee37df755bc24144c13174d67
         'App\\Http\\Controllers\\VipController' => __DIR__ . '/../..' . '/app/Http/Controllers/VipController.php',
         'App\\Http\\Controllers\\VisitorController' => __DIR__ . '/../..' . '/app/Http/Controllers/VisitorController.php',
         'App\\Http\\Controllers\\WalletController' => __DIR__ . '/../..' . '/app/Http/Controllers/WalletController.php',
+        'App\\Http\\Controllers\\Websockets\\WebsocketHandlers\\ChatRoomHandler' => __DIR__ . '/../..' . '/app/Http/Controllers/Websockets/WebsocketHandlers/ChatRoomHandler.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',

@@ -94,6 +94,28 @@ class ChatRoomController extends Controller
          'charging_level.icon as mic_user_charging_level') 
          -> where('mics.room_id' , '=' , $room_id)-> get();
 
+
+         foreach( $mics as $mic){
+            $designs = DB::table('design_purchases') 
+            ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+            ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+            'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $mic -> user_id)
+            -> where('designs.category_id' , '=' , 4)
+            -> where('design_purchases.isDefault' , '=' , 1)
+            -> get();
+            if(count ($designs) > 0 ){
+                  $design = $designs[0];
+                  if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                    $mic -> frame =  $designs[0] -> motion_icon  ;
+                  } else {
+                    $mic -> frame =  ''  ;
+                  }
+            } else {
+                $mic -> frame =  ""  ;
+            }
+            
+           }
+
          $members = DB::table('room_members')
          -> leftJoin('app_users' , 'room_members.user_id' , '=' , 'app_users.id')
          ->leftJoin('levels as share_level' ,function ($join) {
@@ -108,6 +130,28 @@ class ChatRoomController extends Controller
           'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
            'charging_level.icon as mic_user_charging_level') 
            -> where('room_members.room_id' , '=' , $room_id)-> get();
+
+           foreach( $members as $member){
+            $designs = DB::table('design_purchases') 
+            ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+            ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+            'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $member -> user_id)
+            -> where('designs.category_id' , '=' , 5)
+            -> where('design_purchases.isDefault' , '=' , 1)
+            -> get();
+            if(count ($designs) > 0 ){
+                  $design = $designs[0];
+                  if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                    $member -> entery =  $designs[0] -> motion_icon  ;
+                  } else {
+                    $member -> entery =  ''  ;
+                  }
+            } else {
+                $member -> entery =  ""  ;
+            }
+            
+           }
+        
 
            $admins = DB::table('room_admins')
            -> leftJoin('app_users' , 'room_admins.user_id' , '=' , 'app_users.id')
