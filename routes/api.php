@@ -43,6 +43,7 @@ use Illuminate\Http\Request;
         Route::post('/Account/unfollowkUser', [App\Http\Controllers\Api\AppUserController::class, 'unfollowkUser'])->name('unfollowkUser');
         Route::post('/Account/updateToken', [App\Http\Controllers\Api\AppUserController::class, 'updateUserToken'])->name('updateUserToken');
         Route::post('/Account/updateUserGender', [App\Http\Controllers\Api\AppUserController::class, 'updateUserGender'])->name('updateUserGender');
+        Route::get('/Account/checkUserISAgencyMember/{user_id}', [App\Http\Controllers\Api\AppUserController::class, 'checkUserISAgencyMember'])->name('checkUserISAgencyMember');
 
 
         
@@ -120,8 +121,5 @@ use Illuminate\Http\Request;
         Route::get('/chargingAgency/getAgency/{user_id}', [App\Http\Controllers\Api\ChargingAgencyController::class, 'getAgency'])->name('getAgency');
         Route::get('/chargingAgency/operations/{agency_id}', [App\Http\Controllers\Api\ChargingAgencyController::class, 'getAgencyOperations'])->name('getAgencyOperations');
 
-        
-
-        //websockets
-
-        WebSocketsRouter::webSocket('/ws/enterRoom' , WebsocketHandlersChatRoomHandler::class);
+        Route::get('/hostAgency/getAgencyByTag/{tag}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyByTag'])->name('getAgencyByTag');
+        Route::post('/hostAgency/JoinAgencyRequest', [App\Http\Controllers\Api\HostAgencyController::class, 'JoinAgencyRequest'])->name('JoinAgencyRequest');

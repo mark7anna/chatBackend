@@ -213,7 +213,9 @@
     "charging_agency" => "وكالات الشحن",
     "charging_agency_balance" => "رصيد الوكالة",
     "current_balance" => "الرصيد الحالي",
-    "charging_value" => "قيمة الشحن"
+    "charging_value" => "قيمة الشحن",
+    "video_url" => "فيديو mp4",
+    "audio_url" => "ملف الصوت"
 
 
 

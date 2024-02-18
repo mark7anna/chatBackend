@@ -212,7 +212,9 @@ return [
 "charging_agency" => "Charging Agency ",
 "charging_agency_balance" => "Agency Balance ",
 "current_balance" => "Current Balance",
-"charging_value" => "Charging Value"
+"charging_value" => "Charging Value",
+"video_url" => "Video Mp4",
+"audio_url" => "Audio File "
 
 
 

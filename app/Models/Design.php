@@ -23,6 +23,8 @@ class Design extends Model
         'motion_icon',
         'dark_icon',
         'subject',
-        'vip_id'
+        'vip_id',
+        'video_url',
+        'audio_url'
     ];
 }

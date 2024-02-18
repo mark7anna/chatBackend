@@ -120,6 +120,22 @@
                 </div>
               </div>
 
+              <div class="mb-3">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="audio_url" class="col-form-label">{{ __('main.audio_url') }}:</label>
+                        <input class="form-control" type="file" id="audio_url" name="audio_url"
+                        accept="*">
+                    </div>
+                    <div class="col-6">
+                        <label for="video_url" class="col-form-label">{{ __('main.video_url') }}:</label>
+                        <input class="form-control" type="file" id="video_url" name="video_url"
+                        accept="*">
+                    </div>
+                </div>
+              
+              </div>
+
 
               <div class="mb-3">
                 <div class="row">

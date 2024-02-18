@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\api\UserNotificationController;
 use App\Http\Controllers\Controller;
+use App\Models\AgencyMember;
 use App\Models\AppUser;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -17,8 +18,7 @@ use App\Models\Block;
 use App\Models\UserReport;
 use App\Models\Country;
 use App\Models\Follower;
-
-
+use App\Models\HostAgency;
 
 class AppUserController extends Controller
 {
@@ -588,6 +588,23 @@ class AppUserController extends Controller
       } catch(QueryException $ex){
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
       }
+    }
+
+    public function checkUserISAgencyMember($user_id){
+       try{
+        $members = AgencyMember::where('user_id' , '=' , $user_id) -> get();
+        if(count($members) > 0){
+           $agency = HostAgency::find($members[0] -> agency_id);
+           return response()->json(['state' => 'success' , 'agency' =>  $agency ]);
+        } else {
+          return response()->json(['state' => 'success' , 'agency' =>  null ]);
+
+        }
+
+       }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+       }
     }
     
 }

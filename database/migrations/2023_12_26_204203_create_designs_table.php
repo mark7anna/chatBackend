@@ -27,6 +27,8 @@ return new class extends Migration
             $table -> string('dark_icon');
             $table -> integer('subject');
             $table -> integer('vip_id');
+            $table -> string('video_url');
+            $table -> string('audio_url');
             $table->timestamps();
         });
     }
