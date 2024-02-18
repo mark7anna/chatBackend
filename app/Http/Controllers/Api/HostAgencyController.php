@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AgencyMember;
+use App\Models\AgencyMemberStatistics;
 use App\Models\AppUser;
 use App\Models\HostAgency;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HostAgencyController extends Controller
 {
@@ -58,5 +60,54 @@ class HostAgencyController extends Controller
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
         }
 
+    }
+
+
+    public function getAgencyMembers($agent_id){
+      try{
+        $agencies = HostAgency::where('user_id' , '=' , $agent_id) -> get();
+        if(count($agencies) > 0) {
+            $agency = $agencies[0];
+            $members = DB::table('agency_members') -> join('app_users' , 'agency_members.user_id' , '=' , 'app_users.id')
+            -> select('agency_members.*' , 'app_users.name as member_name' , 'app_users.tag as member_tag' , 'app_users.gender as member_gender' 
+            , 'app_users.img as member_img' )
+             -> where('agency_members.agency_id' , '=' ,   $agency -> id)
+             -> get();
+
+             return response()->json(['state' => 'success' , 'agency' => $agency , 'members' => $members]);
+        }  else {
+            return response()->json(['state' => 'failed' , 'message' => "Agency not found"]);
+
+        }
+        
+
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+      }
+    }
+    public function getAgencyMemberStatics($user_id){
+        try{
+            $members = DB::table('agency_members')-> join('app_users' , 'agency_members.user_id' , '=' , 'app_users.id')
+            -> select('app_users.name as member_name' , 'app_users.tag as member_tag' , 'app_users.img as member_img') 
+            -> where('agency_members.user_id' , '=' , $user_id)
+            -> get();
+            if(count($members) > 0){
+                $member = $members[0];
+                $statics = AgencyMemberStatistics::where('user_id' , '=' , $user_id) -> get();
+                $points = AgencyMemberStatistics::where('user_id' , '=' , $user_id) -> get();
+                return response()->json(['state' => 'success' , 'member' => $member , 'statics' => $statics , 'points' => $points]);
+    
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => "Member not found"]);
+
+            }
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+  
+        
     }
 }

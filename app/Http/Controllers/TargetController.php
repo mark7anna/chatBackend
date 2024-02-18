@@ -40,8 +40,13 @@ class TargetController extends Controller
                 'agent_amount' => 'required',
 
             ]);
-            $icon = time() . '.' . $request->icon->getClientOriginalExtension();
-            $request->icon->move(('images/Target'), $icon);
+            if($request -> icon){
+                $icon = time() . '.' . $request->icon->getClientOriginalExtension();
+                $request->icon->move(('images/Target'), $icon);
+            } else {
+                $icon = "";
+            }
+   
 
             Target::create([
                 'order' => $request -> order,

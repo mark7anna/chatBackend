@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AgencyMember;
+use App\Models\AgencyMemberStatistics;
 use App\Models\ChatRoom;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -519,6 +521,7 @@ class ChatRoomController extends Controller
                      $room -> update([
                         'talkers_count' => $talkers_count
                      ]);
+                     $this -> updateHostAgencyRecords($request -> user_id , 1);
                     return $this -> getRoom($room -> id);
 
                 } else {
@@ -562,6 +565,7 @@ class ChatRoomController extends Controller
                        'talkers_count' => $talkers_count
                     ]);
 
+                    $this -> updateHostAgencyRecords($request -> user_id , 0);
                     return $this -> getRoom($room -> id);
 
 
@@ -577,6 +581,50 @@ class ChatRoomController extends Controller
     
           }
     }
+
+
+     //////////////////Host Agency Statics///////////////////////////
+     public function updateHostAgencyRecords($user_id , $state){
+          try{
+            $members = AgencyMember::where('user_id' , '=' , $user_id) -> get();
+            if(count($members) > 0){
+                //this user is a host agency member let's fill his time sheet
+                if($state  == 0){
+                    //start a new session 
+                    AgencyMemberStatistics::create([
+                        'user_id' => $user_id,
+                        'agency_id' => $members[0] -> agency_id,
+                        'start_time' => Carbon::now(),
+                        'end_time' => Carbon::now(),
+                        'net_hours' => 0,
+                    ]);
+                } else {
+                    // end up the current session
+                    $sessions = AgencyMemberStatistics::Where('user_id' , '=' , $user_id) -> where('net_hours' , '=' , 0) -> get() ;
+                    $count = Count($sessions);
+                    if($count > 0){
+                        $session = $sessions[$count -1] ;
+                        $end_time = Carbon::now();
+                        $hours = $end_time->diffInHours($session -> start_time);
+                        $session  -> update([
+                            'end_time' => $end_time ,
+                            'net_hours' => $hours,
+                        ]);
+                    }
+                }
+            } else {
+                // this is a normal user let him alone :)
+            }
+          }catch(QueryException $ex){
+
+          }
+     }
+
+
+
+
+     ///////////////////////////////////////////////////////////////
+
 
     public function lockMic(Request $request){
        try{

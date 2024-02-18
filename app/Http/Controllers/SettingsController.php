@@ -36,7 +36,7 @@ class SettingsController extends Controller
     public function store(Request $request)
     {
         if($request -> id > 0){
-           $setting = Settings::fins($request -> id);
+           $setting = Settings::find($request -> id);
            if($setting){
             $setting -> update([
                'diamond_to_gold_ratio' => $request -> diamond_to_gold_ratio ,

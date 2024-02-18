@@ -123,3 +123,6 @@ use Illuminate\Http\Request;
 
         Route::get('/hostAgency/getAgencyByTag/{tag}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyByTag'])->name('getAgencyByTag');
         Route::post('/hostAgency/JoinAgencyRequest', [App\Http\Controllers\Api\HostAgencyController::class, 'JoinAgencyRequest'])->name('JoinAgencyRequest');
+
+        Route::get('/hostAgency/getAgencyMembers/{agent_id}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyMembers'])->name('getAgencyMembers');
+        Route::get('/hostAgency/getAgencyMemberStatics/{user_id}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyMemberStatics'])->name('getAgencyMemberStatics');
