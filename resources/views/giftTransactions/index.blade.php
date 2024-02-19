@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.gift_transactions')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
+        <div class="container-fluid py-4" @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -46,10 +46,10 @@
                                             <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 {{ __('main.price') }}</th>
-                                                <th
+                                            <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 {{ __('main.total') }}</th>
-                                                <th
+                                            <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 {{ __('main.send_date') }}</th>
                                             <th></th>
@@ -62,25 +62,31 @@
                                                 <div style="display: flex ; justify-content: center">
                                                     <img src="{{ asset('images/Designs/' . $transaction->gift_img) }}"
                                                         width="80" />
-                                                    <span>{{ $transaction -> gift_name }} ({{ $transaction ->  gift_tag}})</span>
+                                                    <span>{{ $transaction -> gift_name }} ({{ $transaction ->
+                                                        gift_tag}})</span>
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <div style="display: flex ; justify-content: center">
                                                     <img src="{{ asset('images/AppUsers/' . $transaction->sender_img) }}"
-                                                        width="80" />
-                                                    <span>{{ $transaction -> sender_name }} ({{ $transaction -> sender_tag }})</span>
+                                                        width="60" height="60" style="border-radius: 50%" />
+                                                    <span>{{ $transaction -> sender_name }} ({{ $transaction ->
+                                                        sender_tag }})</span>
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <div style="display: flex ; justify-content: center">
+                                                    @if ($transaction->receiver_img != "")
                                                     <img src="{{ asset('images/AppUsers/' . $transaction->receiver_img) }}"
-                                                        width="80" />
-                                                    <span>{{ $transaction -> receiver_name }} ({{ $transaction -> receiver_tag }})</span>
+                                                        width="60" height="60" style="border-radius: 50%" />
+                                                    @endif
+
+                                                    <span>{{ $transaction -> receiver_name }} ({{ $transaction ->
+                                                        receiver_tag }})</span>
                                                 </div>
                                             </td>
 
-                                            <td class="text-center"> {{ $transaction -> purcharoom_namese_date }}</td>
+                                            <td class="text-center"> {{ $transaction -> room_name}}</td>
                                             <td class="text-center"> {{ $transaction -> count }}</td>
                                             <td class="text-center"> {{ $transaction -> price }}</td>
 

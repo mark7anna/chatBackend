@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AppUser;
 use App\Models\ChargingOpration;
+use App\Models\Level;
 use App\Models\Notification;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -93,8 +94,10 @@ class AppUserController extends Controller
           }
           $walet[0] -> update ();
 
+
           $this -> createChargeOperation($request -> userIdd , $request -> chargeType == 1 ? $request -> gold :  -1 * $request -> gold);
 
+           $this -> checkToUp($request -> userIdd );
             return redirect()->route('appUsers' , 1)->with('success', __('main.updated'));
 
         }
@@ -110,6 +113,37 @@ class AppUserController extends Controller
             'charging_date' => Carbon::now()
         ]);
       }
+
+      public function checkToUp($user_id){
+        try{
+            $user = AppUser::find($user_id);
+            if($user){
+                $operations = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
+                $current_level = Level::find($user -> charging_level_id);
+                $totalChargeValue = 0 ;
+                $up_level = 0 ;
+                foreach( $operations as  $operation){
+                    $totalChargeValue  +=  $operation -> gold ;
+                }
+                if($current_level -> points > $totalChargeValue){
+                    //do no thing
+                    return 'not upgrade';
+                } else {
+                    $up_level = Level::Where('type' , '=' , 2) 
+                    -> where('points' , '>=' ,$totalChargeValue )  ->orderBy('points', 'ASC') -> get()[0] -> id;
+                 $user -> update([
+                    'charging_level_id' => $up_level 
+                 ]);
+                }
+  
+  
+  
+  
+            }
+        } catch(QueryException $ex){
+  
+        }
+    }
 
 
     public function userNotifications(){

@@ -9,7 +9,7 @@
         <!-- Navbar -->
         @include('layouts.nav' , ['pageTitle' => __('main.design_purchases')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4"  @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
+        <div class="container-fluid py-4" @if(Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
@@ -34,9 +34,9 @@
                                             <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 {{ __('main.user') }}</th>
-                                            <th
+                                            {{-- <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                {{ __('main.available') }}</th>
+                                                {{ __('main.available') }}</th> --}}
                                             <th
                                                 class="text-uppercase text-center text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 {{ __('main.purchase_date') }}</th>
@@ -62,18 +62,19 @@
                                             </td>
                                             <td class="text-center">
                                                 <div style="display: flex ; justify-content: center">
+                                                    @if ($purchase->user_img != "")
                                                     <img src="{{ asset('images/AppUsers/' . $purchase->user_img) }}"
-                                                        width="80" />
+                                                        width="60" height="60" style="border-radius: 50%" />
+                                                    @endif
+
                                                     <span>{{ $purchase -> user_name }}</span>
                                                 </div>
                                             </td>
 
-                                            <td class="text-center">
+                                            {{-- <td class="text-center">
                                                 <input type="checkbox" class="form-check" onclick="return false;"
-                                                    style="display: block ; margin:auto" @if($purchase -> isAvailable ==
-                                                1 )
-                                                checked @endif/>
-                                            </td>
+                                                    style="display: block ; margin:auto" @if() checked @endif />
+                                            </td> --}}
                                             <td class="text-center"> {{ $purchase -> purchase_date }}</td>
                                             <td class="text-center"> {{ $purchase -> available_until }}</td>
                                             <td class="text-center"> {{ $purchase -> price }}</td>
