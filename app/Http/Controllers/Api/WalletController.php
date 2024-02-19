@@ -49,6 +49,8 @@ class WalletController extends Controller
         }
     }
 
+    
+
     public function getWallet($user_id){
         try{
             $wallets = Wallet::where('user_id' , '=' , $user_id ) -> get();

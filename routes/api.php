@@ -126,3 +126,10 @@ use Illuminate\Http\Request;
 
         Route::get('/hostAgency/getAgencyMembers/{agent_id}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyMembers'])->name('getAgencyMembers');
         Route::get('/hostAgency/getAgencyMemberStatics/{user_id}', [App\Http\Controllers\Api\HostAgencyController::class, 'getAgencyMemberStatics'])->name('getAgencyMemberStatics');
+
+
+        Route::get('/hostAgency/testStat/{user_id}/{state}', [App\Http\Controllers\Api\ChatRoomController::class, 'updateHostAgencyRecords'])->name('updateHostAgencyRecords');
+
+        Route::post('/gifts/sendGift', [App\Http\Controllers\Api\GiftController::class, 'sendGiftToUser'])->name('sendGiftToUser');
+
+        

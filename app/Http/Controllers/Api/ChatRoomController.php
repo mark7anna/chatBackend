@@ -589,7 +589,7 @@ class ChatRoomController extends Controller
             $members = AgencyMember::where('user_id' , '=' , $user_id) -> get();
             if(count($members) > 0){
                 //this user is a host agency member let's fill his time sheet
-                if($state  == 0){
+                if($state  == 1){
                     //start a new session 
                     AgencyMemberStatistics::create([
                         'user_id' => $user_id,
@@ -605,10 +605,10 @@ class ChatRoomController extends Controller
                     if($count > 0){
                         $session = $sessions[$count -1] ;
                         $end_time = Carbon::now();
-                        $hours = $end_time->diffInHours($session -> start_time);
+                        $mins = $end_time->diffInMinutes($session -> start_time);
                         $session  -> update([
                             'end_time' => $end_time ,
-                            'net_hours' => $hours,
+                            'net_hours' => $mins,
                         ]);
                     }
                 }
@@ -616,6 +616,7 @@ class ChatRoomController extends Controller
                 // this is a normal user let him alone :)
             }
           }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
           }
      }
