@@ -70,7 +70,10 @@ use Illuminate\Http\Request;
         Route::post('/chatRooms/useMic', [App\Http\Controllers\Api\ChatRoomController::class, 'useMic'])->name('useMic');
         Route::post('/chatRooms/leaveMic', [App\Http\Controllers\Api\ChatRoomController::class, 'leaveMic'])->name('leaveMic');
         Route::post('/chatRooms/chnageRoomBg', [App\Http\Controllers\Api\ChatRoomController::class, 'chnageRoomBg'])->name('chnageRoomBg');
+        Route::get('/chatRooms/getRoomCup/{room_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomCup'])->name('getRoomCup');
 
+
+        
         
         Route::get('/festivalBanners/getAll', [App\Http\Controllers\Api\FestivalBannerController::class, 'index'])->name('getFestivalBanners');
         Route::get('/users/Search/{txt}', [App\Http\Controllers\Api\AppUserController::class, 'search'])->name('usersSearch');
@@ -131,5 +134,7 @@ use Illuminate\Http\Request;
         Route::get('/hostAgency/testStat/{user_id}/{state}', [App\Http\Controllers\Api\ChatRoomController::class, 'updateHostAgencyRecords'])->name('updateHostAgencyRecords');
 
         Route::post('/gifts/sendGift', [App\Http\Controllers\Api\GiftController::class, 'sendGiftToUser'])->name('sendGiftToUser');
+
+        Route::get('/app/appCup', [App\Http\Controllers\Api\ChatRoomController::class, 'getAppCup'])->name('getAppCup');
 
         

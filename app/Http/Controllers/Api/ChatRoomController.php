@@ -17,6 +17,7 @@ use App\Models\Mic;
 use App\Models\Emossions;
 use App\Models\Design;
 use App\Models\GiftCategory;
+use App\Models\GiftTransaction;
 use App\Models\RoomMember;
 
 class ChatRoomController extends Controller
@@ -200,8 +201,18 @@ class ChatRoomController extends Controller
                'charging_level.icon as mic_user_charging_level') 
                -> where('room_blocks.room_id' , '=' , $room_id)-> get();
        
+                //get room cup
+
+                $transactions = GiftTransaction::Where('room_id' , '=' ,  $room_id) -> get();
+
+                $roomCup = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+                -> whereDate('sendDate' ,  Carbon::today() )->sum('total');
+
+
+
+
                return response()->json(['state' => 'success' , 'room' => $room , 'mics' => $mics , 'members' => $members , 'followers' => $followers ,
-                'admins' => $admins , 'blockers' => $blockers]);
+                'admins' => $admins , 'blockers' => $blockers , 'roomCup' => $roomCup]);
    
     }
     public function createRoom($user_id){
@@ -696,6 +707,70 @@ class ChatRoomController extends Controller
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
     
           }
+    }
+
+    public function getRoomCup($room_id){
+        try{
+            // $daily = DB::table('gift_transactions') -> 
+            // join('app_users' , 'app_users.id' , 'gift_transactions.sender_id')
+            // ->leftJoin('levels as share_level' ,function ($join) {
+            //     $join->on('app_users.share_level_id', '=', 'share_level.id');
+            //     })->leftJoin('levels as karizma_level' ,function ($join) {
+            //         $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+            //     }) 
+            //     ->leftJoin('levels as charging_level' ,function ($join) {
+            //         $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+            //     })
+            
+            // -> select('gift_transactions.*' , 'app_users.name as sender_name' , 'app_users.tag as sender_tag' ,
+            // 'app_users.img as sender_img' , 'share_level.icon  as sender_share_level' , 
+            // 'karizma_level.icon as sender_karizma_level' , 'charging_level.icon as sender_karizma_level')
+            //  -> where('gift_transactions.room_id' , '=' , $room_id)
+            //  -> whereDate('sendDate' ,  Carbon::today() ) -> get();
+            
+            $daily = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+            -> whereDate('sendDate' ,  Carbon::today() ) 
+             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+             $weekly = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+             -> whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
+              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+              $fromDate = Carbon::now()-> subDays(30);
+              $tillDate = Carbon::now();
+
+              $monthly = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+              -> whereBetween('sendDate', [ $fromDate ,  $tillDate ])
+               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+              return response()->json(['state' => 'success' , 'daily' => $daily , 'weekly' => $weekly , 'monthly' => $monthly]);
+
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+ 
+        }
+    }
+
+    public function getAppCup(){
+        try{
+            $daily = GiftTransaction::whereDate('sendDate' ,  Carbon::today() ) 
+             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+             $weekly = GiftTransaction::whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
+              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+              $fromDate = Carbon::now()-> subDays(30);
+              $tillDate = Carbon::now();
+
+              $monthly = GiftTransaction::whereBetween('sendDate', [ $fromDate ,  $tillDate ])
+               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+
+              return response()->json(['state' => 'success' , 'daily' => $daily , 'weekly' => $weekly , 'monthly' => $monthly]);
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+ 
+        }
     }
 
 }
