@@ -16,6 +16,7 @@ return new class extends Migration
             $table -> decimal('diamond_to_gold_ratio');
             $table -> decimal('gift_sender_diamond_back');
             $table -> decimal('gift_room_owner_diamond_back');
+            $table -> decimal('gift_receiver_diamond_back');
             $table->timestamps();
         });
     }

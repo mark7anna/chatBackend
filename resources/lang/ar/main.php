@@ -215,7 +215,8 @@
     "current_balance" => "الرصيد الحالي",
     "charging_value" => "قيمة الشحن",
     "video_url" => "فيديو mp4",
-    "audio_url" => "ملف الصوت"
+    "audio_url" => "ملف الصوت",
+    "gift_receiver_diamond_back"=> "نسبة الماس الذي يحصل عليه المستلم من قيمة الهدية"
 
 
 

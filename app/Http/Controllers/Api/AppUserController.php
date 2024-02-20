@@ -15,10 +15,13 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
 use App\Models\Usertags;
 use App\Models\Block;
+use App\Models\ChargingOpration;
 use App\Models\UserReport;
 use App\Models\Country;
 use App\Models\Follower;
+use App\Models\GiftTransaction;
 use App\Models\HostAgency;
+use App\Models\Level;
 
 class AppUserController extends Controller
 {
@@ -432,6 +435,7 @@ class AppUserController extends Controller
          'gift_transactions.count' , 'gift_transactions.count as isDefault' , 'gift_transactions.count as design_cat' ) -> where('gift_transactions.receiver_id' , '=' , $user_id)
         -> get();
 
+
         return response()->json(['state' => 'success' , 'designs' => $designs , 'gifts' => $gifts ]);
 
       }catch(QueryException $ex){
@@ -440,6 +444,16 @@ class AppUserController extends Controller
  
 
     }
+    public function getUserGifts($user_id){
+      $gifts = DB::table('gift_transactions') 
+      ->join('designs' , 'gift_transactions.gift_id' , 'designs.id')
+      ->select('designs.*' , 'gift_transactions.sendDate as  available_until' ,
+       'gift_transactions.count' , 'gift_transactions.count as isDefault' , 'gift_transactions.count as design_cat' ) -> where('gift_transactions.receiver_id' , '=' , $user_id)
+      -> get();
+
+      return $gifts -> groupby('id');
+    }
+
 
 
     public function reportUser(Request $request){
@@ -605,6 +619,78 @@ class AppUserController extends Controller
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
        }
+    }
+
+    public function getUserLevelsData($user_id){
+      try{
+        $user = AppUser::find($user_id);
+        if($user){
+          $share_level = Level::find($user -> share_level_id);
+          $karizma_level = Level::find($user -> karizma_level_id);
+          $charging_level = Level::find($user -> charging_level_id);
+         
+          $totalCharging = ChargingOpration::where('user_id' , '=' , $user_id) -> sum('gold');
+          $chargingLevelValue = $charging_level -> points ;
+          $prev_level = Level::Where('type' , '=' , 2) 
+          -> where('points' , '<=' ,$totalCharging )  ->orderBy('points', 'DESC') -> get()[0] -> points;
+
+          if($totalCharging  ==  $charging_level -> points){
+            $charging_level = Level::Where('type' , '=' , 2) 
+            -> where('points' , '>' , $charging_level -> points )  ->orderBy('points', 'ASC') -> get()[0];
+         
+          }
+
+          $charging_value =  $totalCharging -   $prev_level  ;
+          $charging_up_value = $charging_level  -> points - $charging_value ;
+          $charging_percent = $charging_value / $charging_up_value  ;
+
+
+          $giftShare = GiftTransaction::where('sender_id' , '=' , $user_id) -> sum('total');
+          $prev_share_level = Level::Where('type' , '=' , 0) 
+          -> where('points' , '<=' ,$giftShare )  ->orderBy('points', 'DESC') -> get()[0] -> points;
+
+          if($giftShare  ==  $share_level -> points){
+            $share_level = Level::Where('type' , '=' , 0) 
+            -> where('points' , '>' , $share_level -> points )  ->orderBy('points', 'ASC') -> get()[0];
+         
+          } 
+
+          $share_value = $giftShare -  $prev_share_level  ;
+          $share_up = $share_level -> points -  $share_value  ;
+          $share_percent =    $share_value  / $share_up   ;
+
+          $giftKarizma = GiftTransaction::where('receiver_id' , '=' , $user_id) -> sum('total');
+
+          $prev_karizma_level = Level::Where('type' , '=' , 1) 
+          -> where('points' , '<=' ,$giftKarizma )  ->orderBy('points', 'DESC') -> get()[0] -> points;
+
+          if($giftKarizma  ==  $karizma_level -> points){
+            $karizma_level = Level::Where('type' , '=' , 1) 
+            -> where('points' , '>' , $karizma_level -> points )  ->orderBy('points', 'ASC') -> get()[0];
+         
+          } 
+            $karizma_value = $giftKarizma -  $prev_karizma_level  ;
+            $karizma_up = $karizma_level -> points -  $karizma_value  ;
+            $karizma_percent =    $karizma_value  / $karizma_up   ;
+          
+         
+        
+
+
+          
+          return response()->json(['state' => 'success' , 'charging_value' =>  $charging_value  , 'charging_up_value' => $charging_up_value ,
+           'charging_percent' => $charging_percent , 'share_value' => $share_value , 'share_up' =>$share_up , 'share_percent' => $share_percent ,
+          'karizma_value' => $karizma_value , 'karizma_up' => $karizma_up , 'karizma_percent' => $karizma_percent ]);
+
+
+
+        } else {
+          return response()->json(['state' => 'failed' , 'message' => 'can not find user']);
+        }
+      } catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+      }
+
     }
     
 }

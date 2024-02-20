@@ -520,8 +520,21 @@ class ChatRoomController extends Controller
             $user = AppUser::find($request -> user_id);
             $room = ChatRoom::find($request -> room_id);
             $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('order' , $request -> mic) -> get() ;
-
+            $userMics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('user_id' , $request -> user_id) -> get() ;
+             
             if($user && $room){
+                if(count($userMics) > 0){
+                    $userMic = $userMics[0];
+                    $userMic -> update([
+                        'user_id'  => 0 ,
+                     ]);
+                     $talkers_count = $room -> talkers_count - 1 ;
+                     $room -> update([
+                        'talkers_count' => $talkers_count
+                     ]);
+                     $this -> updateHostAgencyRecords($request -> user_id , 0);
+                }
+
                if(count($mics) >  0){
                 $mic = $mics[0];
                 if($mic -> isClosed == 0 && $mic -> user_id == 0){

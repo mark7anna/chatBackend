@@ -52,7 +52,7 @@ class GiftController extends Controller
                           'diamond' => $senderWallet -> diamond + $senderDiamond
                         ]);
 
-                        $recevierDiamond = ($gift -> price * $request -> count) ;
+                        $recevierDiamond = ($gift -> price * $request -> count) * ($setting -> gift_receiver_diamond_back / 100) ;;
                         $receiverWallet -> update([
                             'diamond' => $receiverWallet -> diamond + $recevierDiamond 
                         ]);

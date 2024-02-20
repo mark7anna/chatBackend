@@ -214,7 +214,8 @@ return [
 "current_balance" => "Current Balance",
 "charging_value" => "Charging Value",
 "video_url" => "Video Mp4",
-"audio_url" => "Audio File "
+"audio_url" => "Audio File ",
+"gift_receiver_diamond_back" => "Diamond Ratio for the receiver"
 
 
 

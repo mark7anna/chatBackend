@@ -9,13 +9,12 @@
         <!-- Navbar -->
         @include('layouts.nav', ['pageTitle' => __('main.settings')])
         <!-- End Navbar -->
-        <div class="container-fluid py-4" @if (Config::get('app.locale') == 'ar') style="direction: rtl" @endif s>
+        <div class="container-fluid py-4" @if (Config::get('app.locale')=='ar' ) style="direction: rtl" @endif s>
             <div class="row">
                 <div class="col-12">
                     @include('flash-message')
                     <div class="card mb-4">
-                        <div class="card-header pb-0"
-                            style="display: flex;
+                        <div class="card-header pb-0" style="display: flex;
                 justify-content: left;
                 align-items: center;">
 
@@ -24,33 +23,50 @@
                         </div>
                         <div class="card-body px-0 pt-0 pb-2">
                             <div class="col-9" style="display: block ; margin: auto">
-                                <form  id="roleForm" method="POST" action="{{ route('settingsStore') }}" enctype="multipart/form-data">
+                                <form id="roleForm" method="POST" action="{{ route('settingsStore') }}"
+                                    enctype="multipart/form-data">
                                     @csrf
-                                <div class="mb-3">
-                                        <label for="name" class="col-form-label">{{ __('main.diamond_to_gold_ratio') }}:</label>
-                                        <input type="number" class="form-control" id="diamond_to_gold_ratio" name="diamond_to_gold_ratio" required
-                                        value="{{$setting  ? $setting -> diamond_to_gold_ratio : 0}}">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="name" class="col-form-label">{{ __('main.gift_sender_diamond_back') }}:</label>
-                                    <input type="number" class="form-control" id="gift_sender_diamond_back" name="gift_sender_diamond_back" required 
-                                    value="{{$setting  ? $setting -> gift_sender_diamond_back : 0}}">
-                                </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="col-form-label">{{ __('main.diamond_to_gold_ratio')
+                                            }}:</label>
+                                        <input type="number" class="form-control" id="diamond_to_gold_ratio"
+                                            name="diamond_to_gold_ratio" required
+                                            value="{{$setting  ? $setting -> diamond_to_gold_ratio : 0}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="col-form-label">{{ __('main.gift_sender_diamond_back')
+                                            }}:</label>
+                                        <input type="number" class="form-control" id="gift_sender_diamond_back"
+                                            name="gift_sender_diamond_back" required
+                                            value="{{$setting  ? $setting -> gift_sender_diamond_back : 0}}">
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label for="name" class="col-form-label">{{ __('main.gift_room_owner_diamond_back') }}:</label>
-                                    <input type="number" class="form-control" id="gift_room_owner_diamond_back" name="gift_room_owner_diamond_back" required
-                                    value="{{$setting  ? $setting -> gift_room_owner_diamond_back : 0}}">
-                                    <input type="hidden" class="form-control" id="id" name="id"  value="{{$setting  ? $setting -> id : 0}}">
-                                </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="col-form-label">{{
+                                            __('main.gift_room_owner_diamond_back') }}:</label>
+                                        <input type="number" class="form-control" id="gift_room_owner_diamond_back"
+                                            name="gift_room_owner_diamond_back" required
+                                            value="{{$setting  ? $setting -> gift_room_owner_diamond_back : 0}}">
+                                        <input type="hidden" class="form-control" id="id" name="id"
+                                            value="{{$setting  ? $setting -> id : 0}}">
+                                    </div>
 
-                                <button type="submit" class="btn btn-primary" form="roleForm">{{ __('main.save') }}</button>
+                                    <div class="mb-3">
+                                        <label for="name" class="col-form-label">{{
+                                            __('main.gift_receiver_diamond_back') }}:</label>
+                                        <input type="number" class="form-control" id="gift_receiver_diamond_back"
+                                            name="gift_receiver_diamond_back" required
+                                            value="{{$setting  ? $setting -> gift_receiver_diamond_back : 0}}">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary" form="roleForm">{{ __('main.save')
+                                        }}</button>
 
 
-                          
-                    
-                    
-                              </form>
+
+
+
+                                </form>
                             </div>
                         </div>
                     </div>

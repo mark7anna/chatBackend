@@ -12,6 +12,7 @@ class Settings extends Model
       'id',
       'diamond_to_gold_ratio', //نسبة فك الماس الي ذهب
       'gift_sender_diamond_back' , // نسبة الماس الذي يحصل عليه مرسل الهدية
-      'gift_room_owner_diamond_back' // نسبة الماس الذي يحصل عليه صاحب الغرفة من الهدية
+      'gift_room_owner_diamond_back',
+       'gift_receiver_diamond_back' // نسبة الماس الذي يحصل عليه صاحب الغرفة من الهدية
     ];
 }

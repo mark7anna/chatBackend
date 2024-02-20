@@ -42,6 +42,7 @@ class SettingsController extends Controller
                'diamond_to_gold_ratio' => $request -> diamond_to_gold_ratio ,
                'gift_sender_diamond_back' => $request -> gift_sender_diamond_back ,
                'gift_room_owner_diamond_back' => $request -> gift_room_owner_diamond_back ,
+               'gift_receiver_diamond_back' => $request -> gift_receiver_diamond_back ,
 
             ]);
             return redirect()->route('settings')->with('success', __('main.updated'));
@@ -52,6 +53,7 @@ class SettingsController extends Controller
                 'diamond_to_gold_ratio' => $request -> diamond_to_gold_ratio ,
                 'gift_sender_diamond_back' => $request -> gift_sender_diamond_back ,
                 'gift_room_owner_diamond_back' => $request -> gift_room_owner_diamond_back ,
+                'gift_receiver_diamond_back' => $request -> gift_receiver_diamond_back ,
  
              ]);
              return redirect()->route('settings')->with('success', __('main.created'));

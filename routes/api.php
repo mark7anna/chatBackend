@@ -27,7 +27,10 @@ use Illuminate\Http\Request;
         Route::post('/Account/hoppies/Add', [App\Http\Controllers\Api\AppUserController::class, 'addHoppy'])->name('addHoppy');
         Route::get('/Account/designs/all/{id}', [App\Http\Controllers\Api\AppUserController::class, 'getUserDesigns'])->name('getUserDesigns');
         Route::get('/Account/getUSerByTag/{tag}', [App\Http\Controllers\Api\AppUserController::class, 'getUSerByTag'])->name('getUSerByTag');
+        Route::get('/Account/gifts/all/{id}', [App\Http\Controllers\Api\AppUserController::class, 'getUserGifts'])->name('getUserGifts');
+        Route::get('/Account/getUserLevelsData/{id}', [App\Http\Controllers\Api\AppUserController::class, 'getUserLevelsData'])->name('getUserLevelsData');
 
+        
         
 
         Route::post('/Account/name/update', [App\Http\Controllers\Api\AppUserController::class, 'updateUserName'])->name('updateUserName');
