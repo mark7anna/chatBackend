@@ -4,14 +4,14 @@
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
       aria-hidden="true" id="iconSidenav"></i>
-    <a class="navbar-brand m-0" href=" # "
-      target="_blank">
+    <a class="navbar-brand m-0" href=" # " target="_blank">
       <img src="{{ asset('assets/icons/chat.png') }}" class="navbar-brand-img h-100" alt="main_logo">
       <span class="ms-1 font-weight-bold">Chat Dashboard</span>
     </a>
   </div>
   <hr class="horizontal dark mt-0">
-  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main" style="overflow-y: hidden !important; min-height: 70vh; ">
+  <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main"
+    style="overflow-y: hidden !important; min-height: 70vh; ">
     <ul class="navbar-nav" @if(Config::get('app.locale')=='ar' ) style="padding-right: 0px !important" @endif>
       <li class="nav-item">
         <a @if($slag==1) class="nav-link  active" @else class="nav-link" @endif href="{{ route('home') }}">
@@ -43,6 +43,8 @@
               href="{{route('chargeAppUserBalance')}}">{{__('main.chargeUsersBalance')}}</a></li>
           <li><a @if($subSlag==104) class="dropdown-item active-drop" @else class="dropdown-item" @endif
               href="{{route('userNotifications')}}">{{__('main.sendUserAlert')}}</a></li>
+          <li><a @if($subSlag==105) class="dropdown-item active-drop" @else class="dropdown-item" @endif
+              href="{{route('addMedalTouser')}}">{{__('main.addMedalTouser')}}</a></li>
 
         </ul>
       </li>

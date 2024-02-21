@@ -226,12 +226,16 @@ class AppUserController extends Controller
                   -> where('blocks.user_id' , '=' , $id) -> get();
 
           
+                  $medals = DB::table('user_medals')
+                  -> join('badges' , 'user_medals.badge_id' , '=' , 'badges.id')
+                  -> select('badges.*' , 'user_medals.user_id')
+                  -> where('user_medals.user_id' , '=' , $id) -> get();
               
 
                 if(count($users) > 0){
                   $user = $users[0] ;
                   return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
-                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks ]);
+                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks , 'medals' => $medals ]);
                 } else {
               
                   return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);

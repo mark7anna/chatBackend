@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppUser;
+use App\Models\Badge;
 use App\Models\ChargingOpration;
 use App\Models\Level;
 use App\Models\Notification;
+use App\Models\UserMedal;
 use App\Models\Wallet;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -282,4 +285,56 @@ class AppUserController extends Controller
             return redirect()->route('userNotifications' )->with('success', __('main.deleted'));
         }
     }
+ 
+    public function  addMedalTouser(){
+        $medals = Badge::all();
+        return view ('AppUsers.addMedalToUser' , compact('medals'));
+
+    }
+    public function AddMedalToUserPost($user_id , $medal_id){
+        $medal = Badge::find($medal_id);
+        $user = AppUser::find($user_id);
+        $medals = UserMedal::where('user_id' , '=' , $user_id)
+        -> where('badge_id' , '=' , $medal_id) -> get() ;
+        if(count($medals) == 0){
+            if($medal && $user){
+                UserMedal::create([
+                    'user_id' => $user_id,
+                    'badge_id' => $medal_id
+                ]);
+            }
+            return redirect()->route('appUsers' , 1 )->with('success', __('main.updated'));
+
+        } else {
+            return redirect()->route('appUsers' , 1 )->with('error', 'This Medal Already added to this user');
+
+        }
+     
+
+
+    }
+        
+    public function deleteMedalToUserPost($user_id , $medal_id){
+        $medals = UserMedal::where('user_id' , '=' , $user_id)
+        -> where('badge_id' , '=' , $medal_id) -> get() ;
+        
+        if(count($medals) > 0){
+           $medals[0] -> delete();
+           return redirect()->route('appUsers' , 1 )->with('success', __('main.deleted'));
+
+        }
+    }
+    
+
+    public function  getuserMedals($id){
+        $medals = DB::table('user_medals')
+        -> join('badges' , 'user_medals.badge_id' , '=' , 'badges.id')
+        -> select('badges.*' , 'user_medals.user_id')
+        -> where('user_medals.user_id' , '=' , $id) -> get();
+
+        echo(json_encode($medals));
+        exit ;
+    } 
+
+    
 }

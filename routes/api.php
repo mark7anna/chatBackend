@@ -66,6 +66,13 @@ use Illuminate\Http\Request;
         Route::get('/chatRooms/getRoomByAdmin/{admin_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomByAdmin'])->name('getRoomByAdmin');
         Route::get('/chatRooms/trackUser/{user_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'trackUser'])->name('trackUser');
 
+        Route::post('/chatRooms/updateRoomImage', [App\Http\Controllers\Api\ChatRoomController::class, 'updateRoomImage'])->name('updateRoomImage');
+        Route::post('/chatRooms/updateRoomCategory', [App\Http\Controllers\Api\ChatRoomController::class, 'updateRoomCategory'])->name('updateRoomCategory');
+        Route::post('/chatRooms/addAdmin', [App\Http\Controllers\Api\ChatRoomController::class, 'addRoomAdmin'])->name('addRoomAdmin');
+        Route::post('/chatRooms/removeAdmin', [App\Http\Controllers\Api\ChatRoomController::class, 'removeRoomAdmin'])->name('removeRoomAdmin');
+
+
+
         Route::post('/chatRooms/enterRoom', [App\Http\Controllers\Api\ChatRoomController::class, 'enterRoom'])->name('enterRoom');
         Route::post('/chatRooms/exitRoom', [App\Http\Controllers\Api\ChatRoomController::class, 'exitRoom'])->name('exitRoom');
         Route::post('/chatRooms/lockMic', [App\Http\Controllers\Api\ChatRoomController::class, 'lockMic'])->name('lockMic');

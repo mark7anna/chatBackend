@@ -104,6 +104,14 @@ function()
     Route::get('/userNotifications', [App\Http\Controllers\AppUserController::class, 'userNotifications'])->name('userNotifications');
     Route::get('/getAppUserByTag/{tag}', [App\Http\Controllers\AppUserController::class, 'show'])->name('getAppUserByTag');
     Route::get('/getAppUserById/{id}', [App\Http\Controllers\AppUserController::class, 'showById'])->name('getAppUserById');
+    Route::get('/addMedalTouser', [App\Http\Controllers\AppUserController::class, 'addMedalTouser'])->name('addMedalTouser');
+    Route::get('/AddMedalToUserPost/{user_id}/{medal_id}', [App\Http\Controllers\AppUserController::class, 'AddMedalToUserPost'])->name('AddMedalToUserPost');
+    Route::get('/getuserMedals/{id}', [App\Http\Controllers\AppUserController::class, 'getuserMedals'])->name('getuserMedals');
+    Route::get('/deleteMedalToUserPost/{user_id}/{medal_id}', [App\Http\Controllers\AppUserController::class, 'deleteMedalToUserPost'])->name('deleteMedalToUserPost');
+
+
+    
+    
 
     Route::post('/updateDiamondWallet', [App\Http\Controllers\AppUserController::class, 'updateDiamondWallet'])->name('updateDiamondWallet');
     Route::post('/updateGoldWallet', [App\Http\Controllers\AppUserController::class, 'updateGoldWallet'])->name('updateGoldWallet');
