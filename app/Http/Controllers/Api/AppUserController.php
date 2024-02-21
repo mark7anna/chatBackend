@@ -22,6 +22,7 @@ use App\Models\Follower;
 use App\Models\GiftTransaction;
 use App\Models\HostAgency;
 use App\Models\Level;
+use App\Models\VipPurchase;
 
 class AppUserController extends Controller
 {
@@ -223,10 +224,14 @@ class AppUserController extends Controller
                   -> join('app_users' , 'app_users.id' , '=' ,'blocks.blocke_user')
                   -> select('blocks.*' , 'app_users.name as blocked_name' , 'app_users.tag as blocked_tag')
                   -> where('blocks.user_id' , '=' , $id) -> get();
+
+          
+              
+
                 if(count($users) > 0){
                   $user = $users[0] ;
                   return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
-                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks]);
+                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks ]);
                 } else {
               
                   return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);

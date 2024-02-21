@@ -147,7 +147,7 @@ class PostsController extends Controller
             'post_id' => $request -> post_id,
             'user_id'=> $request -> user_id,
             'content'=> $request -> content,
-            'order'=> $request -> order,
+            'order'=> $request -> order ?? 0,
         ]);
         
         $comments = DB::table('comments')

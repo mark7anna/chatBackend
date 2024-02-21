@@ -119,6 +119,10 @@ use Illuminate\Http\Request;
 
         Route::get('/vip/all', [App\Http\Controllers\Api\VipController::class, 'index'])->name('getVip');
         Route::get('/vip/getAll', [App\Http\Controllers\Api\VipController::class, 'getVip'])->name('getVipAll');
+        Route::post('/vip/purchaseVip', [App\Http\Controllers\Api\VipController::class, 'purchaseVip'])->name('purchaseVip');
+
+
+        
 
         Route::get('/designs/medal/all', [App\Http\Controllers\Api\DesignController::class, 'getAllMedals'])->name('getAllMedals');
 
