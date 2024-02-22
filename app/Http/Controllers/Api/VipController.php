@@ -12,6 +12,7 @@ use App\Models\VipPurchase;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class VipController extends Controller
 {
@@ -29,6 +30,10 @@ class VipController extends Controller
     public function getVip(){
         try{
             $vips = Vip::all();
+            foreach($vips  as $vip){
+                $vip -> isDefault = 0 ;
+                $vip -> available_untill = "";
+            }
             return response()->json(['state' => 'success' , 'vips' => $vips ]);
 
         }catch(QueryException $ex){
@@ -114,6 +119,52 @@ class VipController extends Controller
     }
 
     public function getUserVips($user_id){
+        try{
+            $vips = DB::table('vip_purchases') 
+            -> join('vips' , 'vip_purchases.vip_id' , '=' , 'vips.id')
+            -> select('vips.*' , 'vip_purchases.available_untill' , 'vip_purchases.isDefault' )
+            -> where('vip_purchases.user_id' , '=' , $user_id) -> get();
 
+            foreach($vips as $vip){
+                $designs = Design::where('vip_id' , '=' , $vip -> id) -> get();
+                $vip -> designs = $designs ;
+            }
+            return response()->json(['state' => 'success' , 'vips' => $vips]);
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+    
     }
+
+    public function useVip(Request $request){
+        try{
+           $vips_to_un_used = VipPurchase::where('user_id' , '=' , $request -> user_id)
+           ->where('isDefault' , '=' , 1)-> get();
+           $vips_to_use = VipPurchase::where('user_id' , '=' , $request -> user_id)
+           -> where('vip_id' , '=' , $request -> vip_id) -> get();
+           if(count($vips_to_use) > 0){
+            $vips_to_use[0] -> update([
+                'isDefault' => 1 
+            ]);
+            foreach(  $vips_to_un_used as $unused){
+                $unused -> update([
+                    'isDefault' => 0 
+                ]);
+                
+    
+            }
+            return $this -> getUserVips($request -> user_id);
+           } else {
+            return response()->json(['state' => 'failed' , 'message' => 'Sorry! we can not find this design !']);
+    
+           }
+        } catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+    
+        }
+       }
+
+    
 }

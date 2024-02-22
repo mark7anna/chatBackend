@@ -18,6 +18,7 @@ use App\Models\Block;
 use App\Models\ChargingOpration;
 use App\Models\UserReport;
 use App\Models\Country;
+use App\Models\Design;
 use App\Models\Follower;
 use App\Models\GiftTransaction;
 use App\Models\HostAgency;
@@ -230,12 +231,22 @@ class AppUserController extends Controller
                   -> join('badges' , 'user_medals.badge_id' , '=' , 'badges.id')
                   -> select('badges.*' , 'user_medals.user_id')
                   -> where('user_medals.user_id' , '=' , $id) -> get();
-              
+                  $vips = DB::table('vip_purchases') 
+                  -> join('vips' , 'vip_purchases.vip_id' , '=' , 'vips.id')
+                  -> select('vips.*' , 'vip_purchases.available_untill' , 'vip_purchases.isDefault' )
+                  -> where('vip_purchases.user_id' , '=' , $id) 
+                  -> where('vip_purchases.isDefault' , '=' , 1) 
+                  -> get();
+      
+                  foreach($vips as $vip){
+                      $designs = Design::where('vip_id' , '=' , $vip -> id) -> get();
+                      $vip -> designs = $designs ;
+                  }
 
                 if(count($users) > 0){
                   $user = $users[0] ;
                   return response()->json(['state' => 'success' , 'user' => $user , 'followers' => $followers , 
-                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks , 'medals' => $medals ]);
+                  'followings' => $followings , 'friends' => $friends , 'visitors' => $visitors , 'tags' => $tags , 'blocks' => $blocks , 'medals' => $medals , 'vips' => $vips]);
                 } else {
               
                   return response()->json(['state' => 'notFound' , 'message' => "Sorry ! we can not find this user" ]);
