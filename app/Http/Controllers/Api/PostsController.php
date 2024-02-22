@@ -39,6 +39,7 @@ class PostsController extends Controller
             'app_users.gender as gender' , 'app_users.img as user_img' , 'share_level.icon as share_level_img' ,
             'karizma_level.icon as karizma_level_img' , 'charging_level.icon as charging_level_img' , 'tags.name as tag'  ) 
             -> where('posts.accepted' , '=' , 1)
+            ->orderBy('posts.id', 'DESC')
             -> get();
     
             $likes = DB::table('post_likes')

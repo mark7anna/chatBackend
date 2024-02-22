@@ -78,7 +78,7 @@ class GiftController extends Controller
                         //////////////////////////////////////////////////////////////////////////////////
 
 
-                        return response()->json(['state' => 'success' , 'message' => 'Gift Sent Successfully']);
+                        return response()->json(['state' => 'success' , 'message' => 'success']);
 
                     } else {
                         return response()->json(['state' => 'failed' , 'message' => 'something wentwrong ']);

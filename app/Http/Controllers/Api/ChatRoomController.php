@@ -206,7 +206,7 @@ class ChatRoomController extends Controller
 
                 $transactions = GiftTransaction::Where('room_id' , '=' ,  $room_id) -> get();
 
-                $roomCup = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+                $roomCup = (int) GiftTransaction::Where('room_id' , '=' ,  $room_id) 
                 -> whereDate('sendDate' ,  Carbon::today() )->sum('total');
 
 
