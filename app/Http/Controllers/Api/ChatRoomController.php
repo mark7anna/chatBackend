@@ -794,18 +794,24 @@ class ChatRoomController extends Controller
             
             $daily = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
             -> whereDate('sendDate' ,  Carbon::today() ) 
-             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') 
+             -> orderBy('sum' , 'DESC')
+             -> get();
 
              $weekly = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
              -> whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
-              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') 
+              -> orderBy('sum' , 'DESC')
+              -> get();
 
               $fromDate = Carbon::now()-> subDays(30);
               $tillDate = Carbon::now();
 
               $monthly = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
               -> whereBetween('sendDate', [ $fromDate ,  $tillDate ])
-               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum')
+               -> orderBy('sum' , 'DESC')
+               -> get();
 
               return response()->json(['state' => 'success' , 'daily' => $daily , 'weekly' => $weekly , 'monthly' => $monthly]);
 
@@ -818,24 +824,149 @@ class ChatRoomController extends Controller
 
     public function getAppCup(){
         try{
+            //daily , weekly , monthly , 
+               //bigger sender , bigger reciver , bigger room
+
+               $fromDate = Carbon::now()-> subDays(30);
+               $tillDate = Carbon::now();
+
             $daily = GiftTransaction::whereDate('sendDate' ,  Carbon::today() ) 
-             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
-
+             -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
              $weekly = GiftTransaction::whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
-              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
-
-              $fromDate = Carbon::now()-> subDays(30);
-              $tillDate = Carbon::now();
-
+              -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
               $monthly = GiftTransaction::whereBetween('sendDate', [ $fromDate ,  $tillDate ])
-               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum') -> get();
+               -> groupBy('sender_id') ->selectRaw('sender_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
 
-              return response()->json(['state' => 'success' , 'daily' => $daily , 'weekly' => $weekly , 'monthly' => $monthly]);
+
+               $dailyK = GiftTransaction::whereDate('sendDate' ,  Carbon::today() ) 
+               -> groupBy('receiver_id') ->selectRaw('receiver_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
+               $weeklyK = GiftTransaction::whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
+                -> groupBy('receiver_id') ->selectRaw('receiver_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
+                $monthlyK = GiftTransaction::whereBetween('sendDate', [ $fromDate ,  $tillDate ])
+                 -> groupBy('receiver_id') ->selectRaw('receiver_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();  
+                 
+                 $dailyR = GiftTransaction::whereDate('sendDate' ,  Carbon::today() ) 
+                 -> groupBy('room_id') ->selectRaw('room_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
+                 $weeklyR = GiftTransaction::whereBetween('sendDate', [Carbon::now() -> subDays(7), Carbon::now()])
+                  -> groupBy('room_id') ->selectRaw('room_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get();
+                  $monthlyR = GiftTransaction::whereBetween('sendDate', [ $fromDate ,  $tillDate ])
+                   -> groupBy('room_id') ->selectRaw('room_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get(); 
+
+            if(count($daily) > 0)    {
+                $dailyFan = $daily[0];
+                $user = $this -> getUserData($dailyFan -> sender_id);
+                $dailyFan -> user = $user ;
+            } else {
+                $dailyFan = null ;
+            }
+            if(count($weekly) > 0)    {
+                $weekFan = $weekly[0];
+                $user = $this -> getUserData($weekFan -> sender_id);
+                $weekFan -> user = $user ;
+            } else {
+                $weekFan = null ;
+            }
+            if(count($monthly) > 0)    {
+                $monthFan = $monthly[0];
+                $user = $this -> getUserData($monthFan -> sender_id);
+                $monthFan -> user = $user ;
+            } else {
+                $monthFan = null ;
+            }
+
+
+            if(count($dailyK) > 0)    {
+                $dailyFanK = $dailyK[0];
+                $user = $this -> getUserData($dailyFanK -> receiver_id);
+                $dailyFanK -> user = $user ;
+            } else {
+                $dailyFanK = null ;
+            }
+            if(count($weeklyK) > 0)    {
+                $weekFanK = $weeklyK[0];
+                $user = $this -> getUserData($weekFanK -> receiver_id);
+                $weekFanK -> user = $user ;
+            } else {
+                $weekFanK = null ;
+            }
+            if(count($monthlyK) > 0)    {
+                $monthFanK = $monthlyK[0];
+                $user = $this -> getUserData($monthFanK -> receiver_id);
+                $monthFanK -> user = $user ;
+            } else {
+                $monthFanK = null ;
+            }
+
+            
+            if(count($dailyR) > 0)    {
+                $dailyRoom = $dailyR[0];
+                $room = ChatRoom::find($dailyRoom -> room_id);
+                $dailyRoom -> room = $room ;
+            } else {
+                $dailyRoom = null ;
+            }
+            if(count($weeklyR) > 0)    {
+                $weekRoom = $weeklyR[0];
+                $room = ChatRoom::find($weekRoom -> room_id);
+                $weekRoom -> room = $room ;
+            } else {
+                $weekRoom = null ;
+            }
+            if(count($monthlyR) > 0)    {
+                $monthRoom = $monthlyR[0];
+                $room = ChatRoom::find($monthRoom -> room_id);
+                $monthRoom -> room = $room ;
+            } else {
+                $monthRoom = null ;
+            }
+
+            
+
+        
+
+
+              return response()->json(['state' => 'success' , 
+              'dailyFan' => $dailyFan , 'weekFan' => $weekFan , 'monthFan' => $monthFan ,
+              'dailyFanK' => $dailyFanK , 'weekFanK' => $weekFanK , 'monthFanK' => $monthFanK ,
+              'dailyRoom' => $dailyRoom , 'weekRoom' => $weekRoom , 'monthRoom' => $monthRoom]);
         }catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
  
         }
     }
+
+    public function getUserData ($id) {
+        try{
+          $users = DB::table('app_users')
+          -> join('wallets' , 'app_users.id' , '=','wallets.user_id')
+          -> join('levels as share_level' , 'share_level.id' , '=' , 'app_users.share_level_id' )
+          -> join('levels as karizma_level' , 'karizma_level.id' , '=' , 'app_users.karizma_level_id' )
+          -> join('levels as charging_level' , 'charging_level.id' , '=' , 'app_users.charging_level_id')
+          -> join('countries' , 'countries.id' , '=' , 'app_users.country')
+  
+          -> select('app_users.*' , 'wallets.gold' , 'wallets.diamond' , 
+          'share_level.order as share_level_order' , 'share_level.points as share_level_points' , 'share_level.icon as share_level_icon' ,
+          'karizma_level.order as karizma_level_order' , 'karizma_level.points as karizma_level_points' , 'karizma_level.icon as karizma_level_icon' ,
+          'charging_level.order as charging_level_order' , 'charging_level.points as charging_level_points' , 'charging_level.icon as charging_level_icon' ,
+          'countries.name as country_name' , 'countries.icon as country_flag') 
+          -> where('app_users.id' , '=' , $id)-> get();
+  
+  
+                  if(count($users) > 0){
+                   return  $user = $users[0] ;
+                   return $user ;
+
+                  } else {
+                        return null ;
+    }
+          
+        } catch(QueryException $ex){
+            return null ;
+  
+        }
+  
+  
+      }
 
     public function addRoomAdmin(Request $request){
         try{
