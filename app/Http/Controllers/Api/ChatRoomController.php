@@ -344,7 +344,7 @@ class ChatRoomController extends Controller
         try{
           $room = ChatRoom::find($request -> id);
           if($room){
-            if($room -> img){
+            if($request -> img){
               $img = time() . '.' . $request->img->extension();
               $request->img->move(('images/Rooms'), $img);
           } else {
