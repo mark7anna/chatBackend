@@ -852,83 +852,120 @@ class ChatRoomController extends Controller
                   $monthlyR = GiftTransaction::whereBetween('sendDate', [ $fromDate ,  $tillDate ])
                    -> groupBy('room_id') ->selectRaw('room_id, sum(total) as sum')  -> orderBy('sum' , 'DESC') -> get(); 
 
-            if(count($daily) > 0)    {
-                $dailyFan = $daily[0];
-                $user = $this -> getUserData($dailyFan -> sender_id);
-                $dailyFan -> user = $user ;
-            } else {
-                $dailyFan = null ;
+            // if(count($daily) > 0)    {
+            //     $dailyFan = $daily[0];
+            //     $user = $this -> getUserData($dailyFan -> sender_id);
+            //     $dailyFan -> user = $user ;
+            // } else {
+            //     $dailyFan = null ;
+            // }
+            $dailyFans = [] ;
+
+            for($i = 0 ; $i < count($daily) ; $i++){
+                    $dailyFan = $daily[$i];
+                    $user = $this -> getUserData($dailyFan -> sender_id);
+                    $dailyFan -> user = $user ; 
+                    array_push($dailyFans ,  $dailyFan);
+                  
             }
-            if(count($weekly) > 0)    {
-                $weekFan = $weekly[0];
+
+
+            $weekFans = [] ;
+
+            for($i = 0 ; $i < count($weekly) ; $i++){
+                $weekFan = $weekly[$i];
                 $user = $this -> getUserData($weekFan -> sender_id);
                 $weekFan -> user = $user ;
-            } else {
-                $weekFan = null ;
-            }
-            if(count($monthly) > 0)    {
-                $monthFan = $monthly[0];
-                $user = $this -> getUserData($monthFan -> sender_id);
-                $monthFan -> user = $user ;
-            } else {
-                $monthFan = null ;
-            }
+                array_push($weekFans ,  $weekFan);
+              
+               }
 
+               $monthFans = [] ;
 
-            if(count($dailyK) > 0)    {
-                $dailyFanK = $dailyK[0];
-                $user = $this -> getUserData($dailyFanK -> receiver_id);
-                $dailyFanK -> user = $user ;
-            } else {
-                $dailyFanK = null ;
-            }
-            if(count($weeklyK) > 0)    {
-                $weekFanK = $weeklyK[0];
-                $user = $this -> getUserData($weekFanK -> receiver_id);
-                $weekFanK -> user = $user ;
-            } else {
-                $weekFanK = null ;
-            }
-            if(count($monthlyK) > 0)    {
-                $monthFanK = $monthlyK[0];
-                $user = $this -> getUserData($monthFanK -> receiver_id);
-                $monthFanK -> user = $user ;
-            } else {
-                $monthFanK = null ;
-            }
+               for($i = 0 ; $i < count($monthly) ; $i++){
+                   $monthFan = $monthly[$i];
+                   $user = $this -> getUserData($monthFan -> sender_id);
+                   $monthFan -> user = $user ;
+                   array_push($monthFans ,  $monthFan);
+                 
+                  }
+
+                  $dailyFanKs = [] ;
+
+                  for($i = 0 ; $i < count($dailyK) ; $i++){
+                    $dailyFanK = $dailyK[$i];
+                    $user = $this -> getUserData($dailyFanK -> receiver_id);
+                    $dailyFanK -> user = $user ;
+                      array_push($dailyFanKs ,  $dailyFanK);
+                    
+                     
+                    }
+                    $weekFanKs = [] ;
+
+                    for($i = 0 ; $i < count($weeklyK) ; $i++){
+                        $weekFanK = $weeklyK[$i];
+                        $user = $this -> getUserData($weekFanK -> receiver_id);
+                        $weekFanK -> user = $user ;
+                        array_push($weekFanKs ,  $weekFanK);
+
+                    }
+
+                    $monthFanKs = [] ;
+
+                    for($i = 0 ; $i < count($monthlyK) ; $i++){
+                        $monthFanK = $monthlyK[$i];
+                        $user = $this -> getUserData($monthFanK -> receiver_id);
+                        $monthFanK -> user = $user ;
+                        array_push($monthFanKs ,  $monthFanK);
+
+                    }
+
+                    $dailyRooms = [] ;
+
+                    for($i = 0 ; $i < count($dailyR) ; $i++){
+                        $dailyRoom = $dailyR[$i];
+                        $room = ChatRoom::find($dailyRoom -> room_id);
+                        $admin = Appuser::find($room -> userId);
+                        $room -> admin_img = $admin -> img ; 
+                        $dailyRoom -> room = $room ;
+                        array_push($dailyRooms ,  $dailyRoom);
+
+                    }
+
+                    $weeklyRs = [] ;
+
+                    for($i = 0 ; $i < count($weeklyR) ; $i++){
+                        $weekRoom = $weeklyR[$i];
+                        $room = ChatRoom::find($weekRoom -> room_id);
+                        $admin = Appuser::find($room -> userId);
+                        $room -> admin_img = $admin -> img ; 
+                        $weekRoom -> room = $room ;
+                        array_push($weeklyRs ,  $weekRoom);
+
+                    }
+                    
+
+                    $monthRooms = [] ;
+
+                    for($i = 0 ; $i < count($monthlyR) ; $i++){
+                        $monthRoom = $monthlyR[$i];
+                        $room = ChatRoom::find($monthRoom -> room_id);
+                        $admin = Appuser::find($room -> userId);
+                        $room -> admin_img = $admin -> img ; 
+                        $monthRoom -> room = $room ;
+                        array_push($monthRooms ,  $monthRoom);
+
+                    }
+                      
+                
+    
 
             
-            if(count($dailyR) > 0)    {
-                $dailyRoom = $dailyR[0];
-                $room = ChatRoom::find($dailyRoom -> room_id);
-                $dailyRoom -> room = $room ;
-            } else {
-                $dailyRoom = null ;
-            }
-            if(count($weeklyR) > 0)    {
-                $weekRoom = $weeklyR[0];
-                $room = ChatRoom::find($weekRoom -> room_id);
-                $weekRoom -> room = $room ;
-            } else {
-                $weekRoom = null ;
-            }
-            if(count($monthlyR) > 0)    {
-                $monthRoom = $monthlyR[0];
-                $room = ChatRoom::find($monthRoom -> room_id);
-                $monthRoom -> room = $room ;
-            } else {
-                $monthRoom = null ;
-            }
-
-            
-
-        
-
 
               return response()->json(['state' => 'success' , 
-              'dailyFan' => $dailyFan , 'weekFan' => $weekFan , 'monthFan' => $monthFan ,
-              'dailyFanK' => $dailyFanK , 'weekFanK' => $weekFanK , 'monthFanK' => $monthFanK ,
-              'dailyRoom' => $dailyRoom , 'weekRoom' => $weekRoom , 'monthRoom' => $monthRoom]);
+              'dailyFans' => $dailyFans , 'weekFans' => $weekFans , 'monthFans' => $monthFans ,
+              'dailyFanKs' => $dailyFanKs , 'weekFanK' => $weekFanKs , 'monthFanKs' => $monthFanKs,
+              'dailyRooms' => $dailyRooms , 'weeklyRs' => $weeklyRs , 'monthRooms' => $monthRooms]);
         }catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
  
