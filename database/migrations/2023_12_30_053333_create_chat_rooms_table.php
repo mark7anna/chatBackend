@@ -34,6 +34,7 @@ return new class extends Migration
             $table -> integer('themeId');
             $table -> integer('country_id');
             $table -> text('hello_message');
+            $table -> integer('isCounter');
             $table->timestamps();
         });
     }

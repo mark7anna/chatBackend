@@ -30,6 +30,7 @@ class ChatRoom extends Model
       'reportCount',
       'themeId',
       'country_id',
-      'hello_message'
+      'hello_message',
+      'isCounter'
     ];
 }

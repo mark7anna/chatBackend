@@ -634,6 +634,8 @@ class ChatRoomController extends Controller
                 
                     $mic -> update([
                        'user_id'  => 0 ,
+                       'counter' => 0
+
                     ]);
                     $talkers_count = $room -> talkers_count - 1 ;
                     $room -> update([
@@ -1058,6 +1060,24 @@ class ChatRoomController extends Controller
         } catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
+        }
+
+    }
+    public function toggleCounter($room_id ){
+         try{
+            $room = ChatRoom::find($room_id);
+            if($room){
+                $room -> update([
+                   'isCounter' => $room -> isCounter == 0 ? 1 : 0 
+                ]);
+                return $this -> getRoom($room_id);
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find  the room']); 
+
+            }
+
+         }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
         }
 
     }

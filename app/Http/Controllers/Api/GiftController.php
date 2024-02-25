@@ -10,6 +10,7 @@ use App\Models\ChatRoom;
 use App\Models\Design;
 use App\Models\GiftTransaction;
 use App\Models\Level;
+use App\Models\Mic;
 use App\Models\Settings;
 use App\Models\Wallet;
 use Carbon\Carbon;
@@ -62,7 +63,16 @@ class GiftController extends Controller
                             'diamond' => $ownerWallet -> diamond + $ownerDiamond 
                         ]);
 
-                        ////////////////////////////////////////////////////////////////////////////////////
+                        /////////////////////////////////update mic counter///////////////////////////////////////////////////
+
+                        $mics = Mic::where('room_id' , '=' , $request -> room_id) ->where ('user_id' , $request -> recevier_id) -> get() ;
+                        if(count($mics) > 0){
+                            $mic = $mics[0];
+                            $new_counter = $mic -> counter + ($gift -> price * $request -> count) ;
+                            $mic -> update([
+                                'counter' =>   $new_counter
+                            ]);
+                        }
                         
                         /////////////////////////////Handle Host Agency Record/////////////////////////////
                        

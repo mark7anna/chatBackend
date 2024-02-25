@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mics', function (Blueprint $table) {
+        Schema::create('mic_counters', function (Blueprint $table) {
             $table->id();
-            $table -> integer('room_id');
-            $table -> integer('order');
-            $table -> integer('user_id');
-            $table -> integer('isClosed');
-            $table -> integer('isMute');
-            $table -> integer('counter');
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mics');
+        Schema::dropIfExists('mic_counters');
     }
 };

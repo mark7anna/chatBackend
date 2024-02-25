@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Mic extends Model
+class MicCounter extends Model
 {
     use HasFactory;
     protected $fillable = [
-      'id', 
-      'room_id',
-      'order',
-      'user_id',
-      'isClosed',
-      'isMute',
-      'counter'
-      
+       'id',
+       'mic_id',
+       'user_id',
+       'room_id',
+       
     ];
 }
