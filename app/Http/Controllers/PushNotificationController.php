@@ -11,7 +11,7 @@ class PushNotificationController extends Controller
     public function sendNotificationToUser($token , $title , $message){
         $headers = [
            "Content-Type" => "application/json",
-           "Authorization" => "key=AAAA9KG6GqI:APA91bE3eRJUYtH33C8bpKWdyi4tcQwmIqhSq3_IPNUnjrAXUnyN3tNSfxiY8uS_DJ1zGgQD8XVDtANvBOnd3703JE77iTQjWoVAuCh6Q_KEDnxWP-1KWs44eCcIuLhRY14ELm7eKywN"
+           'Authorization' => 'key=AAAApSeXnMc:APA91bG-7NnK_dTYnoCeZ0BPxR5oGJCtn7_mg5lVhG_AtMHDYrrQZ16dgcFV3iXC128SmXco1YUa50STSfBZzxCenXxqwwC2GtbtiMenkjpSnQkCBMLYCo5DEMxP01lLjcF0Q9rMtDiU'
         ];
         $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', [
             "to" => $token,
