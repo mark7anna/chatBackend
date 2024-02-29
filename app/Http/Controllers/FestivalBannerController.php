@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatRoom;
 use App\Models\FestivalBanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,12 +53,24 @@ class FestivalBannerController extends Controller
             ]);
             $img = time() .  '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/FestivalBanner'), $img);
+
+            if($request -> room_id){
+                $room = ChatRoom::where('tag' , '=' , $request -> room_id) -> get();
+                if(count($room) > 0){
+                    $room_id  = $room[0] -> id ;
+                } else {
+                    $room_id =  0;
+                }
+            } else {
+                $room_id =  0;
+            }
+
             FestivalBanner::create([
                 'title' => $request -> title,
                 'type' => $request -> type,
                 'description' => $request -> description ?? "",
                 'img' => $img ,
-                'room_id' => $request -> room_id,
+                'room_id' => $room_id,
                 'start_date'=> Carbon::parse($request->start_date),
                 'duration_in_hour' => $request -> duration_in_hour,
                 'enable'=> $request -> enable,
@@ -112,12 +125,22 @@ class FestivalBannerController extends Controller
                 $img = $banner -> img ;
             }
 
+            if($request -> room_id){
+                $room = ChatRoom::where('tag' , '=' , $request -> room_id) -> get();
+                if(count($room) > 0){
+                    $room_id  = $room[0] -> id ;
+                } else {
+                    $room_id =  $banner -> room_id;
+                }
+            } else {
+                $room_id =  $banner -> room_id;
+            }
             $banner -> update([
                 'title' => $request -> title,
                 'type' => $request -> type,
                 'description' => $request -> description ?? "",
                 'img' => $img ,
-                'room_id' => $request -> room_id,
+                'room_id' => $room_id,
                 'start_date'=> Carbon::parse($request->start_date),
                 'duration_in_hour' => $request -> duration_in_hour,
                 'enable'=> $request -> enable,

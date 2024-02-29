@@ -33,6 +33,29 @@ class ChatRoomController extends Controller
         //
     }
 
+    public function enable($id)
+    {
+        $room = ChatRoom::find($id);
+        if($room){
+            $room -> update([
+                'state' => 1
+            ]);
+        }
+        return redirect()->route('chatRooms' , 1)->with('success', __('main.updated'));
+
+    }
+
+    public function disable($id)
+    {
+        $room = ChatRoom::find($id);
+        if($room){
+            $room -> update([
+                'state' => 0
+            ]);
+        }
+        return redirect()->route('chatRooms' , 1)->with('success', __('main.updated'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */

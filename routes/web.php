@@ -121,6 +121,9 @@ function()
     Route::post('/updateAppUser', [App\Http\Controllers\AppUserController::class, 'Update'])->name('updateAppUser');
 
     Route::get('/rooms/{state}', [App\Http\Controllers\ChatRoomController::class, 'index'])->name('chatRooms');
+    Route::get('/rooms_activate/{id}', [App\Http\Controllers\ChatRoomController::class, 'enable'])->name('rooms_activate');
+    Route::get('/rooms_disable/{id}', [App\Http\Controllers\ChatRoomController::class, 'disable'])->name('rooms_disable');
+
 
     Route::get('/festival_banners', [App\Http\Controllers\FestivalBannerController::class, 'index'])->name('festival_banners');
     Route::post('/festivalBannerStore', [App\Http\Controllers\FestivalBannerController::class, 'store'])->name('festivalBannerStore');

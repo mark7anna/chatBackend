@@ -19,6 +19,7 @@ use App\Models\Design;
 use App\Models\GiftCategory;
 use App\Models\GiftTransaction;
 use App\Models\RoomAdmin;
+use App\Models\RoomBlock;
 use App\Models\RoomMember;
 
 class ChatRoomController extends Controller
@@ -30,8 +31,20 @@ class ChatRoomController extends Controller
             -> join('themes' , 'chat_rooms.themeId' , 'themes.id')
             -> join('app_users' , 'chat_rooms.userId' , 'app_users.id')
             -> select('chat_rooms.*' , 'countries.icon as flag' , 'app_users.tag as admin_tag' , 
-            'app_users.name as admin_name' , 'app_users.img as admin_img' , 'themes.img as room_bg') -> get();
-            return $rooms ;
+            'app_users.name as admin_name' , 'app_users.img as admin_img' , 'themes.img as room_bg')
+            -> where('state' , '=' , 1)
+            -> get();
+            
+            $data = [] ;
+            foreach($rooms as $room){
+                $members = RoomMember::where('room_id' , '=' , $room -> id) -> get();
+                if(count($members) > 0 ){
+                  array_push($data , $room);
+                }
+            }
+
+            
+            return $data ;
         } catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
 
@@ -48,7 +61,10 @@ class ChatRoomController extends Controller
             -> select('chat_rooms.*' , 'countries.icon as flag' , 'app_users.tag as admin_tag' , 
             'app_users.name as admin_name' , 'app_users.img as admin_img' , 'themes.img as room_bg') 
             -> where('chat_rooms.tag' , 'like' , '%' .$txt . '%' )
-            ->orWhere('chat_rooms.name', 'like', '%' . $txt . '%')->get();
+            ->orWhere('chat_rooms.name', 'like', '%' . $txt . '%')
+            -> where('state' , '=' , 1)
+
+            ->get();
             return $rooms ;
         } catch(QueryException $ex){
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
@@ -81,139 +97,196 @@ class ChatRoomController extends Controller
         -> join('app_users' , 'chat_rooms.userId' , 'app_users.id')
         -> join('themes' , 'chat_rooms.themeId' , 'themes.id')
         -> select('chat_rooms.*' , 'countries.icon as flag' , 'app_users.tag as admin_tag' , 
-        'app_users.name as admin_name' , 'app_users.img as admin_img' , 'themes.img as room_bg') -> where( 'chat_rooms.id' , '=' , $room_id) -> first();
+        'app_users.name as admin_name' , 'app_users.img as admin_img' , 'themes.img as room_bg')
+         -> where( 'chat_rooms.id' , '=' , $room_id)
+         -> where('chat_rooms.state' , '=' , 1)
+          -> first();
+          
+          if($room){
+            $mics = DB::table('mics')
+            -> leftJoin('app_users' , 'mics.user_id' , '=' , 'app_users.id')
+            ->leftJoin('levels as share_level' ,function ($join) {
+             $join->on('app_users.share_level_id', '=', 'share_level.id');
+             })->leftJoin('levels as karizma_level' ,function ($join) {
+                 $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+             }) 
+             ->leftJoin('levels as charging_level' ,function ($join) {
+                 $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+             }) -> select('mics.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
+             'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
+             'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
+              'charging_level.icon as mic_user_charging_level') 
+              -> where('mics.room_id' , '=' , $room_id)-> get();
+     
+     
+              foreach( $mics as $mic){
+                 $designs = DB::table('design_purchases') 
+                 ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+                 ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+                 'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $mic -> user_id)
+                 -> where('designs.category_id' , '=' , 4)
+                 -> where('design_purchases.isDefault' , '=' , 1)
+                 -> get();
+                 if(count ($designs) > 0 ){
+                       $design = $designs[0];
+                       if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                         $mic -> frame =  $designs[0] -> motion_icon  ;
+                       } else {
+                         $mic -> frame =  ''  ;
+                       }
+                 } else {
+                     $mic -> frame =  ""  ;
+                 }
+                 
+                }
+     
+              $members = DB::table('room_members')
+              -> leftJoin('app_users' , 'room_members.user_id' , '=' , 'app_users.id')
+              ->leftJoin('levels as share_level' ,function ($join) {
+               $join->on('app_users.share_level_id', '=', 'share_level.id');
+               })->leftJoin('levels as karizma_level' ,function ($join) {
+                   $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+               }) 
+               ->leftJoin('levels as charging_level' ,function ($join) {
+                   $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+               }) -> select('room_members.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
+               'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
+               'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
+                'charging_level.icon as mic_user_charging_level') 
+                -> where('room_members.room_id' , '=' , $room_id)-> get();
+                
+                
+                 
+     
+                foreach( $members as $member){
+                 $entering = DB::table('design_purchases') 
+                 ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+                 ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+                 'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $member -> user_id)
+                 -> where('designs.category_id' , '=' , 5)
+                 -> where('design_purchases.isDefault' , '=' , 1) -> get();
 
-       $mics = DB::table('mics')
-       -> leftJoin('app_users' , 'mics.user_id' , '=' , 'app_users.id')
-       ->leftJoin('levels as share_level' ,function ($join) {
-        $join->on('app_users.share_level_id', '=', 'share_level.id');
-        })->leftJoin('levels as karizma_level' ,function ($join) {
-            $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-        }) 
-        ->leftJoin('levels as charging_level' ,function ($join) {
-            $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-        }) -> select('mics.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-        'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-        'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-         'charging_level.icon as mic_user_charging_level') 
-         -> where('mics.room_id' , '=' , $room_id)-> get();
+                 $pubbling = DB::table('design_purchases') 
+                 ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+                 ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+                 'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $member -> user_id)
+                 -> where('designs.category_id' , '=' , 6)
+                 -> where('design_purchases.isDefault' , '=' , 1) -> get();
 
 
-         foreach( $mics as $mic){
-            $designs = DB::table('design_purchases') 
-            ->join('designs' , 'design_purchases.design_id' , 'designs.id')
-            ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
-            'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $mic -> user_id)
-            -> where('designs.category_id' , '=' , 4)
-            -> where('design_purchases.isDefault' , '=' , 1)
-            -> get();
-            if(count ($designs) > 0 ){
-                  $design = $designs[0];
-                  if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
-                    $mic -> frame =  $designs[0] -> motion_icon  ;
-                  } else {
-                    $mic -> frame =  ''  ;
-                  }
-            } else {
-                $mic -> frame =  ""  ;
-            }
+                 $banners = DB::table('design_purchases') 
+                 ->join('designs' , 'design_purchases.design_id' , 'designs.id')
+                 ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
+                 'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $member -> user_id)
+                 -> where('designs.category_id' , '=' , 3)
+                 -> where('design_purchases.isDefault' , '=' , 1) -> get();
+                
+                 
+                 if(count ($entering) > 0 ){
+                       $design = $entering[0];
+                       if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                         $member -> entery =  $design -> motion_icon  ;
+                         $member -> entery_audio =  $design -> audio_url  ;
+                         $member -> entery_name = $design -> name ;
+                       } else {
+                         $member -> entery =  ''  ;
+                         $member -> entery_audio = '' ;
+                         $member -> entery_name = '';
+                       }
+                 } else {
+                     $member -> entery =  ""  ;
+                     $member -> entery_audio = '' ;
+                     $member -> entery_name = '';
+                 }
+                 
+                    
+                    
+              if( count($pubbling) > 0 ){
+                    $design = $pubbling[0];
+                    if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                        $member -> pubble =  $design -> motion_icon  ;
+                      } else {
+                        $member -> pubble =  ''  ;
+                      }
+                 } else {
+                    $member -> pubble =  ''  ;
+                 }
+
+                 if( count($banners) > 0 ){
+                    $design = $banners[0];
+                    if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
+                        $member -> banner =  $design -> motion_icon  ;
+                      } else {
+                        $member -> banner =  ''  ;
+                      }
+                 } else {
+                    $member -> banner =  ''  ;
+                 }
+                 
+                 
+                }
+             
+     
+                $admins = DB::table('room_admins')
+                -> leftJoin('app_users' , 'room_admins.user_id' , '=' , 'app_users.id')
+                ->leftJoin('levels as share_level' ,function ($join) {
+                 $join->on('app_users.share_level_id', '=', 'share_level.id');
+                 })->leftJoin('levels as karizma_level' ,function ($join) {
+                     $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+                 }) 
+                 ->leftJoin('levels as charging_level' ,function ($join) {
+                     $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+                 }) -> select('room_admins.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
+                 'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
+                 'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
+                  'charging_level.icon as mic_user_charging_level') 
+                  -> where('room_admins.room_id' , '=' , $room_id)-> get();
+     
+                  $followers = DB::table('room_follows')
+                  -> leftJoin('app_users' , 'room_follows.user_id' , '=' , 'app_users.id')
+                  ->leftJoin('levels as share_level' ,function ($join) {
+                   $join->on('app_users.share_level_id', '=', 'share_level.id');
+                   })->leftJoin('levels as karizma_level' ,function ($join) {
+                       $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+                   }) 
+                   ->leftJoin('levels as charging_level' ,function ($join) {
+                       $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+                   }) -> select('room_follows.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
+                   'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
+                   'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
+                    'charging_level.icon as mic_user_charging_level') 
+                    -> where('room_follows.room_id' , '=' , $room_id)-> get();
+     
+                 $blockers = DB::table('room_blocks')
+                  -> leftJoin('app_users' , 'room_blocks.user_id' , '=' , 'app_users.id')
+                  ->leftJoin('levels as share_level' ,function ($join) {
+                   $join->on('app_users.share_level_id', '=', 'share_level.id');
+                   })->leftJoin('levels as karizma_level' ,function ($join) {
+                       $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
+                   }) 
+                   ->leftJoin('levels as charging_level' ,function ($join) {
+                       $join->on('app_users.charging_level_id', '=', 'charging_level.id');
+                   }) -> select('room_blocks.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
+                   'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
+                   'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
+                    'charging_level.icon as mic_user_charging_level') 
+                    -> where('room_blocks.room_id' , '=' , $room_id)-> get();
             
-           }
+                     //get room cup
+     
+                     $roomCup = (int) GiftTransaction::Where('room_id' , '=' ,  $room_id) 
+                     -> whereDate('sendDate' ,  Carbon::today() )->sum('total');
+                   
+     
+     
+     
+                    return response()->json(['state' => 'success' , 'room' => $room , 'mics' => $mics , 'members' => $members , 'followers' => $followers ,
+                     'admins' => $admins , 'blockers' => $blockers , 'roomCup' => $roomCup]);
 
-         $members = DB::table('room_members')
-         -> leftJoin('app_users' , 'room_members.user_id' , '=' , 'app_users.id')
-         ->leftJoin('levels as share_level' ,function ($join) {
-          $join->on('app_users.share_level_id', '=', 'share_level.id');
-          })->leftJoin('levels as karizma_level' ,function ($join) {
-              $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-          }) 
-          ->leftJoin('levels as charging_level' ,function ($join) {
-              $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-          }) -> select('room_members.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-          'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-          'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-           'charging_level.icon as mic_user_charging_level') 
-           -> where('room_members.room_id' , '=' , $room_id)-> get();
-
-           foreach( $members as $member){
-            $designs = DB::table('design_purchases') 
-            ->join('designs' , 'design_purchases.design_id' , 'designs.id')
-            ->select('designs.*' , 'design_purchases.available_until' , 'design_purchases.count' , 
-            'design_purchases.isDefault' , 'design_purchases.design_cat') -> where('design_purchases.user_id' , '=' , $member -> user_id)
-            -> where('designs.category_id' , '=' , 5)
-            -> where('design_purchases.isDefault' , '=' , 1)
-            -> get();
-            if(count ($designs) > 0 ){
-                  $design = $designs[0];
-                  if(Carbon::parse($design -> available_until) -> startOfDay() >= Carbon::now() -> startOfDay()){
-                    $member -> entery =  $designs[0] -> motion_icon  ;
-                  } else {
-                    $member -> entery =  ''  ;
-                  }
-            } else {
-                $member -> entery =  ""  ;
-            }
-            
-           }
-        
-
-           $admins = DB::table('room_admins')
-           -> leftJoin('app_users' , 'room_admins.user_id' , '=' , 'app_users.id')
-           ->leftJoin('levels as share_level' ,function ($join) {
-            $join->on('app_users.share_level_id', '=', 'share_level.id');
-            })->leftJoin('levels as karizma_level' ,function ($join) {
-                $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-            }) 
-            ->leftJoin('levels as charging_level' ,function ($join) {
-                $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-            }) -> select('room_admins.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-            'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-            'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-             'charging_level.icon as mic_user_charging_level') 
-             -> where('room_admins.room_id' , '=' , $room_id)-> get();
-
-             $followers = DB::table('room_follows')
-             -> leftJoin('app_users' , 'room_follows.user_id' , '=' , 'app_users.id')
-             ->leftJoin('levels as share_level' ,function ($join) {
-              $join->on('app_users.share_level_id', '=', 'share_level.id');
-              })->leftJoin('levels as karizma_level' ,function ($join) {
-                  $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-              }) 
-              ->leftJoin('levels as charging_level' ,function ($join) {
-                  $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-              }) -> select('room_follows.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-              'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-              'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-               'charging_level.icon as mic_user_charging_level') 
-               -> where('room_follows.room_id' , '=' , $room_id)-> get();
-
-            $blockers = DB::table('room_blocks')
-             -> leftJoin('app_users' , 'room_blocks.user_id' , '=' , 'app_users.id')
-             ->leftJoin('levels as share_level' ,function ($join) {
-              $join->on('app_users.share_level_id', '=', 'share_level.id');
-              })->leftJoin('levels as karizma_level' ,function ($join) {
-                  $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-              }) 
-              ->leftJoin('levels as charging_level' ,function ($join) {
-                  $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-              }) -> select('room_blocks.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-              'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-              'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-               'charging_level.icon as mic_user_charging_level') 
-               -> where('room_blocks.room_id' , '=' , $room_id)-> get();
+          } else {
+            return response()->json(['state' => 'failed' , 'message' => 'this Room is Disable']);
+          }
        
-                //get room cup
-
-                $transactions = GiftTransaction::Where('room_id' , '=' ,  $room_id) -> get();
-
-                $roomCup = (int) GiftTransaction::Where('room_id' , '=' ,  $room_id) 
-                -> whereDate('sendDate' ,  Carbon::today() )->sum('total');
-
-
-
-
-               return response()->json(['state' => 'success' , 'room' => $room , 'mics' => $mics , 'members' => $members , 'followers' => $followers ,
-                'admins' => $admins , 'blockers' => $blockers , 'roomCup' => $roomCup]);
    
     }
     public function createRoom($user_id){
@@ -226,7 +299,7 @@ class ChatRoomController extends Controller
             'tag' => $tag,
             'name' => $user-> name,
             'img' => $user -> img,
-            'state' => 0,
+            'state' => 1,
             'password' => "",
             'userId' => $user_id,
             'subject' => "CHAT",
@@ -395,89 +468,6 @@ class ChatRoomController extends Controller
     
             if($room){
                 return $this -> getRoom($room -> id);
-                // $room_id = $room  -> id ;
-                // $mics = DB::table('mics')
-                // -> leftJoin('app_users' , 'mics.user_id' , '=' , 'app_users.id')
-                // ->leftJoin('levels as share_level' ,function ($join) {
-                //  $join->on('app_users.share_level_id', '=', 'share_level.id');
-                //  })->leftJoin('levels as karizma_level' ,function ($join) {
-                //      $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-                //  }) 
-                //  ->leftJoin('levels as charging_level' ,function ($join) {
-                //      $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-                //  }) -> select('mics.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-                //  'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-                //  'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-                //   'charging_level.icon as mic_user_charging_level') 
-                //   -> where('mics.room_id' , '=' , $room_id)-> get();
-         
-                //   $members = DB::table('room_members')
-                //   -> leftJoin('app_users' , 'room_members.user_id' , '=' , 'app_users.id')
-                //   ->leftJoin('levels as share_level' ,function ($join) {
-                //    $join->on('app_users.share_level_id', '=', 'share_level.id');
-                //    })->leftJoin('levels as karizma_level' ,function ($join) {
-                //        $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-                //    }) 
-                //    ->leftJoin('levels as charging_level' ,function ($join) {
-                //        $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-                //    }) -> select('room_members.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-                //    'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-                //    'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-                //     'charging_level.icon as mic_user_charging_level') 
-                //     -> where('room_members.room_id' , '=' , $room_id)-> get();
-         
-                //     $admins = DB::table('room_admins')
-                //     -> leftJoin('app_users' , 'room_admins.user_id' , '=' , 'app_users.id')
-                //     ->leftJoin('levels as share_level' ,function ($join) {
-                //      $join->on('app_users.share_level_id', '=', 'share_level.id');
-                //      })->leftJoin('levels as karizma_level' ,function ($join) {
-                //          $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-                //      }) 
-                //      ->leftJoin('levels as charging_level' ,function ($join) {
-                //          $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-                //      }) -> select('room_admins.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-                //      'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-                //      'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-                //       'charging_level.icon as mic_user_charging_level') 
-                //       -> where('room_admins.room_id' , '=' , $room_id)-> get();
-         
-                //       $followers = DB::table('room_follows')
-                //       -> leftJoin('app_users' , 'room_follows.user_id' , '=' , 'app_users.id')
-                //       ->leftJoin('levels as share_level' ,function ($join) {
-                //        $join->on('app_users.share_level_id', '=', 'share_level.id');
-                //        })->leftJoin('levels as karizma_level' ,function ($join) {
-                //            $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-                //        }) 
-                //        ->leftJoin('levels as charging_level' ,function ($join) {
-                //            $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-                //        }) -> select('room_follows.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-                //        'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-                //        'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-                //         'charging_level.icon as mic_user_charging_level') 
-                //         -> where('room_follows.room_id' , '=' , $room_id)-> get();
-         
-                //      $blockers = DB::table('room_blocks')
-                //       -> leftJoin('app_users' , 'room_blocks.user_id' , '=' , 'app_users.id')
-                //       ->leftJoin('levels as share_level' ,function ($join) {
-                //        $join->on('app_users.share_level_id', '=', 'share_level.id');
-                //        })->leftJoin('levels as karizma_level' ,function ($join) {
-                //            $join->on('app_users.karizma_level_id', '=', 'karizma_level.id');
-                //        }) 
-                //        ->leftJoin('levels as charging_level' ,function ($join) {
-                //            $join->on('app_users.charging_level_id', '=', 'charging_level.id');
-                //        }) -> select('room_blocks.*' , 'app_users.tag as mic_user_tag' , 'app_users.name as mic_user_name' ,
-                //        'app_users.img as mic_user_img' , 'app_users.gender as mic_user_gender' , 'app_users.birth_date as mic_user_birth_date' ,
-                //        'share_level.icon as mic_user_share_level' , 'karizma_level.icon as mic_user_karizma_level' ,
-                //         'charging_level.icon as mic_user_charging_level') 
-                //         -> where('room_blocks.room_id' , '=' , $room_id)-> get();
-
-
-                        
-                // $roomCup = GiftTransaction::Where('room_id' , '=' ,  $room_id) 
-                // -> whereDate('sendDate' ,  Carbon::today() )->sum('total');
-                
-                //         return response()->json(['state' => 'success' , 'room' => $room , 'mics' => $mics , 'members' => $members , 'followers' => $followers ,
-                //          'admins' => $admins , 'blockers' => $blockers , 'roomCup' => $roomCup]);
             } else {
                 return response()->json(['state' => 'failed' , 'message' => 'user hase no room']);
      
@@ -1080,6 +1070,59 @@ class ChatRoomController extends Controller
             return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
         }
 
+    }
+
+    public function blockRoomMember(Request $request){
+       try{
+          $user = AppUser::find($request -> user_id);
+          $room = ChatRoom::find($request -> room_id);
+          if($user && $room){
+            $until = Carbon::now() ;
+            if($request ->block_type == "HOUR"){
+                $until = Carbon::now() -> addHours(1);
+            }  else if($request ->block_type == "DAY"){
+                $until = Carbon::now() -> addDays(1);
+            } else {
+                $until = Carbon::now() -> addYears(1);
+            }
+            RoomBlock::create([
+                'room_id' => $request ->room_id ,
+                'user_id' => $request ->user_id ,
+                'blocked_date' => Carbon::now(),
+                'block_type' => $request ->block_type ,
+                'block_until' =>  $until
+            ]);
+            
+            return $this -> getRoom($request -> room_id);
+          }else {
+            return response()->json(['state' => 'failed' , 'message' => 'can not find  the room or the user']); 
+          }
+            
+          
+       }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+        }
+         
+    }
+
+    public function unBlockRoomMember(Request $request){
+      try{
+        $user = AppUser::find($request -> user_id);
+        $room = ChatRoom::find( $request -> room_id);
+        $block = RoomBlock::where('room_id' , '=' , $request -> room_id) 
+        -> where('user_id' , '=' , $request -> user_id)-> get();
+        if($user && $room ){
+            if(count($block) > 0)
+            $block[0] -> delete();
+            return $this -> getRoom($request -> room_id);
+
+           
+        }else{
+            return response()->json(['state' => 'failed' , 'message' => 'can not find  the room or the user']); 
+        }
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+        }
     }
 
 }

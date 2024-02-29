@@ -71,6 +71,8 @@ use Illuminate\Http\Request;
         Route::post('/chatRooms/addAdmin', [App\Http\Controllers\Api\ChatRoomController::class, 'addRoomAdmin'])->name('addRoomAdmin');
         Route::post('/chatRooms/removeAdmin', [App\Http\Controllers\Api\ChatRoomController::class, 'removeRoomAdmin'])->name('removeRoomAdmin');
         Route::get('/chatRooms/toggleCounter/{room_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'toggleCounter'])->name('toggleCounter');
+        Route::post('/chatRooms/blockRoomMember', [App\Http\Controllers\Api\ChatRoomController::class, 'blockRoomMember'])->name('blockRoomMember');
+        Route::post('/chatRooms/unBlockRoomMember', [App\Http\Controllers\Api\ChatRoomController::class, 'unBlockRoomMember'])->name('unBlockRoomMember');
 
 
 

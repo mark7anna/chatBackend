@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppUser;
 use App\Models\Banner;
+use App\Models\ChatRoom;
 use Illuminate\Http\Request;
 
 class BannerController extends Controller
@@ -44,6 +46,30 @@ class BannerController extends Controller
             ]);
             $img = time() . '.' . $request->img->getClientOriginalExtension();
             $request->img->move(('images/Banners'), $img);
+
+            $user_id = 0 ;
+            $room_id  = 0 ;
+            if($request -> user_id){
+                $user = AppUser::where('tag' , '=' , $request -> user_id) ->get();
+                if(count($user) > 0 ){
+                    $user_id = $user[0] -> id ; 
+                } else {
+                    $user_id = 0 ;
+                }
+            } else {
+                $user_id = 0 ;
+            }
+            if($request -> room_id){
+                $room = ChatRoom::where('tag' , '=' , $request -> room_id) -> get();
+                if(count($room) > 0){
+                    $room_id  = $room[0] -> id ;
+                } else {
+                    $room_id  = 0 ;
+                }
+            } else {
+                $room_id  = 0 ;
+            }
+
             Banner::create([
                 'type' => $request -> type,
                 'name' => $request -> name,
@@ -51,8 +77,8 @@ class BannerController extends Controller
                 'order' => $request -> order ,
                 'action' => $request -> action,
                 'url' => $request -> url ?? "",
-                'user_id' => $request -> user_id ?? 0,
-                'room_id' => $request -> room_id ?? 0,
+                'user_id' => $user_id,
+                'room_id' => $room_id,
 
             ]);
             return redirect()->route('banners')->with('success', __('main.created'));
@@ -100,6 +126,29 @@ class BannerController extends Controller
             } else {
                 $img  =  $banner -> img ;
             }
+            $user_id = 0 ;
+            $room_id  = 0 ;
+            if($request -> user_id){
+                $user = AppUser::where('tag' , '=' , $request -> user_id) ->get();
+                if(count($user) > 0 ){
+                    $user_id = $user[0] -> id ; 
+                } else {
+                    $user_id =  $banner -> user_id;
+                }
+            } else {
+                $user_id =  $banner -> user_id;
+            }
+            if($request -> room_id){
+                $room = ChatRoom::where('tag' , '=' , $request -> room_id) -> get();
+                if(count($room) > 0){
+                    $room_id  = $room[0] -> id ;
+                } else {
+                    $room_id =  $banner -> room_id;
+                }
+            } else {
+                $room_id =  $banner -> room_id;
+            }
+
             $banner -> update([
                 'type' => $request -> type,
                 'name' => $request -> name,
@@ -107,8 +156,8 @@ class BannerController extends Controller
                 'order' => $request -> order ,
                 'action' => $request -> action,
                 'url' => $request -> url ?? "",
-                'user_id' => $request -> user_id ?? 0,
-                'room_id' => $request -> room_id ?? 0,
+                'user_id' => $user_id,
+                'room_id' =>  $room_id,
 
             ]);
             return redirect()->route('banners')->with('success', __('main.updated'));
