@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\AppUser;
+use App\Models\ChargingOpration;
 use Carbon\Carbon;
 use App\Models\Country;
 use App\Models\Themes;
@@ -18,9 +19,14 @@ use App\Models\Emossions;
 use App\Models\Design;
 use App\Models\GiftCategory;
 use App\Models\GiftTransaction;
+use App\Models\Level;
+use App\Models\LuckyCase;
+use App\Models\Rollet;
+use App\Models\RolletUSer;
 use App\Models\RoomAdmin;
 use App\Models\RoomBlock;
 use App\Models\RoomMember;
+use App\Models\Wallet;
 
 class ChatRoomController extends Controller
 {
@@ -1123,6 +1129,311 @@ class ChatRoomController extends Controller
       }catch(QueryException $ex){
         return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
         }
+    }
+
+    public function createLuckyCase(Request $request){
+      try{
+        $room = ChatRoom::find($request -> room_id);
+        $user = AppUser::find($request -> user_id);
+        if( $room && $user){
+            $lucky =   LuckyCase::create([
+                'type' => $request -> type,
+                'value' => $request -> value,
+                'user_id' => $request -> user_id,
+                'room_id' => $request -> room_id,
+                'out_value' => 0,
+                'created_date' => Carbon::now()
+            ]);
+
+            return response()->json(['state' => 'success' , 'lucky' => $lucky]); 
+ 
+        
+        } else {
+            return response()->json(['state' => 'failed' , 'message' => 'can not find  the room or the user']); 
+        }
+
+      }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+        }
+    }
+
+    public function useLuckyCase(Request $request){
+        try{
+            $room = ChatRoom::find($request -> room_id);
+            $user = AppUser::find($request -> user_id);
+            $lucky = LuckyCase::find($request -> lucky_id);
+            if($room && $user && $lucky){
+                 if(($lucky -> out_value + $request -> value) <= $lucky -> value){
+                    $lucky -> update([
+                       'out_value' => $lucky -> out_value + $request -> value
+                    ]);
+
+                    $wallets = Wallet::where('user_id' , '=' , $request -> user_id) -> get();
+                    if(count( $wallets) > 0){
+                        $wallet =  $wallets[0];
+                        $wallet -> update([
+                           'gold' => $wallet -> gold + $request -> value
+                        ]);
+                    }
+
+                    ChargingOpration::create([
+                        'user_id' => $request -> user_id ,
+                        'gold' => $request -> value,
+                        'source' => "LUCKY CASE",
+                        'state' => 1,
+                        'charging_date' => Carbon::now()
+                    ]);
+                    $this -> checkToUp( $request -> user_id);
+                    $lucky = LuckyCase::find($request -> lucky_id);
+                    return response()->json(['state' => 'success' , 'lucky' => $lucky]); 
+
+                 } else {
+                    return response()->json(['state' => 'failed' , 'message' => 'case is empty !']); 
+
+                 }
+
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find  the room or the user or the lucky case']); 
+
+            }
+        }catch(QueryException $ex){
+        return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+        }
+    }
+
+    public function checkToUp($user_id){
+        try{
+            $user = AppUser::find($user_id);
+            if($user){
+                $operations = ChargingOpration::where('user_id' , '=' , $user_id) -> get();
+                $current_level = Level::find($user -> charging_level_id);
+                $totalChargeValue = 0 ;
+                $up_level = 0 ;
+                foreach( $operations as  $operation){
+                    $totalChargeValue  +=  $operation -> gold ;
+                }
+                if($current_level -> points > $totalChargeValue){
+                    //do no thing
+                    return 'not upgrade';
+                } else {
+                    $up_level = Level::Where('type' , '=' , 2) 
+                    -> where('points' , '>=' ,$totalChargeValue )  ->orderBy('points', 'ASC') -> get()[0] -> id;
+                 $user -> update([
+                    'charging_level_id' => $up_level 
+                 ]);
+                }
+
+
+
+
+            }
+        } catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+    }
+
+    public function CreateRollet(Request $request){
+        try{
+            $room = ChatRoom::find($request -> room_id);
+            $user = AppUser::find($request -> user_id);
+            if($room && $user){
+                $activeRollets = Rollet::where('room_id' , '=' , $request -> room_id)
+                -> where('state' , '<' , 2)
+                -> get();
+                if(count($activeRollets) == 0){
+                    //create rollet
+                    $id =Rollet::create([
+                        'room_id' => $request -> room_id,
+                        'type' => $request -> type,
+                        'value' =>  $request -> value,
+                        'member_count' =>  $request -> adminShare ,
+                        'actual_member_count' => $request -> adminShare  ,
+                        'adminShare' => $request -> adminShare,
+                        'state' => 0,
+                        'winner_id' => 0
+                    ]) -> id;
+                    if($id > 0){
+                         if($request -> adminShare == 1){
+
+                         return  $this -> addUserToRollet(  $id , $request -> user_id);
+                
+                         } else {
+                           return $this -> getRollet($id );
+
+                         }
+                    }
+                } else {
+                    //show rollet
+                    $rolletID =  $activeRollets[0] -> id ;
+                     return $this -> getRollet($rolletID );
+                }
+
+
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find  the room or the user']); 
+
+            }
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+
+    }
+
+
+    public function getRollet($rolletID){
+       
+        $rollet = DB::table('rollets')
+         -> leftJoin('rollet_u_sers' , 'rollets.id' , '=' , 'rollet_u_sers.rollet_id')
+         ->join('app_users' ,function ($join) {
+            $join->on('app_users.id', '=', 'rollet_u_sers.user_id');
+           })-> select('rollets.*' , 'rollet_u_sers.id as rollet_user_id' , 'app_users.name as user_name' ,
+           'app_users.img as user_img')
+           -> where('rollets.id' , '=' ,  $rolletID ) -> get();
+           if( $rollet -> state == 0 ){
+            $rollet_state = 'PENDING' ;
+           } else if($rollet -> state == 1){
+            $rollet_state = 'RUNNING' ;
+           } else {
+            $rollet_state = "";
+           }
+           
+
+        return response()->json(['state' => 'success' , 'rollet' => $rollet , 'rollet_state' => $rollet_state]); 
+    }
+
+    public function addUserToRollet($rollet_id , $user_id ){
+        try{
+            $rollet = Rollet::find($rollet_id);
+            if($rollet){
+                if($rollet -> actual_member_count < $rollet -> member_count){
+                    $member_id =  RolletUSer::create([
+                        'rollet_id' => $rollet_id,
+                        'user_id' => $user_id
+                    ]) -> id;
+
+                    if($member_id > 0){
+                        $wallets = Wallet::where('user_id' , '=' , $user_id) -> get();
+                        if(count ( $wallets) > 0){
+                            $wallet =  $wallets[0];
+                            $wallet -> update([
+                                 'gold' => $wallet -> gold - $rollet -> value
+                            ]);
+                        }
+                    }
+                    $rollet -> update([
+                        $rollet -> actual_member_count => $rollet -> actual_member_count + 1
+                    ]);
+
+                       return $this -> getRollet($rollet -> id);
+
+                } else {
+                    return response()->json(['state' => 'failed' , 'message' => 'can not add user to the full rollet']); 
+
+                }
+            }
+
+        
+    
+         
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+ 
+    }
+
+    public function deleteRollet($rollet_id ){
+       try{
+         $rollet = Rollet::find($rollet_id);
+         if($rollet ){
+            $users = RolletUSer::where('rollet_id' , '=' , $rollet_id) -> get();
+            foreach($users as $user){
+                $wallets = Wallet::where('user_id' , '=' , $user -> user_id) -> get();
+                $wallet = $wallets[0];
+                $wallet -> update([
+                    'gold' => $wallet -> gold + $rollet -> value
+                ]);
+                
+            }
+            $rollet -> delete();
+            return response()->json(['state' => 'success' , 'message' => 'rollet deleted successfully']);
+
+         }
+       }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+    }
+
+    public function StartRollet($rollet_id){
+        try{
+            $rollet = Rollet::find($rollet_id);
+            if($rollet){
+                $rollet -> update([
+                    'state' => 1
+                ]);
+                return $this -> getRollet($rollet -> id);
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find the rollet']); 
+
+            }
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+
+    }
+
+    public function rolletLoser($rollet_id , $loser){
+        try{
+            $rollet = Rollet::find($rollet_id);
+            if($rollet){
+                $members = RolletUSer::Where('user_id' , '=' , $loser) -> get();
+                if(count( $members) > 0){
+                   $member = $members[0];
+                   $member -> delete();
+                } 
+               
+                return $this -> endRollet($rollet -> id);
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find the rollet']); 
+
+            }
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+    }
+    public function endRollet($rollet_id){
+        try{
+            $rollet = Rollet::find($rollet_id);
+            if($rollet){
+                $members = RolletUSer::Where('rollet_id' , '=' , $rollet_id) -> get();
+                if(count( $members) == 1){
+                   $winner = $members[0];
+                   $rollet -> update([
+                    'winner_id' => $winner -> user_id ,
+                    'state' => 2
+                   ]);
+                   $winner -> delete();
+                } 
+               
+                return $this -> getRollet($rollet -> id);
+            } else {
+                return response()->json(['state' => 'failed' , 'message' => 'can not find the rollet']); 
+
+            }
+
+        }catch(QueryException $ex){
+            return response()->json(['state' => 'failed' , 'message' => $ex->getMessage()]);
+
+        }
+
     }
 
 }

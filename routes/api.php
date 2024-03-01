@@ -84,6 +84,13 @@ use Illuminate\Http\Request;
         Route::post('/chatRooms/leaveMic', [App\Http\Controllers\Api\ChatRoomController::class, 'leaveMic'])->name('leaveMic');
         Route::post('/chatRooms/chnageRoomBg', [App\Http\Controllers\Api\ChatRoomController::class, 'chnageRoomBg'])->name('chnageRoomBg');
         Route::get('/chatRooms/getRoomCup/{room_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'getRoomCup'])->name('getRoomCup');
+        Route::post('/chatRooms/luckyCase/craete', [App\Http\Controllers\Api\ChatRoomController::class, 'createLuckyCase'])->name('createLuckyCase');
+        Route::post('/chatRooms/luckyCase/use', [App\Http\Controllers\Api\ChatRoomController::class, 'useLuckyCase'])->name('useLuckyCase');
+        Route::post('/chatRooms/rollet/craete', [App\Http\Controllers\Api\ChatRoomController::class, 'CreateRollet'])->name('CreateRollet');
+        Route::get('/chatRooms/rollet/subscripe/{rollet_id}/{user_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'addUserToRollet'])->name('addUserToRollet');
+        Route::get('/chatRooms/rollet/delete/{rollet_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'deleteRollet'])->name('deleteRollet');
+        Route::get('/chatRooms/rollet/start/{rollet_id}', [App\Http\Controllers\Api\ChatRoomController::class, 'deleteRollet'])->name('deleteRollet');
+        Route::get('/chatRooms/rollet/loser/{rollet_id}/{loser}', [App\Http\Controllers\Api\ChatRoomController::class, 'rolletLoser'])->name('rolletLoser');
 
 
         
